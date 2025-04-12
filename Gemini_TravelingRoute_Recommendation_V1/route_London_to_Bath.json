@@ -1,0 +1,178 @@
+{
+  "timestamp": "2025-04-12T22:36:29.591163",
+  "query": {
+    "origin": "London",
+    "destination": "Bath"
+  },
+  "plan": {
+    "weather": {
+      "description": "Current weather data for Bath is unavailable in this static response. Please use a real-time weather API for up-to-date information.",
+      "temperature": "N/A",
+      "conditions": "N/A",
+      "recommendation": "Check the current weather forecast before your trip and dress accordingly."
+    },
+    "walkability": {
+      "score": 85,
+      "description": "Bath is a highly walkable city with a compact city center and many pedestrianized areas.  The city's historic streets and attractions are close together, making it easy to explore on foot.",
+      "pros": [
+        "Compact city center",
+        "Pedestrian-friendly streets",
+        "Many attractions within walking distance",
+        "Scenic walking routes along the river"
+      ],
+      "cons": [
+        "Some hills can be challenging",
+        "Cobblestone streets can be uneven",
+        "Can be crowded during peak season"
+      ]
+    },
+    "transportation_options": [
+      {
+        "mode": "driving",
+        "estimated_time": "Approximately 2.5 - 3.5 hours (depending on traffic)",
+        "distance": "Approximately 115 miles (185 km)",
+        "cost": "\u00a320 - \u00a330 for fuel (depending on vehicle and fuel prices) + potential parking fees (\u00a310 - \u00a320 per day)",
+        "weather_impact": "Rain, fog, or snow can significantly impact driving times and safety. Traffic congestion is common, especially during peak hours and holidays.",
+        "pros": [
+          "Flexibility to stop at other locations along the way",
+          "Can carry more luggage",
+          "Can be faster than public transit in off-peak hours"
+        ],
+        "cons": [
+          "Traffic congestion can be significant",
+          "Parking in Bath can be expensive and difficult to find",
+          "Driving in an unfamiliar city can be stressful"
+        ],
+        "feasibility": "Feasible, but traffic and parking can be challenging."
+      },
+      {
+        "mode": "walking",
+        "estimated_time": "Not feasible for a journey of this distance (approximately 37 hours of continuous walking).",
+        "distance": "Approximately 115 miles (185 km)",
+        "cost": "Minimal (water and snacks)",
+        "weather_impact": "Highly susceptible to weather conditions. Extreme heat, cold, or rain would make this option impractical.",
+        "pros": [],
+        "cons": [
+          "Impractical due to the long distance"
+        ],
+        "feasibility": "Not feasible"
+      },
+      {
+        "mode": "public_transit",
+        "estimated_time": "Approximately 1.5 - 2.5 hours (depending on train schedule and connections)",
+        "distance": "Approximately 115 miles (185 km)",
+        "cost": "\u00a330 - \u00a380 (depending on train operator, time of booking, and class)",
+        "weather_impact": "Generally unaffected by weather, although severe disruptions can occur.",
+        "pros": [
+          "Relaxing and comfortable",
+          "Avoids traffic and parking hassles",
+          "Can be cost-effective"
+        ],
+        "cons": [
+          "Less flexibility than driving",
+          "Can be crowded during peak hours",
+          "Subject to train schedules and potential delays"
+        ],
+        "feasibility": "Highly feasible and recommended"
+      },
+      {
+        "mode": "biking",
+        "estimated_time": "Approximately 10-12 hours (depending on fitness level and route)",
+        "distance": "Approximately 115 miles (185 km)",
+        "cost": "Minimal (water, snacks, and potential bike rental if needed)",
+        "weather_impact": "Highly susceptible to weather conditions. Rain, wind, or extreme temperatures can make this option challenging.",
+        "pros": [
+          "Scenic route",
+          "Good exercise",
+          "Environmentally friendly"
+        ],
+        "cons": [
+          "Physically demanding",
+          "Requires specialized equipment (bike, helmet, etc.)",
+          "Time-consuming",
+          "Safety concerns on busy roads"
+        ],
+        "feasibility": "Feasible for experienced cyclists, but requires planning and preparation. Consider a multi-day trip with overnight stops."
+      }
+    ]
+  },
+  "selected_mode": "driving",
+  "final_route": {
+    "route_summary": {
+      "mode": "driving",
+      "origin": "London (Trafalgar Square)",
+      "destination": "Bath City Centre",
+      "total_time": "2.5 - 3.5 hours (depending on traffic)",
+      "total_distance": "Approximately 115 miles (185 km)",
+      "weather_advisory": "Check real-time weather conditions for Bath and along the route before departure using a weather app or website.",
+      "feasibility_assessment": "This route is feasible and uses major public roads."
+    },
+    "steps": [
+      {
+        "number": 1,
+        "instruction": "Start at Trafalgar Square, heading southwest on A4 Whitehall towards Parliament Square.",
+        "distance": "0.5 miles",
+        "time": "5-10 minutes",
+        "path_type": "Road",
+        "notes": "Follow signs for M4/Heathrow."
+      },
+      {
+        "number": 2,
+        "instruction": "Continue onto A3212 and follow signs for M4/Heathrow.",
+        "distance": "1 mile",
+        "time": "5-10 minutes",
+        "path_type": "Road",
+        "notes": ""
+      },
+      {
+        "number": 3,
+        "instruction": "Join the M4 motorway heading west towards Heathrow/Reading/Bristol.",
+        "distance": "105 miles",
+        "time": "1.5 - 2.5 hours",
+        "path_type": "Motorway",
+        "notes": "Stay on the M4 for the majority of the journey."
+      },
+      {
+        "number": 4,
+        "instruction": "Exit the M4 at Junction 18 for Bath.",
+        "distance": "N/A",
+        "time": "N/A",
+        "path_type": "Motorway Exit",
+        "notes": ""
+      },
+      {
+        "number": 5,
+        "instruction": "Follow the A46 towards Bath city centre.",
+        "distance": "5 miles",
+        "time": "10-15 minutes",
+        "path_type": "Road",
+        "notes": ""
+      },
+      {
+        "number": 6,
+        "instruction": "Arrive in Bath city centre.",
+        "distance": "N/A",
+        "time": "N/A",
+        "path_type": "Road",
+        "notes": "Parking is available in various locations throughout the city centre."
+      }
+    ],
+    "recommendations": [
+      "Allow extra time for travel during peak hours or if there are roadworks.",
+      "Consider stopping at Reading Services on the M4 for a break.",
+      "Pre-book parking in Bath to avoid delays upon arrival.",
+      "Visit the Roman Baths, Bath Abbey, and the Royal Crescent while in Bath."
+    ],
+    "safety_concerns": [
+      "Adjust driving speed according to weather conditions.",
+      "Be aware of potential traffic congestion, especially during peak hours.",
+      "Take regular breaks on long journeys to avoid driver fatigue."
+    ],
+    "validation": {
+      "is_validated": true,
+      "issues": [],
+      "alternatives": []
+    }
+  },
+  "validation_warnings": []
+}

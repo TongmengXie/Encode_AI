@@ -1,0 +1,162 @@
+{
+  "timestamp": "2025-04-12T12:55:39.281934",
+  "query": {
+    "origin": "London",
+    "destination": "Cardiff"
+  },
+  "plan": {
+    "weather": {
+      "description": "Current weather data unavailable. Please check a real-time weather service for up-to-date information.",
+      "temperature": "N/A",
+      "conditions": "N/A",
+      "recommendation": "Check the forecast before you travel and pack accordingly."
+    },
+    "walkability": {
+      "score": 75,
+      "description": "Cardiff city centre is generally very walkable with good pedestrian infrastructure. Many attractions are within easy walking distance of each other.",
+      "pros": [
+        "Pleasant city centre",
+        "Pedestrianized areas",
+        "Good signage",
+        "Many attractions within walking distance"
+      ],
+      "cons": [
+        "Can be hilly in some areas",
+        "Walking from outside the city centre can be time-consuming"
+      ]
+    },
+    "transportation_options": [
+      {
+        "mode": "driving",
+        "estimated_time": "Approximately 2 hours 30 minutes - 3 hours (depending on traffic)",
+        "distance": "Approximately 150 miles",
+        "cost": "\u00a320-\u00a330 for fuel (estimate), plus potential congestion charges and parking fees.",
+        "weather_impact": "Heavy rain or fog can increase travel time and reduce visibility.",
+        "pros": [
+          "Direct route",
+          "Flexibility",
+          "Can carry luggage easily"
+        ],
+        "cons": [
+          "Traffic congestion",
+          "Parking costs",
+          "Potential for delays due to accidents or roadworks"
+        ]
+      },
+      {
+        "mode": "walking",
+        "estimated_time": "Not feasible for this distance (approximately 30+ hours)",
+        "distance": "Approximately 150 miles",
+        "cost": "Minimal (food and drink)",
+        "weather_impact": "Heavily impacted by weather. Rain, wind, and extreme temperatures would make this impractical.",
+        "pros": [],
+        "cons": [
+          "Impractical distance",
+          "Extremely time-consuming",
+          "Physically demanding"
+        ]
+      },
+      {
+        "mode": "public_transit",
+        "estimated_time": "Approximately 2 hours 15 minutes - 2 hours 45 minutes by train",
+        "distance": "Approximately 150 miles",
+        "cost": "\u00a340-\u00a380 for a train ticket (depending on time of booking and train type)",
+        "weather_impact": "Generally unaffected by weather, although severe disruptions can occur.",
+        "pros": [
+          "Relatively fast",
+          "Comfortable",
+          "Can work or relax during the journey"
+        ],
+        "cons": [
+          "Fixed schedule",
+          "Can be expensive",
+          "Requires transfers to/from stations"
+        ]
+      },
+      {
+        "mode": "biking",
+        "estimated_time": "Approximately 10-12 hours (depending on fitness level and route)",
+        "distance": "Approximately 150 miles",
+        "cost": "Minimal (food and drink)",
+        "weather_impact": "Heavily impacted by weather. Rain, wind, and extreme temperatures would make this challenging.",
+        "pros": [
+          "Scenic route",
+          "Good exercise",
+          "Environmentally friendly"
+        ],
+        "cons": [
+          "Physically demanding",
+          "Time-consuming",
+          "Requires carrying luggage",
+          "Safety concerns on busy roads"
+        ]
+      }
+    ]
+  },
+  "selected_mode": "biking",
+  "final_route": {
+    "route_summary": {
+      "mode": "biking",
+      "origin": "London",
+      "destination": "Cardiff",
+      "total_time": "10-12 hours (depending on fitness level and route)",
+      "total_distance": "Approximately 150 miles",
+      "weather_advisory": "Please check a real-time weather service for up-to-date information before departure and adjust your plans accordingly. Be prepared for changing conditions."
+    },
+    "steps": [
+      {
+        "number": 1,
+        "instruction": "Start at your chosen location in London.  A good starting point could be Hyde Park.",
+        "distance": "Variable",
+        "time": "Variable",
+        "notes": "Ensure your bike is in good working order and you have necessary supplies."
+      },
+      {
+        "number": 2,
+        "instruction": "Follow the A4 towards Slough and Reading.",
+        "distance": "Approximately 35 miles",
+        "time": "2-3 hours",
+        "notes": "This section can be busy with traffic. Consider alternative routes if preferred."
+      },
+      {
+        "number": 3,
+        "instruction": "Continue on the A4 to Newbury.",
+        "distance": "Approximately 15 miles",
+        "time": "1-1.5 hours",
+        "notes": "Newbury offers a good stop for refreshments."
+      },
+      {
+        "number": 4,
+        "instruction": "From Newbury, follow the A34 towards Marlborough and then the A4 towards Chippenham.",
+        "distance": "Approximately 40 miles",
+        "time": "3-4 hours",
+        "notes": "This section includes some challenging hills."
+      },
+      {
+        "number": 5,
+        "instruction": "From Chippenham, follow the A420 towards Bristol, then transition to the M4 motorway cycle path towards Cardiff.",
+        "distance": "Approximately 40 miles",
+        "time": "3-4 hours",
+        "notes": "Be mindful of traffic when transitioning between roads and cycle paths."
+      },
+      {
+        "number": 6,
+        "instruction": "Continue on the M4 cycle path until you reach your destination in Cardiff.",
+        "distance": "Approximately 20 miles",
+        "time": "1.5-2 hours",
+        "notes": "Cardiff Castle is a good landmark to aim for as you approach the city center."
+      }
+    ],
+    "recommendations": [
+      "Check the weather forecast before you leave and pack appropriate clothing.",
+      "Carry plenty of water and snacks.",
+      "Ensure your bike is in good working order and you have a repair kit.",
+      "Wear bright clothing and use lights, especially in low visibility conditions.",
+      "Take regular breaks to rest and refuel.",
+      "Be aware of traffic and follow the Highway Code.",
+      "Consider booking accommodation in advance if you plan to stay overnight.",
+      "Potential points of interest include Windsor Castle (near Slough), the Avebury Stone Circle (near Marlborough), and the Roman Baths (in Bath - slight detour).",
+      "If weather conditions are adverse, consider postponing your trip."
+    ]
+  }
+}

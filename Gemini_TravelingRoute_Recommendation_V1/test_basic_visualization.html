@@ -1,0 +1,255 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Route from London to Cambridge</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+                background-color: #f5f5f5;
+                color: #333;
+            }
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                background-color: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .header {
+                background-color: #4CAF50;
+                color: white;
+                padding: 15px;
+                border-radius: 6px;
+                margin-bottom: 20px;
+            }
+            .section {
+                margin-bottom: 25px;
+                padding: 15px;
+                background-color: #f9f9f9;
+                border-radius: 6px;
+                border-left: 4px solid #4CAF50;
+            }
+            .weather-section {
+                background-color: #e3f2fd;
+                border-left: 4px solid #2196F3;
+            }
+            .walkability-section {
+                background-color: #fff8e1;
+                border-left: 4px solid #FFC107;
+            }
+            .transport-section {
+                background-color: #f1f8e9;
+            }
+            .selected-transport {
+                background-color: #e8f5e9;
+                border: 2px solid #4CAF50;
+            }
+            .transport-option {
+                margin-bottom: 10px;
+                padding: 10px;
+                border-radius: 4px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+            .steps-section {
+                background-color: #e8eaf6;
+                border-left: 4px solid #3F51B5;
+            }
+            .step {
+                margin-bottom: 10px;
+                padding: 10px;
+                background-color: white;
+                border-radius: 4px;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            }
+            ul.pros-cons {
+                padding-left: 20px;
+            }
+            .pros {
+                color: #4CAF50;
+            }
+            .cons {
+                color: #F44336;
+            }
+            .map-container {
+                height: 400px;
+                margin-bottom: 20px;
+                border-radius: 6px;
+                overflow: hidden;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            th, td {
+                padding: 10px;
+                border: 1px solid #ddd;
+                text-align: left;
+            }
+            th {
+                background-color: #f2f2f2;
+            }
+            .recommendations {
+                background-color: #fce4ec;
+                border-left: 4px solid #E91E63;
+                padding: 15px;
+                border-radius: 6px;
+                margin-top: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>Route from London to Cambridge</h1>
+                <p>Transportation Mode: DRIVING</p>
+                <p>Generated on: 2025-04-12 17:40:49</p>
+            </div>
+    
+            <div class="section weather-section">
+                <h2>Weather Conditions in Cambridge</h2>
+                <p><strong>Description:</strong> Partly cloudy in Cambridge</p>
+                <p><strong>Temperature:</strong> 15°C (59°F)</p>
+                <p><strong>Conditions:</strong> Partly cloudy</p>
+                <p><strong>Recommendation:</strong> Good day for traveling, bring a light jacket</p>
+            </div>
+        
+            <div class="section walkability-section">
+                <h2>Walkability Assessment</h2>
+                <p><strong>Score:</strong> 85/100</p>
+                <p><strong>Description:</strong> Cambridge is very walkable with many pedestrian-friendly areas</p>
+                <h3>Pros:</h3>
+                <ul class="pros-cons pros">
+        <li>Many pedestrian zones</li><li>Good sidewalks</li><li>Beautiful scenery</li>
+                </ul>
+                <h3>Cons:</h3>
+                <ul class="pros-cons cons">
+        
+                </ul>
+            </div>
+        
+            <div class="section transport-section">
+                <h2>Transportation Options</h2>
+    
+                <div class="transport-option selected-transport">
+                    <h3>DRIVING (Selected)</h3>
+                    <p><strong>Time:</strong> 1.5 - 2 hours</p>
+                    <p><strong>Distance:</strong> ~95 km (60 miles)</p>
+                    <p><strong>Cost:</strong> £15-20 for fuel + potential parking fees</p>
+                    <p><strong>Weather Impact:</strong> Good driving conditions</p>
+                    <h4>Pros:</h4>
+                    <ul class="pros-cons pros">
+        <li>Fastest option</li><li>Flexibility</li>
+                    </ul>
+                    <h4>Cons:</h4>
+                    <ul class="pros-cons cons">
+        
+                    </ul>
+                </div>
+        
+                <div class="transport-option">
+                    <h3>WALKING</h3>
+                    <p><strong>Time:</strong> Not practical (~30 hours)</p>
+                    <p><strong>Distance:</strong> ~95 km (60 miles)</p>
+                    <p><strong>Cost:</strong> Free</p>
+                    <p><strong>Weather Impact:</strong> Good walking weather, but very long distance</p>
+                    <h4>Pros:</h4>
+                    <ul class="pros-cons pros">
+        <li>Scenic views</li><li>Exercise</li>
+                    </ul>
+                    <h4>Cons:</h4>
+                    <ul class="pros-cons cons">
+        
+                    </ul>
+                </div>
+        
+            </div>
+    
+            <div class="section map-container">
+                <h2>Route Map</h2>
+                
+    
+    
+            <div class="folium-map" id="map_1651cbf0affbd5aae03e9dc6e587864e" ></div>
+        
+
+            </div>
+        
+            <div class="section">
+                <h2>Route Summary</h2>
+                <p><strong>Mode:</strong> driving</p>
+                <p><strong>Total Time:</strong> 1.5 - 2 hours</p>
+                <p><strong>Total Distance:</strong> ~95 km (60 miles)</p>
+                <p><strong>Weather Advisory:</strong> Good conditions for travel</p>
+            </div>
+        
+            <div class="section steps-section">
+                <h2>Route Steps</h2>
+                <table>
+                    <tr>
+                        <th>#</th>
+                        <th>Instruction</th>
+                        <th>Distance</th>
+                        <th>Time</th>
+                        <th>Notes</th>
+                    </tr>
+        
+                    <tr>
+                        <td>1</td>
+                        <td>Start in central London</td>
+                        <td>0 km</td>
+                        <td>0 min</td>
+                        <td>N/A</td>
+                    </tr>
+            
+                    <tr>
+                        <td>2</td>
+                        <td>Take M11 motorway north</td>
+                        <td>80 km</td>
+                        <td>60 min</td>
+                        <td>N/A</td>
+                    </tr>
+            
+                    <tr>
+                        <td>3</td>
+                        <td>Exit onto A1303</td>
+                        <td>10 km</td>
+                        <td>15 min</td>
+                        <td>N/A</td>
+                    </tr>
+            
+                    <tr>
+                        <td>4</td>
+                        <td>Follow signs to Cambridge city center</td>
+                        <td>5 km</td>
+                        <td>15 min</td>
+                        <td>N/A</td>
+                    </tr>
+            
+                    <tr>
+                        <td>5</td>
+                        <td>Arrive in Cambridge</td>
+                        <td>0 km</td>
+                        <td>0 min</td>
+                        <td>N/A</td>
+                    </tr>
+            
+                </table>
+            </div>
+        
+            <div class="recommendations">
+                <h2>Recommendations</h2>
+                <ul>
+        <li>Consider using Park & Ride facilities in Cambridge to avoid parking issues</li><li>Traffic can be heavy during rush hours (8-9am, 5-6:30pm)</li>
+                </ul>
+            </div>
+        
+        </div>
+    </body>
+    </html>
+    

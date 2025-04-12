@@ -1,0 +1,178 @@
+{
+  "timestamp": "2025-04-12T14:17:25.708395",
+  "query": {
+    "origin": "Bristol",
+    "destination": "Bath"
+  },
+  "plan": {
+    "weather": {
+      "description": "Current weather data for Bath is unavailable in this static response. Please use a real-time weather API for up-to-date information.",
+      "temperature": "N/A",
+      "conditions": "N/A",
+      "recommendation": "Check the current weather forecast before your trip and dress accordingly."
+    },
+    "walkability": {
+      "score": 85,
+      "description": "Bath is a relatively compact city with a well-preserved historical center. Many attractions are within walking distance of each other. However, some areas have hills.",
+      "pros": [
+        "Compact city center",
+        "Pedestrian-friendly streets",
+        "Scenic routes"
+      ],
+      "cons": [
+        "Hills in some areas",
+        "Can be crowded during peak season"
+      ]
+    },
+    "transportation_options": [
+      {
+        "mode": "driving",
+        "estimated_time": "25-45 minutes (depending on traffic)",
+        "distance": "Approximately 13 miles (21 km)",
+        "cost": "Variable (fuel, parking)",
+        "weather_impact": "Can be affected by rain, snow, or fog, potentially increasing travel time.",
+        "pros": [
+          "Faster than public transit or biking in good traffic conditions",
+          "Flexibility to explore surrounding areas"
+        ],
+        "cons": [
+          "Traffic congestion, especially during peak hours",
+          "Parking can be expensive and difficult to find",
+          "Environmental impact"
+        ],
+        "feasibility": "Feasible, but traffic can be a significant factor."
+      },
+      {
+        "mode": "walking",
+        "estimated_time": "Not recommended due to the distance (approximately 7-8 hours).",
+        "distance": "Approximately 13 miles (21 km)",
+        "cost": "Free",
+        "weather_impact": "Highly affected by rain, snow, or extreme temperatures.",
+        "pros": [
+          "Healthy",
+          "Opportunity to enjoy the scenery"
+        ],
+        "cons": [
+          "Impractical due to long distance",
+          "Time-consuming",
+          "Can be tiring"
+        ],
+        "feasibility": "Not feasible for most people."
+      },
+      {
+        "mode": "public_transit",
+        "estimated_time": "Approximately 1 hour - 1 hour 30 minutes (depending on the specific route and schedule)",
+        "distance": "Approximately 13 miles (21 km)",
+        "cost": "Around \u00a35-\u00a310 for a single journey",
+        "weather_impact": "Minimally affected by weather, except for potential delays.",
+        "pros": [
+          "Cost-effective",
+          "Environmentally friendly",
+          "Avoids traffic and parking hassles"
+        ],
+        "cons": [
+          "Can be less flexible than driving",
+          "Subject to schedules"
+        ],
+        "feasibility": "Feasible and a good option."
+      },
+      {
+        "mode": "biking",
+        "estimated_time": "Approximately 1.5 - 2.5 hours (depending on the route and cycling speed)",
+        "distance": "Approximately 13 miles (21 km)",
+        "cost": "Bike rental or own bike maintenance",
+        "weather_impact": "Affected by rain, snow, or strong winds.",
+        "pros": [
+          "Scenic route options",
+          "Good exercise",
+          "Environmentally friendly"
+        ],
+        "cons": [
+          "Can be tiring, especially with hills",
+          "Requires suitable clothing and equipment",
+          "Safety concerns on busy roads"
+        ],
+        "feasibility": "Feasible for experienced cyclists, but requires planning and appropriate equipment."
+      }
+    ]
+  },
+  "selected_mode": "biking",
+  "final_route": {
+    "route_summary": {
+      "mode": "biking",
+      "origin": "Bristol Temple Meads Station, Bristol",
+      "destination": "Bath Spa Train Station, Bath",
+      "total_time": "1.5 - 2.5 hours",
+      "total_distance": "13 miles (21 km)",
+      "weather_advisory": "Check a real-time weather API for up-to-date weather information before departure. Dress in layers and be prepared for changing conditions.",
+      "feasibility_assessment": "This route is feasible and utilizes the Bristol & Bath Railway Path, a popular off-road cycle route."
+    },
+    "steps": [
+      {
+        "number": 1,
+        "instruction": "Start at Bristol Temple Meads Station. Head east towards the Bristol & Bath Railway Path.",
+        "distance": "0.5 miles",
+        "time": "5-10 minutes",
+        "path_type": "road/cycle path",
+        "notes": "Follow signs for the Bristol & Bath Railway Path."
+      },
+      {
+        "number": 2,
+        "instruction": "Join the Bristol & Bath Railway Path.",
+        "distance": "11 miles",
+        "time": "1-1.5 hours",
+        "path_type": "dedicated cycle path",
+        "notes": "This is a mostly flat, traffic-free path. Be mindful of other cyclists and pedestrians."
+      },
+      {
+        "number": 3,
+        "instruction": "Continue on the Bristol & Bath Railway Path, passing through Bitton and Saltford.",
+        "distance": "N/A (part of step 2)",
+        "time": "N/A",
+        "path_type": "dedicated cycle path",
+        "notes": "There are cafes and pubs along the route in these villages if you need a break."
+      },
+      {
+        "number": 4,
+        "instruction": "As you approach Bath, the path will lead you closer to the River Avon.",
+        "distance": "N/A (part of step 2)",
+        "time": "N/A",
+        "path_type": "dedicated cycle path",
+        "notes": "Enjoy the scenic views of the river."
+      },
+      {
+        "number": 5,
+        "instruction": "Exit the Bristol & Bath Railway Path near Bath Spa Train Station.",
+        "distance": "0.5 miles",
+        "time": "5-10 minutes",
+        "path_type": "road/cycle path",
+        "notes": "Follow signs for the city centre and Bath Spa Train Station."
+      },
+      {
+        "number": 6,
+        "instruction": "Arrive at Bath Spa Train Station.",
+        "distance": "N/A",
+        "time": "N/A",
+        "path_type": "N/A",
+        "notes": "Your journey is complete."
+      }
+    ],
+    "recommendations": [
+      "Stop at the Dundas Aqueduct for a picturesque view.",
+      "Visit the Avon Valley Railway in Bitton.",
+      "Take a break at one of the pubs along the route in Saltford."
+    ],
+    "safety_concerns": [
+      "Be aware of other cyclists and pedestrians on the shared path.",
+      "Wear appropriate clothing and be visible to other path users.",
+      "Check your bike's brakes and tires before setting off.",
+      "Carry water and snacks, especially during warmer weather."
+    ],
+    "validation": {
+      "is_validated": true,
+      "issues": [],
+      "alternatives": []
+    }
+  },
+  "validation_warnings": []
+}

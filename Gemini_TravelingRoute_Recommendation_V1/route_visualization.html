@@ -1,0 +1,278 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Route from London to Bath</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+                background-color: #f5f5f5;
+                color: #333;
+            }
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                background-color: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .header {
+                background-color: #4CAF50;
+                color: white;
+                padding: 15px;
+                border-radius: 6px;
+                margin-bottom: 20px;
+            }
+            .section {
+                margin-bottom: 25px;
+                padding: 15px;
+                background-color: #f9f9f9;
+                border-radius: 6px;
+                border-left: 4px solid #4CAF50;
+            }
+            .weather-section {
+                background-color: #e3f2fd;
+                border-left: 4px solid #2196F3;
+            }
+            .walkability-section {
+                background-color: #fff8e1;
+                border-left: 4px solid #FFC107;
+            }
+            .transport-section {
+                background-color: #f1f8e9;
+            }
+            .selected-transport {
+                background-color: #e8f5e9;
+                border: 2px solid #4CAF50;
+            }
+            .transport-option {
+                margin-bottom: 10px;
+                padding: 10px;
+                border-radius: 4px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+            .steps-section {
+                background-color: #e8eaf6;
+                border-left: 4px solid #3F51B5;
+            }
+            .step {
+                margin-bottom: 10px;
+                padding: 10px;
+                background-color: white;
+                border-radius: 4px;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            }
+            ul.pros-cons {
+                padding-left: 20px;
+            }
+            .pros {
+                color: #4CAF50;
+            }
+            .cons {
+                color: #F44336;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            th, td {
+                padding: 10px;
+                border: 1px solid #ddd;
+                text-align: left;
+            }
+            th {
+                background-color: #f2f2f2;
+            }
+            .recommendations {
+                background-color: #fce4ec;
+                border-left: 4px solid #E91E63;
+                padding: 15px;
+                border-radius: 6px;
+                margin-top: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>Route from London to Bath</h1>
+                <p>Transportation Mode: DRIVING</p>
+                <p>Generated on: 2025-04-12 22:36:32</p>
+            </div>
+    
+            <div class="section weather-section">
+                <h2>Weather Conditions in Bath</h2>
+                <p><strong>Description:</strong> Current weather data for Bath is unavailable in this static response. Please use a real-time weather API for up-to-date information.</p>
+                <p><strong>Temperature:</strong> N/A</p>
+                <p><strong>Conditions:</strong> N/A</p>
+                <p><strong>Recommendation:</strong> Check the current weather forecast before your trip and dress accordingly.</p>
+            </div>
+        
+            <div class="section walkability-section">
+                <h2>Walkability Assessment</h2>
+                <p><strong>Score:</strong> 85</p>
+                <p><strong>Description:</strong> Bath is a highly walkable city with a compact city center and many pedestrianized areas.  The city's historic streets and attractions are close together, making it easy to explore on foot.</p>
+                <h3>Pros:</h3>
+                <ul class="pros-cons pros">
+        <li>Compact city center</li><li>Pedestrian-friendly streets</li><li>Many attractions within walking distance</li><li>Scenic walking routes along the river</li>
+                </ul>
+                <h3>Cons:</h3>
+                <ul class="pros-cons cons">
+        <li>Some hills can be challenging</li><li>Cobblestone streets can be uneven</li><li>Can be crowded during peak season</li>
+                </ul>
+            </div>
+        
+            <div class="section transport-section">
+                <h2>Transportation Options</h2>
+    
+                <div class="transport-option selected-transport">
+                    <h3>DRIVING (Selected)</h3>
+                    <p><strong>Time:</strong> Approximately 2.5 - 3.5 hours (depending on traffic)</p>
+                    <p><strong>Distance:</strong> Approximately 115 miles (185 km)</p>
+                    <p><strong>Cost:</strong> £20 - £30 for fuel (depending on vehicle and fuel prices) + potential parking fees (£10 - £20 per day)</p>
+                    <p><strong>Weather Impact:</strong> Rain, fog, or snow can significantly impact driving times and safety. Traffic congestion is common, especially during peak hours and holidays.</p>
+                    <h4>Pros:</h4>
+                    <ul class="pros-cons pros">
+        <li>Flexibility to stop at other locations along the way</li><li>Can carry more luggage</li><li>Can be faster than public transit in off-peak hours</li>
+                    </ul>
+                    <h4>Cons:</h4>
+                    <ul class="pros-cons cons">
+        <li>Traffic congestion can be significant</li><li>Parking in Bath can be expensive and difficult to find</li><li>Driving in an unfamiliar city can be stressful</li>
+                    </ul>
+                </div>
+        
+                <div class="transport-option">
+                    <h3>WALKING</h3>
+                    <p><strong>Time:</strong> Not feasible for a journey of this distance (approximately 37 hours of continuous walking).</p>
+                    <p><strong>Distance:</strong> Approximately 115 miles (185 km)</p>
+                    <p><strong>Cost:</strong> Minimal (water and snacks)</p>
+                    <p><strong>Weather Impact:</strong> Highly susceptible to weather conditions. Extreme heat, cold, or rain would make this option impractical.</p>
+                    <h4>Pros:</h4>
+                    <ul class="pros-cons pros">
+        
+                    </ul>
+                    <h4>Cons:</h4>
+                    <ul class="pros-cons cons">
+        <li>Impractical due to the long distance</li>
+                    </ul>
+                </div>
+        
+                <div class="transport-option">
+                    <h3>PUBLIC_TRANSIT</h3>
+                    <p><strong>Time:</strong> Approximately 1.5 - 2.5 hours (depending on train schedule and connections)</p>
+                    <p><strong>Distance:</strong> Approximately 115 miles (185 km)</p>
+                    <p><strong>Cost:</strong> £30 - £80 (depending on train operator, time of booking, and class)</p>
+                    <p><strong>Weather Impact:</strong> Generally unaffected by weather, although severe disruptions can occur.</p>
+                    <h4>Pros:</h4>
+                    <ul class="pros-cons pros">
+        <li>Relaxing and comfortable</li><li>Avoids traffic and parking hassles</li><li>Can be cost-effective</li>
+                    </ul>
+                    <h4>Cons:</h4>
+                    <ul class="pros-cons cons">
+        <li>Less flexibility than driving</li><li>Can be crowded during peak hours</li><li>Subject to train schedules and potential delays</li>
+                    </ul>
+                </div>
+        
+                <div class="transport-option">
+                    <h3>BIKING</h3>
+                    <p><strong>Time:</strong> Approximately 10-12 hours (depending on fitness level and route)</p>
+                    <p><strong>Distance:</strong> Approximately 115 miles (185 km)</p>
+                    <p><strong>Cost:</strong> Minimal (water, snacks, and potential bike rental if needed)</p>
+                    <p><strong>Weather Impact:</strong> Highly susceptible to weather conditions. Rain, wind, or extreme temperatures can make this option challenging.</p>
+                    <h4>Pros:</h4>
+                    <ul class="pros-cons pros">
+        <li>Scenic route</li><li>Good exercise</li><li>Environmentally friendly</li>
+                    </ul>
+                    <h4>Cons:</h4>
+                    <ul class="pros-cons cons">
+        <li>Physically demanding</li><li>Requires specialized equipment (bike, helmet, etc.)</li><li>Time-consuming</li><li>Safety concerns on busy roads</li>
+                    </ul>
+                </div>
+        
+            </div>
+    
+            <div class="section">
+                <h2>Route Summary</h2>
+                <p><strong>Mode:</strong> driving</p>
+                <p><strong>Total Time:</strong> 2.5 - 3.5 hours (depending on traffic)</p>
+                <p><strong>Total Distance:</strong> Approximately 115 miles (185 km)</p>
+                <p><strong>Weather Advisory:</strong> Check real-time weather conditions for Bath and along the route before departure using a weather app or website.</p>
+            </div>
+        
+            <div class="section steps-section">
+                <h2>Route Steps</h2>
+                <table>
+                    <tr>
+                        <th>#</th>
+                        <th>Instruction</th>
+                        <th>Distance</th>
+                        <th>Time</th>
+                        <th>Notes</th>
+                    </tr>
+        
+                    <tr>
+                        <td>1</td>
+                        <td>Start at Trafalgar Square, heading southwest on A4 Whitehall towards Parliament Square.</td>
+                        <td>0.5 miles</td>
+                        <td>5-10 minutes</td>
+                        <td>Follow signs for M4/Heathrow.</td>
+                    </tr>
+            
+                    <tr>
+                        <td>2</td>
+                        <td>Continue onto A3212 and follow signs for M4/Heathrow.</td>
+                        <td>1 mile</td>
+                        <td>5-10 minutes</td>
+                        <td></td>
+                    </tr>
+            
+                    <tr>
+                        <td>3</td>
+                        <td>Join the M4 motorway heading west towards Heathrow/Reading/Bristol.</td>
+                        <td>105 miles</td>
+                        <td>1.5 - 2.5 hours</td>
+                        <td>Stay on the M4 for the majority of the journey.</td>
+                    </tr>
+            
+                    <tr>
+                        <td>4</td>
+                        <td>Exit the M4 at Junction 18 for Bath.</td>
+                        <td>N/A</td>
+                        <td>N/A</td>
+                        <td></td>
+                    </tr>
+            
+                    <tr>
+                        <td>5</td>
+                        <td>Follow the A46 towards Bath city centre.</td>
+                        <td>5 miles</td>
+                        <td>10-15 minutes</td>
+                        <td></td>
+                    </tr>
+            
+                    <tr>
+                        <td>6</td>
+                        <td>Arrive in Bath city centre.</td>
+                        <td>N/A</td>
+                        <td>N/A</td>
+                        <td>Parking is available in various locations throughout the city centre.</td>
+                    </tr>
+            
+                </table>
+            </div>
+        
+            <div class="recommendations">
+                <h2>Recommendations</h2>
+                <ul>
+        <li>Allow extra time for travel during peak hours or if there are roadworks.</li><li>Consider stopping at Reading Services on the M4 for a break.</li><li>Pre-book parking in Bath to avoid delays upon arrival.</li><li>Visit the Roman Baths, Bath Abbey, and the Royal Crescent while in Bath.</li>
+                </ul>
+            </div>
+        
+        </div>
+    </body>
+    </html>
+    
