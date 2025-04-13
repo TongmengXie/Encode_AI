@@ -78,6 +78,7 @@ class UserData:
     budget: Optional[str] = None
     currency_preference: Optional[str] = None
     travel_preference: Optional[str] = None
+    media_preference: Optional[str] = None
     issues: Optional[str] = None
 
 @dataclass
@@ -513,6 +514,7 @@ class BlogGenerator:
         Budget: {user.budget}
         Currency Preference: {user.currency_preference}
         Travel Preference: {user.travel_preference}
+        Media Preference: {user.media_preference}
         Issues: {user.issues}
         
         Generate a blog post with:
@@ -591,9 +593,16 @@ class BlogGenerator:
     
     def _generate_media_suggestions_gemini(self, user: UserData, blog_data) -> List[MediaSuggestion]:
         """Generate media suggestions using Gemini"""
+        # Determine media types based on user preference
+        media_type_prompt = "only images that would complement the blog"
+        if user.media_preference and user.media_preference.lower() == "videos":
+            media_type_prompt = "only videos that would complement the blog"
+        elif user.media_preference and user.media_preference.lower() == "mixed":
+            media_type_prompt = "a mix of images and videos that would complement the blog"
+        
         prompt = f"""
         Based on this blog post about a trip to {user.destination} with interest in {user.interests},
-        suggest only 2 specific images that would complement the blog. No video or audio suggestions needed.
+        suggest {media_type_prompt}. Limit to 2 suggestions.
         
         IMPORTANT: ALL IMAGES MUST BE SCENIC VIEWS, LANDSCAPES, OR ARCHITECTURE WITHOUT ANY HUMANS OR PEOPLE IN THEM.
         
@@ -603,14 +612,14 @@ class BlogGenerator:
         {{
             "media": [
                 {{
-                    "type": "image",
+                    "type": "image or video",
                     "description": "Description for humans",
-                    "prompt": "Detailed prompt for image generation - must explicitly specify no humans or people, focusing on landscapes and scenic views"
+                    "prompt": "Detailed prompt for generation - must explicitly specify no humans or people, focusing on landscapes and scenic views"
                 }},
                 {{
-                    "type": "image",
+                    "type": "image or video",
                     "description": "Description for humans",
-                    "prompt": "Detailed prompt for image generation - must explicitly specify no humans or people, focusing on landscapes and scenic views"
+                    "prompt": "Detailed prompt for generation - must explicitly specify no humans or people, focusing on landscapes and scenic views"
                 }}
             ]
         }}
@@ -666,6 +675,7 @@ class BlogGenerator:
         Budget: {user.budget}
         Currency Preference: {user.currency_preference}
         Travel Preference: {user.travel_preference}
+        Media Preference: {user.media_preference}
         Issues: {user.issues}
         
         Generate a blog post with:
@@ -735,11 +745,18 @@ class BlogGenerator:
             return self._generate_media_suggestions_template(user)
             
         try:
+            # Determine media types based on user preference
+            media_type_prompt = "only 2 specific images"
+            if user.media_preference and user.media_preference.lower() == "videos":
+                media_type_prompt = "only 2 specific videos"
+            elif user.media_preference and user.media_preference.lower() == "mixed":
+                media_type_prompt = "1 image and 1 video"
+            
             prompt = f"""
             Based on this blog post about a trip to {user.destination} with interest in {user.interests},
-            suggest only 2 specific images that would complement the blog. No video or audio suggestions needed.
+            suggest {media_type_prompt} that would complement the blog.
             
-            IMPORTANT: ALL IMAGES MUST BE SCENIC VIEWS, LANDSCAPES, OR ARCHITECTURE WITHOUT ANY HUMANS OR PEOPLE IN THEM.
+            IMPORTANT: ALL MEDIA MUST SHOW SCENIC VIEWS, LANDSCAPES, OR ARCHITECTURE WITHOUT ANY HUMANS OR PEOPLE IN THEM.
             
             Blog title: {blog_data["title"]}
             
@@ -747,14 +764,14 @@ class BlogGenerator:
             {{
                 "media": [
                     {{
-                        "type": "image",
+                        "type": "image or video",
                         "description": "Description for humans",
-                        "prompt": "Detailed prompt for image generation - must explicitly specify no humans or people, focusing on landscapes and scenic views"
+                        "prompt": "Detailed prompt for generation - must explicitly specify no humans or people, focusing on landscapes and scenic views"
                     }},
                     {{
-                        "type": "image",
+                        "type": "image or video",
                         "description": "Description for humans",
-                        "prompt": "Detailed prompt for image generation - must explicitly specify no humans or people, focusing on landscapes and scenic views"
+                        "prompt": "Detailed prompt for generation - must explicitly specify no humans or people, focusing on landscapes and scenic views"
                     }}
                 ]
             }}
@@ -854,21 +871,49 @@ class BlogGenerator:
 
     def _generate_media_suggestions_template(self, user: UserData) -> List[MediaSuggestion]:
         """Generate media suggestions using templates"""
-        image_suggestions = [
-            MediaSuggestion(
-                description=f"Scenic view of {user.destination} landscape",
-                prompt=f"Scenic landscape photograph of {user.destination}, natural beauty, dramatic lighting, no people, no humans, wide angle, high resolution",
-                type="image"
-            ),
-            MediaSuggestion(
-                description=f"{user.interests} in {user.destination} with natural scenery",
-                prompt=f"Beautiful photograph of {user.interests} in {user.destination}, natural scenery, no people, landscape view, golden hour lighting",
-                type="image"
-            ),
-        ]
-        
-        # Return only two image suggestions
-        return image_suggestions
+        # Determine what media types to generate based on user preference
+        if user.media_preference and user.media_preference.lower() == "videos":
+            # Video suggestions only
+            return [
+                MediaSuggestion(
+                    description=f"Video tour of {user.destination}",
+                    prompt=f"Scenic video tour of {user.destination}, natural beauty, timelapse, no people, aerial view",
+                    type="video"
+                ),
+                MediaSuggestion(
+                    description=f"{user.interests} in {user.destination}",
+                    prompt=f"Beautiful video of {user.interests} in {user.destination}, no people, cinematic quality",
+                    type="video"
+                )
+            ]
+        elif user.media_preference and user.media_preference.lower() == "mixed":
+            # Mix of image and video
+            return [
+                MediaSuggestion(
+                    description=f"Scenic view of {user.destination} landscape",
+                    prompt=f"Scenic landscape photograph of {user.destination}, natural beauty, dramatic lighting, no people, no humans, wide angle, high resolution",
+                    type="image"
+                ),
+                MediaSuggestion(
+                    description=f"Video tour of {user.interests} in {user.destination}",
+                    prompt=f"Beautiful video tour of {user.interests} in {user.destination}, no people, cinematic quality",
+                    type="video"
+                )
+            ]
+        else:
+            # Default: image suggestions only
+            return [
+                MediaSuggestion(
+                    description=f"Scenic view of {user.destination} landscape",
+                    prompt=f"Scenic landscape photograph of {user.destination}, natural beauty, dramatic lighting, no people, no humans, wide angle, high resolution",
+                    type="image"
+                ),
+                MediaSuggestion(
+                    description=f"{user.interests} in {user.destination} with natural scenery",
+                    prompt=f"Beautiful photograph of {user.interests} in {user.destination}, natural scenery, no people, landscape view, golden hour lighting",
+                    type="image"
+                )
+            ]
 
 
 class HtmlGenerator:
@@ -1134,6 +1179,7 @@ class BlogGenerationInput(BaseModel):
     budget: Optional[str] = Field(None, description="User's budget")
     currency_preference: Optional[str] = Field(None, description="Currency preference")
     travel_preference: Optional[str] = Field(None, description="Travel preference")
+    media_preference: Optional[str] = Field(None, description="Media preference (images, videos, mixed)")
     issues: Optional[str] = Field(None, description="Any issues to consider")
 
 
@@ -1168,6 +1214,7 @@ class BlogGenerationTool(Tool[str]):
         budget: Optional[str] = None,
         currency_preference: Optional[str] = None,
         travel_preference: Optional[str] = None,
+        media_preference: Optional[str] = None,
         issues: Optional[str] = None,
     ) -> str:
         llm = LLMWrapper.for_usage(LLM_TOOL_MODEL_KEY, context.config).to_langchain()
@@ -1209,6 +1256,8 @@ Format your response as JSON with the following structure:
             user_message += f"Currency Preference: {currency_preference}\n"
         if travel_preference:
             user_message += f"Travel Preference: {travel_preference}\n"
+        if media_preference:
+            user_message += f"Media Preference: {media_preference}\n"
         if issues:
             user_message += f"Issues: {issues}\n"
         
@@ -1307,10 +1356,9 @@ Suggest exactly 2 images that best complement the blog content.
             }, indent=2)
 
 
-def init_portia_config():
-    """Initialize Portia configuration with available AI model."""
-    # Try loading keys from environment
-    load_dotenv()
+def init_portia_config_internal():
+    """Internal helper function to initialize Portia configuration with the appropriate LLM."""
+    # Load API keys from environment variables
     global OPENAI_API_KEY
     global GEMINI_API_KEY
     
@@ -1322,7 +1370,7 @@ def init_portia_config():
         if GEMINI_API_KEY:
             genai.configure(api_key=GEMINI_API_KEY)
     
-    # First try to see which API has working access
+    # Test API access
     openai_working = False
     gemini_working = False
     
@@ -1357,7 +1405,7 @@ def init_portia_config():
     if gemini_working:
         # Prefer Gemini if it's working
         print("Using Gemini for blog generation.")
-        config = Config.from_default(
+        return Config.from_default(
             llm_provider=LLMProvider.GOOGLE_GENERATIVE_AI,
             llm_model_name=LLMModel.GEMINI_2_0_FLASH,
             google_api_key=GEMINI_API_KEY,
@@ -1366,7 +1414,7 @@ def init_portia_config():
     elif openai_working:
         # Fall back to OpenAI if Gemini isn't working
         print("Using OpenAI for blog generation.")
-        config = Config.from_default(
+        return Config.from_default(
             llm_provider=LLMProvider.OPENAI,
             llm_model_name=LLMModel.GPT_3_5_TURBO,
             openai_api_key=OPENAI_API_KEY,
@@ -1375,9 +1423,187 @@ def init_portia_config():
     else:
         print("No working API keys found for either Gemini or OpenAI.")
         print("Please check your API keys and network connection.")
-        exit(1)
-    
-    return config
+        raise RuntimeError("No working API keys available")
+
+
+def init_portia_config():
+    """Initialize Portia configuration with available AI model"""
+    try:
+        # Load environment variables
+        load_dotenv()
+        
+        # Initialize Portia with available AI model
+        config = init_portia_config_internal()
+        
+        # Set up tools registry
+        tools = DefaultToolRegistry(config=config) + InMemoryToolRegistry.from_local_tools([
+            BlogGenerationTool(), MediaSuggestionTool()
+        ])
+        
+        # Create and return Portia configuration
+        return {
+            "config": config,
+            "tools": tools
+        }
+    except Exception as e:
+        print(f"Error initializing Portia: {e}")
+        return None
+
+
+def generate_blog(portia_config, user_data):
+    """Generate blog content using Portia"""
+    try:
+        # Create Portia instance
+        portia = Portia(
+            config=portia_config["config"], 
+            tools=portia_config["tools"], 
+            execution_hooks=CLIExecutionHooks()
+        )
+        
+        print("Generating blog content with Portia...")
+        
+        # Create plan for generating blog content and media suggestions
+        plan = portia.plan(f"""
+        Generate a personalized travel blog for a user with the following details:
+        Name: {user_data.name}
+        Age Range: {user_data.age_range}
+        Gender: {user_data.gender}
+        Nationality: {user_data.nationality}
+        Destination: {user_data.destination}
+        Interests: {user_data.interests}
+        Future Travel Wish: {user_data.future_travel_wish}
+        Special Requirements: {user_data.special_requirements or "None"}
+        Budget: {user_data.budget or "Not specified"}
+        Currency Preference: {user_data.currency_preference or "Not specified"}
+        Travel Preference: {user_data.travel_preference or "Not specified"}
+        Media Preference: {user_data.media_preference or "Images"}
+        Issues: {user_data.issues or "None"}
+
+        First, generate the blog content with appropriate title, introduction, paragraphs, and conclusion.
+        Then, suggest media ({user_data.media_preference or "images"}) that would complement the blog.
+        """)
+        
+        # Execute the plan
+        result = portia.run_plan(plan)
+        print("Blog generation complete!")
+        
+        # Extract blog data and media suggestions from the result
+        blog_result = None
+        media_result = None
+        
+        for step in result.steps:
+            if step.tool_id == "blog_generation":
+                blog_result = step.output
+            elif step.tool_id == "media_suggestion":
+                media_result = step.output
+        
+        if blog_result:
+            # Convert Portia results to BlogContent
+            blog = create_blog_from_portia_results(blog_result, media_result or {"media": []})
+            
+            # Process the media suggestions to generate actual media content
+            # Test both APIs to see which one works
+            use_gemini = GEMINI_AVAILABLE and GEMINI_API_KEY is not None
+            
+            media_gen = MediaGenerator(
+                openai_client=OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None, 
+                use_gemini=use_gemini
+            )
+            
+            # Generate the actual media from the suggestions
+            processed_media = []
+            for media in blog.media_suggestions:
+                if media.type == "image":
+                    processed_media.append(media_gen.generate_image(media.prompt, media.description))
+                else:
+                    processed_media.append(media)
+            
+            blog.media_suggestions = processed_media
+            
+            # Display blog content in console
+            display_blog_console(blog)
+            
+            # Generate HTML blog and open in browser
+            print("Generating HTML blog...")
+            html_gen = HtmlGenerator(blog, user_data)
+            blog_path = html_gen.generate_html()
+            
+            # Open the generated blog in the default web browser
+            try:
+                print(f"Opening blog in web browser: {blog_path}")
+                webbrowser.open('file://' + os.path.abspath(blog_path))
+                return True
+            except Exception as e:
+                print(f"Could not open browser: {e}")
+                print(f"Please open the file manually: {blog_path}")
+                return True
+        else:
+            print("Failed to generate blog content with Portia.")
+            return False
+            
+    except Exception as e:
+        print(f"Error using Portia for blog generation: {e}")
+        print("Falling back to template-based generation...")
+        
+        # Fall back to the original template-based method
+        # First test which API is available
+        openai_working = False
+        gemini_working = False
+        
+        if OPENAI_API_KEY:
+            try:
+                OpenAI(api_key=OPENAI_API_KEY).chat.completions.create(
+                    model="gpt-3.5-turbo",
+                    messages=[{"role": "user", "content": "Hello"}],
+                    max_tokens=5
+                )
+                openai_working = True
+            except Exception:
+                pass
+        
+        if GEMINI_AVAILABLE and GEMINI_API_KEY:
+            try:
+                genai.configure(api_key=GEMINI_API_KEY)
+                genai.GenerativeModel('gemini-pro').generate_content("Hello")
+                gemini_working = True
+            except Exception:
+                pass
+        
+        # Use whichever API is working
+        use_gemini = gemini_working
+        generator = BlogGenerator(
+            openai_api_key=OPENAI_API_KEY if openai_working else None, 
+            use_gemini=use_gemini
+        )
+        
+        if openai_working or gemini_working:
+            try:
+                print(f"Using {'Gemini' if use_gemini else 'OpenAI'} for fallback blog generation")
+                blog = generator.generate_blog(user_data)
+            except Exception as e2:
+                print(f"API-based generation failed: {e2}")
+                print("Using template-based generation as last resort")
+                blog = generator._generate_with_templates(user_data)
+        else:
+            print("No working APIs found. Using template-based generation")
+            blog = generator._generate_with_templates(user_data)
+        
+        display_blog_console(blog)
+        
+        # Generate HTML blog and open in browser
+        print("Generating HTML blog...")
+        html_gen = HtmlGenerator(blog, user_data)
+        blog_path = html_gen.generate_html()
+        
+        # Open the generated blog in the default web browser
+        try:
+            print(f"Opening blog in web browser: {blog_path}")
+            webbrowser.open('file://' + os.path.abspath(blog_path))
+            return True
+        except Exception as e:
+            print(f"Could not open browser: {e}")
+            print(f"Please open the file manually: {blog_path}")
+            return True
 
 
 def create_blog_from_portia_results(blog_json, media_json):
@@ -1424,12 +1650,10 @@ def create_blog_from_portia_results(blog_json, media_json):
         )
 
 
-def main():
-    # Load environment variables
-    load_dotenv()
-    
-    # Example user from the provided data
-    amina = UserData(
+def get_user_input() -> UserData:
+    """Collect user input for blog generation with field-by-field entry and data type validation."""
+    # Default user data
+    default_user = UserData(
         name="Amina Yusuf",
         age_range="35~44",
         gender="Female",
@@ -1441,167 +1665,220 @@ def main():
         budget="$1500",
         currency_preference="Local currency",
         travel_preference="Travel only",
+        media_preference="images",
         issues="No issues"
     )
     
-    try:
-        # Initialize Portia with available AI model
-        config = init_portia_config()
-        
-        # Set up tools registry
-        tools = DefaultToolRegistry(config=config) + InMemoryToolRegistry.from_local_tools([
-            BlogGenerationTool(), MediaSuggestionTool()
-        ])
-        
-        # Create Portia instance
-        portia = Portia(config=config, tools=tools, execution_hooks=CLIExecutionHooks())
-        
-        print("Generating blog content with Portia...")
-        
-        # Create plan for generating blog content and media suggestions
-        plan = portia.plan(f"""
-        Generate a personalized travel blog for a user with the following details:
-        Name: {amina.name}
-        Age Range: {amina.age_range}
-        Gender: {amina.gender}
-        Nationality: {amina.nationality}
-        Destination: {amina.destination}
-        Interests: {amina.interests}
-        Future Travel Wish: {amina.future_travel_wish}
-        Special Requirements: {amina.special_requirements or "None"}
-        Budget: {amina.budget or "Not specified"}
-        Currency Preference: {amina.currency_preference or "Not specified"}
-        Travel Preference: {amina.travel_preference or "Not specified"}
-        Issues: {amina.issues or "None"}
-
-        First, generate the blog content with appropriate title, introduction, paragraphs, and conclusion.
-        Then, suggest media (images) that would complement the blog.
-        """)
-        
-        # Execute the plan
-        result = portia.run_plan(plan)
-        print("Blog generation complete!")
-        
-        # Extract blog data and media suggestions from the result
-        blog_result = None
-        media_result = None
-        
-        for step in result.steps:
-            if step.tool_id == "blog_generation":
-                blog_result = step.output
-            elif step.tool_id == "media_suggestion":
-                media_result = step.output
-        
-        if blog_result:
-            # Convert Portia results to BlogContent
-            blog = create_blog_from_portia_results(blog_result, media_result or {"media": []})
-            
-            # Process the media suggestions to generate actual media content
-            # Test both APIs to see which one works
-            use_gemini = GEMINI_AVAILABLE and GEMINI_API_KEY is not None
-            
-            media_gen = MediaGenerator(
-                openai_client=OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None, 
-                use_gemini=use_gemini
-            )
-            
-            # Generate the actual media from the suggestions
-            processed_media = []
-            for media in blog.media_suggestions:
-                if media.type == "image":
-                    processed_media.append(media_gen.generate_image(media.prompt, media.description))
-                else:
-                    processed_media.append(media)
-            
-            blog.media_suggestions = processed_media
-            
-            # Display blog content in console
-            display_blog_console(blog)
-            
-            # Generate HTML blog and open in browser
-            print("Generating HTML blog...")
-            html_gen = HtmlGenerator(blog, amina)
-            blog_path = html_gen.generate_html()
-            
-            # Open the generated blog in the default web browser
-            try:
-                print(f"Opening blog in web browser: {blog_path}")
-                webbrowser.open('file://' + os.path.abspath(blog_path))
-            except Exception as e:
-                print(f"Could not open browser: {e}")
-                print(f"Please open the file manually: {blog_path}")
-        else:
-            raise Exception("Failed to generate blog content with Portia.")
-            
-    except Exception as e:
-        print(f"Error using Portia for blog generation: {e}")
-        print("Falling back to template-based generation...")
-        
-        # Fall back to the original template-based method
-        # First test which API is available
-        openai_working = False
-        gemini_working = False
-        
-        if OPENAI_API_KEY:
-            try:
-                OpenAI(api_key=OPENAI_API_KEY).chat.completions.create(
-                    model="gpt-3.5-turbo",
-                    messages=[{"role": "user", "content": "Hello"}],
-                    max_tokens=5
-                )
-                openai_working = True
-            except Exception:
-                pass
-        
-        if GEMINI_AVAILABLE and GEMINI_API_KEY:
-            try:
-                genai.configure(api_key=GEMINI_API_KEY)
-                genai.GenerativeModel('gemini-pro').generate_content("Hello")
-                gemini_working = True
-            except Exception:
-                pass
-        
-        # Use whichever API is working
-        use_gemini = gemini_working
-        generator = BlogGenerator(
-            openai_api_key=OPENAI_API_KEY if openai_working else None, 
-            use_gemini=use_gemini
-        )
-        
-        if openai_working or gemini_working:
-            try:
-                print(f"Using {'Gemini' if use_gemini else 'OpenAI'} for fallback blog generation")
-                blog = generator.generate_blog(amina)
-            except Exception as e2:
-                print(f"API-based generation failed: {e2}")
-                print("Using template-based generation as last resort")
-                blog = generator._generate_with_templates(amina)
-        else:
-            print("No working APIs found. Using template-based generation")
-            blog = generator._generate_with_templates(amina)
-        
-        display_blog_console(blog)
-        
-        # Generate HTML blog and open in browser
-        print("Generating HTML blog...")
-        html_gen = HtmlGenerator(blog, amina)
-        blog_path = html_gen.generate_html()
-        
-        # Open the generated blog in the default web browser
-        try:
-            print(f"Opening blog in web browser: {blog_path}")
-            webbrowser.open('file://' + os.path.abspath(blog_path))
-        except Exception as e:
-            print(f"Could not open browser: {e}")
-            print(f"Please open the file manually: {blog_path}")
+    print("\n" + "=" * 60)
+    print("Welcome to the Travel Blog Generator")
+    print("=" * 60)
+    print("Please enter your information for each field or press Enter to use the default value.")
+    print("-" * 60)
     
-    print("\nThis demo shows how personalized travel blog content can be generated with Portia and interactive media.")
-    print("In a full implementation, you could:")
-    print("  - Create a web app for users to input their travel details")
-    print("  - Use DALL-E or Gemini to generate personalized images")
-    print("  - Connect to video APIs for custom video generation")
-    print("  - Allow sharing to social media platforms")
-    print("  - Create printable PDF versions of the blog")
+    # Personal Information
+    print("\nPERSONAL INFORMATION:")
+    
+    # Name (string)
+    name = input(f"Name [default: {default_user.name}]: ").strip() or default_user.name
+    
+    # Age Range with validation
+    while True:
+        age_input = input(f"Age Range (e.g., 25~34) [default: {default_user.age_range}]: ").strip() or default_user.age_range
+        if "~" in age_input or age_input.lower() in ["prefer not to say", "unknown"]:
+            age_range = age_input
+            break
+        else:
+            print("Please use the format '25~34' or enter 'prefer not to say'")
+    
+    # Gender with predefined options
+    gender_options = ["male", "female", "non-binary", "prefer not to say", "other"]
+    print("\nGender options: Male, Female, Non-binary, Prefer not to say, Other")
+    while True:
+        gender = input(f"Gender [default: {default_user.gender}]: ").strip() or default_user.gender
+        if gender.lower() in gender_options or not gender:
+            # Capitalize for display consistency
+            gender = gender.capitalize() if gender else default_user.gender
+            break
+        else:
+            print(f"Please enter one of the options: {', '.join([opt.capitalize() for opt in gender_options])}")
+    
+    # Nationality as string
+    nationality = input(f"Nationality [default: {default_user.nationality}]: ").strip() or default_user.nationality
+    
+    # Travel Information
+    print("\nTRAVEL INFORMATION:")
+    
+    # Destination (city, country format)
+    while True:
+        destination = input(f"Destination (city, country) [default: {default_user.destination}]: ").strip() or default_user.destination
+        if "," in destination or destination == default_user.destination:
+            break
+        else:
+            print("Please use the format 'City, Country' (e.g., Tokyo, Japan)")
+    
+    # Interests as comma-separated list
+    print("Enter interests separated by commas (e.g., history, food, architecture)")
+    interests_input = input(f"Interests [default: {default_user.interests}]: ").strip() or default_user.interests
+    interests = interests_input
+    
+    # Future travel wish
+    future_travel_wish = input(f"Future Travel Wish [default: {default_user.future_travel_wish}]: ").strip() or default_user.future_travel_wish
+    
+    # Optional Information
+    print("\nOPTIONAL INFORMATION:")
+    print("(Press Enter to use default or leave blank for no information)")
+    
+    # Special requirements
+    special_requirements = input(f"Special Requirements [default: {default_user.special_requirements or 'None'}]: ").strip()
+    if not special_requirements and default_user.special_requirements:
+        special_requirements = default_user.special_requirements
+    
+    # Budget with currency formatting
+    while True:
+        budget_input = input(f"Budget (e.g., $1000, €500) [default: {default_user.budget or 'None'}]: ").strip()
+        if not budget_input and default_user.budget:
+            budget = default_user.budget
+            break
+        elif not budget_input:
+            budget = None
+            break
+        elif any(currency in budget_input for currency in ['$', '€', '£', '¥']) or budget_input.isdigit():
+            # Add dollar sign if just a number
+            if budget_input.isdigit():
+                budget = f"${budget_input}"
+            else:
+                budget = budget_input
+            break
+        else:
+            print("Please enter a valid budget with currency symbol (e.g., $1000) or just the number")
+    
+    # Currency preferences with options
+    currency_options = ["local currency", "usd", "eur", "gbp", "jpy", "cny"]
+    print("Currency options: Local currency, USD, EUR, GBP, JPY, CNY, or other")
+    currency_preference = input(f"Currency Preference [default: {default_user.currency_preference or 'None'}]: ").strip() or default_user.currency_preference
+    if currency_preference and currency_preference.lower() in currency_options:
+        # Format currency codes as uppercase
+        if currency_preference.lower() in ["usd", "eur", "gbp", "jpy", "cny"]:
+            currency_preference = currency_preference.upper()
+    
+    # Travel preferences with suggestions
+    travel_options = ["luxury", "budget", "adventure", "cultural", "eco-friendly", "solo", "family", "travel only"]
+    print("Travel preferences: Luxury, Budget, Adventure, Cultural, Eco-friendly, Solo, Family, Travel only")
+    travel_preference = input(f"Travel Preference [default: {default_user.travel_preference or 'None'}]: ").strip() or default_user.travel_preference
+    if travel_preference and travel_preference.lower() not in travel_options:
+        print(f"Note: '{travel_preference}' is not one of the common options, but we'll use it anyway.")
+    
+    # Media preferences with options
+    media_options = ["images", "videos", "mixed"]
+    print("Media preferences: Images, Videos, Mixed")
+    media_preference = input(f"Media Preference [default: {default_user.media_preference or 'Images'}]: ").strip() or default_user.media_preference
+    if media_preference and media_preference.lower() not in media_options:
+        print(f"Note: '{media_preference}' is not one of the common options, defaulting to 'images'.")
+        media_preference = "images"
+    
+    # Issues or concerns
+    issues = input(f"Issues or Concerns [default: {default_user.issues or 'None'}]: ").strip() or default_user.issues
+    
+    # Show summary of input before proceeding
+    print("\n" + "-" * 60)
+    print("INFORMATION SUMMARY:")
+    print(f"Name: {name}")
+    print(f"Age Range: {age_range}")
+    print(f"Gender: {gender}")
+    print(f"Nationality: {nationality}")
+    print(f"Destination: {destination}")
+    print(f"Interests: {interests}")
+    print(f"Future Travel Wish: {future_travel_wish}")
+    print(f"Special Requirements: {special_requirements or 'None'}")
+    print(f"Budget: {budget or 'None'}")
+    print(f"Currency Preference: {currency_preference or 'None'}")
+    print(f"Travel Preference: {travel_preference or 'None'}")
+    print(f"Media Preference: {media_preference or 'Images'}")
+    print(f"Issues or Concerns: {issues or 'None'}")
+    print("-" * 60)
+    
+    # Confirm information is correct
+    while True:
+        confirm = input("\nIs this information correct? (y/n): ").strip().lower()
+        if confirm == 'y':
+            break
+        elif confirm == 'n':
+            print("\nLet's try again...")
+            return get_user_input()  # Restart input collection
+        else:
+            print("Please enter 'y' for yes or 'n' for no.")
+    
+    print("\nThank you for providing your information!")
+    
+    # Create and return the user data
+    return UserData(
+        name=name,
+        age_range=age_range,
+        gender=gender,
+        nationality=nationality,
+        destination=destination,
+        interests=interests,
+        future_travel_wish=future_travel_wish,
+        special_requirements=special_requirements,
+        budget=budget,
+        currency_preference=currency_preference,
+        travel_preference=travel_preference,
+        media_preference=media_preference,
+        issues=issues
+    )
+
+
+def main():
+    """Main function to drive the program"""
+    try:
+        print("\n" + "=" * 60)
+        print("AI-Powered Travel Blog Generator")
+        print("=" * 60)
+        print("Choose an option:")
+        print("1. Enter your information field-by-field")
+        print("2. Use default example (Amina's trip to Kyoto, Japan)")
+        
+        while True:
+            choice = input("\nEnter your choice (1 or 2): ").strip()
+            if choice in ["1", "2"]:
+                break
+            else:
+                print("Invalid choice. Please enter 1 or 2.")
+        
+        if choice == "1":
+            user_data = get_user_input()
+            print("\nGenerating your personalized travel blog...")
+        else:
+            # Use default example user
+            user_data = UserData(
+                name="Amina Yusuf",
+                age_range="35~44",
+                gender="Female",
+                nationality="Nigerian",
+                destination="Kyoto, Japan",
+                interests="Cherry blossom",
+                future_travel_wish="Walk the Camino de Santiago in Spain",
+                special_requirements="24/7 hospital access",
+                budget="$1500",
+                currency_preference="Local currency",
+                travel_preference="Travel only",
+                media_preference="images",
+                issues="No issues"
+            )
+            print("\nUsing default example data: Amina's trip to Kyoto, Japan.")
+            print("Generating travel blog...")
+        
+        # Initialize Portia configuration and generate travel blog
+        portia_config = init_portia_config()
+        if portia_config:
+            content = generate_blog(portia_config, user_data)
+            if content:
+                print("Travel blog generated successfully!")
+                return True
+        return False
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return False
 
 
 if __name__ == "__main__":
