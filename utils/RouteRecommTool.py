@@ -87,6 +87,7 @@ class RouteRecommTool(Tool[str]):
             )
         ]
         response = llm.invoke(messages)
+        print("********************************\n",response, "********************************\n")
         destination =  response.content.split("\n")[-1].strip().get('destination')
         transportation = response.content.split("\n")[-1].strip().get('transportation')
         route_shape =  response.content.split("\n")[-1].strip().get('route_shape')
