@@ -34,12 +34,11 @@ class RouteRecommTool(Tool[str]):
     """
     """
 
-    # id: str = "user_id"
-    # name: str = "user_name"
-    description: str = "Generates a real and effort-saving route in a tourist destination city, consulting Google Map API. In your returned list, always give 1. real place names suitable for the theme and fits effortlessly within the route, 2. coordinates that exactly match the place, and 3. recommendation reason."
+    id: str = "user_id"
+    name: str = "user_name"
+    description: str = "Generates a real and effort-saving route in a tourist destination city in real world, consulting Google Map API. In your returned list, always give 1. real place names suitable for the theme and fits effortlessly within the route, 2. coordinates that exactly match the place, and 3. recommendation reason."
     args_schema: Type[BaseModel] = RouteRecommInput
     output_schema: tuple[str, str] = (
-    
         "json",
         "a list of places to be visited in sequence"
     )
@@ -47,7 +46,7 @@ class RouteRecommTool(Tool[str]):
     def run(
         self,
         context: ToolRunContext,
-        input: str,
+        query: str,
     ) -> bool:
         llm = LLMWrapper.for_usage(LLM_TOOL_MODEL_KEY, context.config).to_langchain()
         messages = [
@@ -55,44 +54,36 @@ class RouteRecommTool(Tool[str]):
                 content='''You are an expert in tourist guidance. 
                 The user will describe the city they want to visit and you should extract their destination, means of transportation and route shape."
                 if any of the above information is absent, ask for clarification.
-                The return should be adherent to this format: "parameters": {
-    "type": "object",
-    "required": [
-      "destination_city",
-      "route_shape",
-      "transportation_type"
-    ],
-    "properties": {
-      "route_shape": {
-        "type": "array",
-        "items": {
-          "enum": [
-            "line",
-            "closed_circle"
-          ],
-          "type": "string"
-        },
-        "description": "The shape of the route to generate."
-      },
-      "destination_city": {
-        "type": "string",
-        "description": "The tourist destination city for the route."
-      },
-      "transportation_type": {
-        "type": "array",
-        "items": {
-          "enum": [
-            "walk",
-            "drive",
-            "public transport"
-          ],
-          "type": "string"
-        },
-        "description": "The type of transportation for the route."
-      }
-    },
-    "additionalProperties": false
-                '''
+                The return should be adherent to this format: 
+                "route_shape": {
+                    "type": "array",
+                    "items": {
+                    "enum": [
+                        "line",
+                        "closed_circle"
+                    ],
+                    "type": "string"
+                    },
+                    "description": "The shape of the route to generate."
+                },
+                "destination_city": {
+                    "type": "string",
+                    "description": "The tourist destination city for the route."
+                },
+                "transportation_type": {
+                    "type": "array",
+                    "items": {
+                    "enum": [
+                        "walk",
+                        "drive",
+                        "public transport"
+                    ],
+                    "type": "string"
+                    },
+                    "description": "The type of transportation for the route."}
+
+                User query is as the following:
+                '''+query
             )
         ]
         response = llm.invoke(messages)
@@ -104,9 +95,9 @@ class RouteRecommTool(Tool[str]):
             return MultipleChoiceClarification(
                 plan_run_id=context.plan_run_id,
                 user_guidance=(
-                    "Could you clarify what types of route are you expecting?:\n"
+                    "Could you clarify what type of route are you expecting?:\n"
                 ),
-                argument_name="human_decision",
-                options=["APPROVED", "REJECTED"],
+                argument_name="route_shape",
+                options=["closed_circle", "line"],
             )
         return destination, transportation, route_shape

@@ -4,7 +4,6 @@ import argparse
 import json
 import os
 from typing import Literal, Type
-from dotenv import load_dotenv
 from langchain.schema import HumanMessage, SystemMessage
 
 from portia import (
@@ -17,19 +16,26 @@ from portia import (
     Tool,
     ToolHardError,
     ToolRunContext,
+    PlanRunState    
 )
 from portia.cli import CLIExecutionHooks
 from pydantic import BaseModel, Field
 from portia.llm_wrapper import LLMWrapper
 from portia.config import LLM_TOOL_MODEL_KEY
 
-# custom tools
-from utils import (
-    RouteRecommTool,
-    DestinationRecommTool,
-    ContentGenTool,
-    UserMatchTool
-)
+import importlib
+
+tools = [
+    "utils.RouteRecommTool",
+    # "ContentGenTool",
+    # "UserMatchTool",
+    # "DestinationRecommTool",
+    # "BlogGenTool"
+]
+
+tool_instances = []
+from utils.RouteRecommTool import RouteRecommTool
+
 
 load_dotenv()
 PORTIA_API_KEY = os.getenv("PORTIA_API_KEY")
@@ -42,9 +48,9 @@ def main(query):
         DefaultToolRegistry(
             config=config,
         )
-        # + InMemoryToolRegistry.from_local_tools(
-        #     [RouteRecommTool()]
-        # )
+        + InMemoryToolRegistry.from_local_tools(
+            [RouteRecommTool()]
+        )
     )
 
     portia = Portia(config=config, tools=tools, execution_hooks=CLIExecutionHooks())
@@ -76,7 +82,31 @@ The user query is as follows: {query}
     )
     print("Plan:")
     print(plan.model_dump_json(indent=2))
-    portia.run_plan(plan)
+    
+    plan_run = portia.run_plan(plan)
+    carry_on = input("Please verify the plan, 0 for cancelling, 1 for going: ")
+    
+    # Check if the plan run was paused due to raised clarifications
+    # while plan_run.state == PlanRunState.NEED_CLARIFICATION:
+    #     # If clarifications are needed, resolve them before resuming the plan run
+    #     for clarification in plan_run.get_outstanding_clarifications():
+    #         # For each clarification, prompt the user for input
+    #         print(f"{clarification.user_guidance}")
+    #         user_input = input("Please enter a value:\n" +
+    #                             (("\n".join(clarification.options) + "\n") 
+    #                                 if isinstance(clarification, MultipleChoiceClarification)
+    #                                 else ""))
+    #         # Resolve the clarification with the user input
+    #         plan_run = portia.resolve_clarification(clarification, user_input, plan_run)
+
+    #     # Once clarifications are resolved, resume the plan run
+    #     plan_run = portia.run(plan_run)
+
+    if carry_on == 1:
+        plan_run = portia.run(plan_run)
+        print(plan_run.model_dump_json(indent=2))
+    # Serialise into JSON and print the output
+    
 
 if __name__ == "__main__":
     # main("I want to visit London today in a closed circle that takes almost 2 hours. Sakura themed")
