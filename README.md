@@ -35,7 +35,20 @@ The application workflow consists of three core features:
 
 ## 📂 Project Structure
 
-WanderMatch/ ├── main.py # Main application logic (see pseudocode below) ├── partner_recommendation.py # Travel mate matching logic ├── route_recommendation.py # Route planning algorithm ├── content_generation.py # Content generation module ├── data/ │ └── sample_users.json # Sample user data for demo/testing ├── static/ │ └── demo_images/ # Screenshots of the app └── README.md
+```bash
+WanderMatch/
+├── main.py                      # Main application logic (see pseudocode below)
+├── partner_recommendation.py    # Travel mate matching logic
+├── route_recommendation.py      # Route planning algorithm
+├── content_generation.py        # Content generation module
+├── data/
+│   └── sample_users.json        # Sample user data for demo/testing
+├── static/
+│   └── demo_images/             # Screenshots of the app
+├── README.md                    # Project overview and documentation
+└── requirements.txt             # Project dependencies
+
+---
 
 ## 📝 Core Pseudocode (main.py)
 
@@ -65,7 +78,7 @@ if ENABLE_CONTENT_GENERATION:
     content = generate_content(user_data, partner_list, route_list)
     print(content)
 
-```python
+---
 
 ## 🖼️ Demo Images
 
