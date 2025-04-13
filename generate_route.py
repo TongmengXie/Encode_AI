@@ -83,9 +83,9 @@ The user query is as follows: {query}
     print("Plan:")
     print(plan.model_dump_json(indent=2))
     
-    plan_run = portia.run_plan(plan)
-    carry_on = input("Please verify the plan, 0 for cancelling, 1 for going: ")
     
+    carry_on = input("Please verify the plan, 0 for cancelling, 1 for going: ")
+    # plan_run = portia.run_plan(plan)
     # Check if the plan run was paused due to raised clarifications
     # while plan_run.state == PlanRunState.NEED_CLARIFICATION:
     #     # If clarifications are needed, resolve them before resuming the plan run
