@@ -83,18 +83,17 @@ if ENABLE_CONTENT_GENERATION:
 Here are some screenshots from our application:
 
 - 📷 **User Input Form**  
-  ![User Input Form](static/demo_images/user_input_form.png)
+  <img src="static/demo_images/user_input_form.png" width="300" />
 
 - 📷 **Travel Mate Match Result**  
-  ![Match Result](demo_images/match_result.jpg)
+  <img src="demo_images/match_result.jpg" width="300" />
 
 - 📷 **Recommended Route Overview**  
-  ![Route Recommendation Text](demo_images/route_recomm_text.png)
-  ![Route Recommendation Map](demo_images/route_recomm_map.png)
+  <img src="demo_images/route_recomm_text.png" width="300" />
+  <img src="demo_images/route_recomm_map.png" width="300" />
 
 - 📷 **Generated Travel Content**  
-  ![Generated Content](static/demo_images/generated_content.png)
-
+  <img src="static/demo_images/generated_content.png" width="300" />
 
 
 ## 📹 Video Demo
