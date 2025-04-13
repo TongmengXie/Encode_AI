@@ -3,11 +3,9 @@
 
 ## 📌 Summary
 
-**WanderMatch** is a travel matchmaking and recommendation platform designed for adventure-seekers looking to connect with like-minded travelers. Our app lets users fill out a simple form with their travel preferences, matches them with a potential travel partner, recommends an optimized travel route based on their combined preferences, and finally generates a shareable content piece summarizing their trip plan.
+**WanderMatch** is a travel matchmaking and recommendation platform designed for adventure-seekers looking to connect with like-minded travelers. Our app lets users fill out a simple form with their travel preferences, matches them with a potential travel partner, recommends an optimized travel route based on their combined preferences, and finally generates a shareable content piece for their social media.
 
-Built during [Hackathon Name], WanderMatch aims to streamline travel planning while fostering meaningful connections.
-
-
+Built during Encode London AI Hackathon, WanderMatch aims to streamline travel planning while fostering meaningful connections.
 
 ## 📖 Overview
 
@@ -19,7 +17,7 @@ The application workflow consists of three core features:
 2. **Route Recommendation**  
    Once paired, WanderMatch proposes an optimized travel route tailored to the duo's shared interests and constraints.
 
-3. **AI-Powered Content Generation**  
+3. **Social Media Content Generation**  
    Finally, the app auto-generates a personalized travel content piece — a blog post or social media caption — summarizing their travel plan, destinations, and highlights.
 
 
