@@ -108,15 +108,6 @@ In this video, we walk through:
 4. Auto-generated travel content preview
 
 
-
-## 📌 GitHub Repository
-
-🔗 [https://github.com/yourusername/wandermatch](https://github.com/yourusername/wandermatch)
-
-The full source code, instructions to run locally, and demo images are available in this repository.
-
-
-
 ## 💡 Future Improvements
 
 Some ideas to extend and enhance WanderMatch:
