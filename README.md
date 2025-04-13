@@ -82,7 +82,7 @@ if ENABLE_CONTENT_GENERATION:
 Here are some screenshots from our application:
 
 - 📷 **User Input Form**  
-  <img src="static/demo_images/user_input_form.png" width="300" />
+  <img src="demo_images/user_input_form.jpg" width="300" />
 
 - 📷 **Travel Mate Match Result**  
   <img src="demo_images/match_result.jpg" width="300" />
@@ -92,7 +92,7 @@ Here are some screenshots from our application:
   <img src="demo_images/route_recomm_map.png" width="300" />
 
 - 📷 **Generated Travel Content**  
-  <img src="static/demo_images/generated_content.png" width="300" />
+  <img src="demo_images/generated_travel_content.jpg" width="300" />
 
 
 ## 📹 Video Demo
