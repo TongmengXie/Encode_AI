@@ -1,6 +1,5 @@
 # ✈️ Project Name: **WanderMatch**
 
----
 
 ## 📌 Summary
 
@@ -8,7 +7,7 @@
 
 Built during [Hackathon Name], WanderMatch aims to streamline travel planning while fostering meaningful connections.
 
----
+
 
 ## 📖 Overview
 
@@ -23,7 +22,7 @@ The application workflow consists of three core features:
 3. **AI-Powered Content Generation**  
    Finally, the app auto-generates a personalized travel content piece — a blog post or social media caption — summarizing their travel plan, destinations, and highlights.
 
----
+
 
 ## 🛠️ How Sponsor Tech Was Used
 
@@ -31,7 +30,7 @@ The application workflow consists of three core features:
   We integrated **Sponsor API** to fetch real-time data (e.g. travel destinations, route suggestions, or content templates) and incorporated it into our matchmaking and content generation logic.  
   Example: Used the `getSuggestedRoutes()` method from Sponsor SDK to propose efficient and scenic routes based on travel data.
 
----
+
 
 ## 📂 Project Structure
 
@@ -49,7 +48,7 @@ WanderMatch/
 └── requirements.txt             # Project dependencies
 ```
 
----
+
 
 ## 📝 Core Pseudocode (main.py)
 
@@ -79,7 +78,7 @@ if ENABLE_CONTENT_GENERATION:
     content = generate_content(user_data, partner_list, route_list)
     print(content)
 ```
----
+
 
 ## 🖼️ Demo Images
 
@@ -97,7 +96,7 @@ Here are some screenshots from our application:
 - 📷 **Generated Travel Content**  
   ![Generated Content](static/demo_images/generated_content.png)
 
----
+
 
 ## 📹 Video Demo
 
@@ -110,7 +109,7 @@ In this video, we walk through:
 3. Recommended travel route display
 4. Auto-generated travel content preview
 
----
+
 
 ## 📌 GitHub Repository
 
@@ -118,7 +117,7 @@ In this video, we walk through:
 
 The full source code, instructions to run locally, and demo images are available in this repository.
 
----
+
 
 ## 💡 Future Improvements
 
