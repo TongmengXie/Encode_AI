@@ -102,13 +102,14 @@ The user query is as follows: {query}
     #     # Once clarifications are resolved, resume the plan run
     #     plan_run = portia.run(plan_run)
 
-    if carry_on == 1:
-        plan_run = portia.run(plan_run)
-        print(plan_run.model_dump_json(indent=2))
+    # if carry_on == 1:
+    #     plan_run = portia.run(plan_run)
+    #     print(plan_run.model_dump_json(indent=2))
     # Serialise into JSON and print the output
     
 
 if __name__ == "__main__":
     # main("I want to visit London today in a closed circle that takes almost 2 hours. Sakura themed")
-    main("I want to visit a city today in a closed circle that takes almost 2 hours. Sakura themed")
+    query = input("Hello! This is a trip advisor, please type your query: \n")
+    main(query)
     

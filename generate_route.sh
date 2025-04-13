@@ -1,0 +1,2 @@
+python generate_route.py
+python Gemini_TravelingRoute_Recommendation_V1/main.py
