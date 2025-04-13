@@ -47,6 +47,7 @@ WanderMatch/
 │   └── demo_images/             # Screenshots of the app
 ├── README.md                    # Project overview and documentation
 └── requirements.txt             # Project dependencies
+```
 
 ---
 
@@ -77,7 +78,7 @@ if ENABLE_ROUTE_RECOMMENDATION:
 if ENABLE_CONTENT_GENERATION:
     content = generate_content(user_data, partner_list, route_list)
     print(content)
-
+```
 ---
 
 ## 🖼️ Demo Images
