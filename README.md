@@ -97,7 +97,8 @@ Here are some screenshots from our application:
 
 ## 📹 Video Demo
 
-👉 [Watch our 3-minute demo here](https://your-demo-video-link.com)
+👉 [Watch our demo video here](https://youtu.be/foC0lBZvPwg?si=Ik3Rx0dGZ9B0u9OH)
+
 
 In this video, we walk through:
 
