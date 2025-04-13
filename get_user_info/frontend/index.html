@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Travel Questionnaire</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; background: #f9f9f9; }
+    .card { background: white; padding: 2rem; border-radius: 12px; max-width: 600px; margin: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .question { margin-bottom: 1.5rem; }
+    .progress { margin-bottom: 1rem; font-weight: bold; color: #555; display: flex; justify-content: space-between; align-items: center; }
+    button { padding: 0.5rem 1rem; font-size: 1rem; border: none; background-color: #4f46e5; color: white; border-radius: 8px; cursor: pointer; margin-top: 1rem; }
+    .results { background: #e0f7fa; padding: 1rem; border-radius: 8px; margin-top: 2rem; }
+    .recommendations { background: #fff8e1; padding: 1rem; border-radius: 8px; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="progress">
+      <div id="progress-indicator"></div>
+      <button onclick="restartSurvey()">Restart</button>
+    </div>
+    <div class="question" id="question-container"></div>
+    <div id="input-container"></div>
+    <button onclick="nextQuestion()">Next</button>
+    <div class="results" id="results" style="display: none;"></div>
+    <button onclick="submitRandomProfile()">🎲 Random Profile</button>
+    <button id="find-mate-button" style="display: none;" onclick="fetchRecommendations()">🔎 Find your travel mate</button>
+  </div>
+
+  <script>
+    const questions = [
+      { label: "What is your name?", type: "text" },
+      { label: "Select your age group", type: "select", options: ["18–24", "25–34", "35–44", "45–54", "55–64", "65+"] },
+      { label: "Select your gender", type: "select", options: ["Female", "Male", "Non-binary", "Prefer not to say"] },
+      { label: "What's your nationality?", type: "text" },
+      { label: "Where do you want to live if you have infinite resources?", type: "text" },
+      { label: "What’s the cultural symbol that first pops to your mind?", type: "text" },
+      { label: "What's the number one goal on your bucket list?", type: "text" },
+      { label: "What sort of healthcare amenities do you expect when traveling?", type: "text" },
+      { label: "How much is your travel budget?", type: "select", options: ["$500", "$1000", "$1500", "$2000", "$3000", "$5000", "$7000", "$10000"] },
+      { label: "What currency or financial arrangements do you typically use while traveling?", type: "select", options: ["Local currency", "Credit card", "Revolut", "Wise", "Cash", "Multi-currency account", "Digital wallets", "Prepaid travel card", "PayPal", "ATM use"] },
+      { label: "What types of insurance coverage are you currently using or interested in?", type: "select", options: ["Travel only", "Medical only", "Comprehensive", "Basic travel", "VIP insurance"] },
+      { label: "Have you encountered any issues with insurance claims during previous travels?", type: "text" },
+    ];
+
+    let current = 0;
+    let answers = [];
+
+    function renderQuestion() {
+      const q = questions[current];
+      document.getElementById("question-container").innerText = q.label;
+      document.getElementById("progress-indicator").innerText = `Question ${current + 1} of ${questions.length}`;
+      const inputDiv = document.getElementById("input-container");
+      inputDiv.innerHTML = "";
+
+      let input;
+      if (q.type === "text") {
+        input = document.createElement("input");
+        input.type = "text";
+        input.id = "input";
+        input.style.width = "100%";
+        input.style.padding = "8px";
+      } else if (q.type === "select") {
+        input = document.createElement("select");
+        input.id = "input";
+        input.style.width = "100%";
+        input.style.padding = "8px";
+        q.options.forEach(opt => {
+          const option = document.createElement("option");
+          option.value = opt;
+          option.text = opt;
+          input.appendChild(option);
+        });
+      }
+
+      input.addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          nextQuestion();
+        }
+      });
+
+      inputDiv.appendChild(input);
+      input.focus();
+    }
+
+    function nextQuestion() {
+      const input = document.getElementById("input");
+      answers.push(input.value);
+      current++;
+      if (current < questions.length) {
+        renderQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      document.querySelector(".question").style.display = "none";
+      document.getElementById("input-container").style.display = "none";
+      document.querySelector("button[onclick='nextQuestion()']").style.display = "none";
+      document.getElementById("progress-indicator").style.display = "none";
+
+      const csvHeader = questions.map((_, i) => `Q${i + 1}`).join(",");
+      const csvRow = answers.map(value => `"${value.replace(/"/g, '""')}"`).join(",");
+      const csvContent = `${csvHeader}\n${csvRow}`;
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+
+      const resultsDiv = document.getElementById("results");
+      resultsDiv.innerHTML = `<h3>Your Answers:</h3>
+        <ul>${answers.map((v, i) => `<li><strong>Q${i + 1}</strong>: ${v}</li>`).join("")}</ul>
+        <a href="${url}" download="questionnaire_results.csv"><button>Download CSV</button></a>
+      `;
+      resultsDiv.style.display = "block";
+
+      fetch("http://localhost:5000/api/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ answers })
+      })
+      .then(res => res.json())
+      .then(data => {
+        const message = document.createElement("p");
+        message.textContent = `✅ Your data has been saved to ${data.saved_as}`;
+        message.style.marginTop = "1rem";
+        message.style.color = "green";
+        resultsDiv.appendChild(message);
+        document.getElementById("find-mate-button").style.display = "inline-block";
+      })
+      .catch(err => console.error("❌ Failed to save to backend:", err));
+    }
+
+    function fetchRecommendations() {
+      const button = document.getElementById("find-mate-button");
+      button.disabled = true;
+      button.textContent = "🔍 Finding...";
+
+      fetch("http://localhost:5000/api/recommend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ answers })
+      })
+      .then(res => res.json())
+      .then(data => {
+        const resultsDiv = document.getElementById("results");
+        const recDiv = document.createElement("div");
+        recDiv.className = "recommendations";
+        recDiv.innerHTML = `
+          <h4>🔍 Top Match Recommendations:</h4>
+          <ul>
+            ${data.recommendations.map(r =>
+              `<li><strong>User ${r.index + 1}</strong> (Score: ${r.score.toFixed(4)}): ${r.name}</li>`
+            ).join("")}
+          </ul>
+        `;
+        resultsDiv.appendChild(recDiv);
+        button.style.display = "none";
+      })
+      .catch(err => {
+        console.error("❌ Failed to fetch recommendations:", err);
+        button.textContent = "❌ Try again";
+      });
+    }
+
+
+    function restartSurvey() {
+      current = 0;
+      answers = [];
+      document.querySelector(".question").style.display = "block";
+      document.getElementById("input-container").style.display = "block";
+      document.querySelector("button[onclick='nextQuestion()']").style.display = "inline-block";
+      document.getElementById("progress-indicator").style.display = "block";
+      document.getElementById("results").style.display = "none";
+      document.getElementById("find-mate-button").style.display = "none";
+      renderQuestion();
+    }
+
+    function submitRandomProfile() {
+      answers = [
+        "Hua li", "18–24", "Male", "China", "Swiss",
+        "Cheese Fondue", "Climb Alps Mountain", "Hospital",
+        "$1000", "Credit card", "Medical only", "No issues"
+      ];
+      showResults();
+    }
+
+    renderQuestion();
+  </script>
+</body>
+</html>
