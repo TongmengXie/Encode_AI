@@ -86,10 +86,11 @@ Here are some screenshots from our application:
   ![User Input Form](static/demo_images/user_input_form.png)
 
 - 📷 **Travel Mate Match Result**  
-  ![Match Result](static/demo_images/match_result.png)
+  ![Match Result](demo_images/match_result.jpg)
 
 - 📷 **Recommended Route Overview**  
-  ![Route Recommendation](static/demo_images/route_recommendation.png)
+  ![Route Recommendation Text](demo_images/route_recomm_text.png)
+  ![Route Recommendation Map](demo_images/route_recomm_map.png)
 
 - 📷 **Generated Travel Content**  
   ![Generated Content](static/demo_images/generated_content.png)
