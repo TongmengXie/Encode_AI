@@ -24,10 +24,9 @@ The application workflow consists of three core features:
 
 ## 🛠️ How Sponsor Tech Was Used
 
-- **Sponsor API / SDK (replace this with actual tech sponsor)**  
-  We integrated **Sponsor API** to fetch real-time data (e.g. travel destinations, route suggestions, or content templates) and incorporated it into our matchmaking and content generation logic.  
-  Example: Used the `getSuggestedRoutes()` method from Sponsor SDK to propose efficient and scenic routes based on travel data.
+**Portia's Plan** feature empowers users to review the agent’s behavior before execution, providing transparency and control over the trip-making process. Users are now able to make informed decisions about what information to share and which tasks to perform (e.g., whether to search for a companion).
 
+Furthermore, **Portia's Clarification** ensures that the user remains in the loop, reducing confusion and aligning the agent’s actions with their objectives. For instance, if the route shape is not specified, the agent will request clarification, ensuring that the generated route aligns with the user’s intended preferences.
 
 
 ## 📂 Project Structure
