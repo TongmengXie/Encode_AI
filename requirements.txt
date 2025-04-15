@@ -15,7 +15,7 @@ rich==13.3.5  # For beautiful terminal output
 markdown==3.4.3  # For blog post formatting
 
 # Web functionality
-webbrowser==0.0.1  # For opening URLs
+# webbrowser==0.0.1  # For opening URLs
 flask-restful==0.3.10  # For building REST APIs
 
 # Data handling and utilities
