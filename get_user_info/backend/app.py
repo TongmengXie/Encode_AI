@@ -11,13 +11,29 @@ from pathlib import Path
 app = Flask(__name__)
 CORS(app)
 
-# ✅ 自动加载项目根目录 .env 文件
-load_dotenv("D:/PycharmProjects/Encode_AI/get_user_info/.env")
+# Get the current directory (where app.py is located)
+BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
+# Go up one level to get the parent directory
+PARENT_DIR = os.path.dirname(BACKEND_DIR)
+# Load environment variables
+load_dotenv(os.path.join(PARENT_DIR, ".env"))
+
+# Initialize OpenAI client
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-# 路径和设置
-BACKEND_DIR = "D:/PycharmProjects/Encode_AI/get_user_info/backend"
-USER_POOL_PATH = "D:/PycharmProjects/Encode_AI/get_user_info/user_pool.csv"
+
+# Path for user pool data
+USER_POOL_PATH = os.path.join(PARENT_DIR, "user_pool.csv")
 WEIGHTS = [0.0, 0.2, 0.1, 0.3, 0.1, 0.3, 0.3, 0.1, 0.3, 0.1, 0.1, 0.1]
+
+# Required fields for the survey form
+REQUIRED_FIELDS = [
+    'name', 'age', 'gender', 'nationality', 'destination', 
+    'cultural_symbol', 'bucket_list', 'healthcare', 'budget',
+    'payment_preference', 'insurance', 'insurance_issues', 'travel_season', 
+    'stay_duration', 'interests', 'personality_type',
+    'communication_style', 'travel_style', 'accommodation_preference',
+    'origin_city', 'destination_city'
+]
 
 # ✅ 嵌入函数
 def embed_answer_list(answer_list):
@@ -41,19 +57,42 @@ def get_top_matches(similarity_matrix, weights, top_k=3):
     return top_users
 
 # ✅ /api/submit — 仅保存用户答案
-@app.route("/api/submit", methods=["POST"])
+@app.route("/api/submit", methods=["POST", "OPTIONS"])
 def submit():
-    data = request.json
-    answers = data["answers"]
-
+    # Handle OPTIONS request for CORS
+    if request.method == "OPTIONS":
+        response = app.make_default_options_response()
+        return response
+        
+    # Handle both JSON and form data
+    if request.is_json:
+        data = request.json
+        if "answers" in data:
+            answers = data["answers"]
+        else:
+            answers = data
+    else:
+        # Process form data
+        answers = request.form.to_dict()
+    
+    # No validation needed - we'll use defaults for missing fields in the main application
+    
     # 保存文件
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"user_answer_{timestamp}.csv"
+    
+    # Ensure the backend directory exists
     os.makedirs(BACKEND_DIR, exist_ok=True)
+    
+    # Save CSV in the backend directory
     filepath = os.path.join(BACKEND_DIR, filename)
+    
+    # Create dataframe and save to CSV
     df = pd.DataFrame([answers])
     df.to_csv(filepath, index=False)
-
+    
+    print(f"✅ Saved user answer to: {filepath}")
+    
     return jsonify({ "saved_as": filename })
 
 # ✅ /api/recommend — 根据前端传入的 answers 返回推荐用户
@@ -66,7 +105,11 @@ def recommend():
     sample_embed = [embed_answer_list([str(v)])[0] for v in answers]
 
     # 嵌入用户池
-    user_pool = pd.read_csv(USER_POOL_PATH, encoding="ISO-8859-1")
+    try:
+        user_pool = pd.read_csv(USER_POOL_PATH, encoding="utf-8")
+    except UnicodeDecodeError:
+        user_pool = pd.read_csv(USER_POOL_PATH, encoding="ISO-8859-1")
+        
     pool_embed = []
     for _, row in user_pool.iterrows():
         row_embed = []
@@ -92,4 +135,6 @@ def recommend():
 
 # ✅ 启动服务器
 if __name__ == "__main__":
+    print(f"Backend directory: {BACKEND_DIR}")
+    print(f"User pool path: {USER_POOL_PATH}")
     app.run(debug=True)

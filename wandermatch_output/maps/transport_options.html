@@ -1,0 +1,666 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Transport Options: Bath to Bristol</title>
+        <style>
+            :root {
+                --primary-color: #3498db;
+                --secondary-color: #2ecc71;
+                --accent-color: #f39c12;
+                --warning-color: #e74c3c;
+                --text-color: #333;
+                --light-bg: #f9f9f9;
+                --card-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                --border-radius: 8px;
+            }
+            
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+            
+            body {
+                background-color: #f5f5f5;
+                color: var(--text-color);
+                padding: 20px;
+            }
+            
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+            
+            header {
+                background: linear-gradient(135deg, var(--primary-color), #1a6ca4);
+                color: white;
+                padding: 25px;
+                border-radius: var(--border-radius);
+                margin-bottom: 30px;
+                text-align: center;
+                box-shadow: var(--card-shadow);
+            }
+            
+            h1 {
+                margin-bottom: 10px;
+                font-size: 2.2rem;
+            }
+            
+            .journey-details {
+                font-size: 1.2rem;
+                opacity: 0.9;
+            }
+            
+            .transport-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+                gap: 25px;
+                margin-bottom: 30px;
+            }
+            
+            .transport-card {
+                background: white;
+                border-radius: var(--border-radius);
+                padding: 20px;
+                box-shadow: var(--card-shadow);
+                transition: transform 0.3s, box-shadow 0.3s;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .transport-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            }
+            
+            .card-header {
+                display: flex;
+                align-items: center;
+                margin-bottom: 15px;
+                border-bottom: 1px solid #eee;
+                padding-bottom: 15px;
+            }
+            
+            .transport-icon {
+                font-size: 2rem;
+                margin-right: 15px;
+                color: var(--primary-color);
+            }
+            
+            .transport-name {
+                font-size: 1.5rem;
+                font-weight: bold;
+            }
+            
+            .detail-row {
+                display: flex;
+                margin-bottom: 10px;
+                align-items: center;
+            }
+            
+            .detail-label {
+                min-width: 120px;
+                font-weight: 600;
+                color: #666;
+            }
+            
+            .detail-value {
+                flex: 1;
+            }
+            
+            .badge {
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-size: 0.85rem;
+                font-weight: 600;
+                color: white;
+                display: inline-block;
+            }
+            
+            .impact-low {
+                background-color: var(--secondary-color);
+            }
+            
+            .impact-medium {
+                background-color: var(--accent-color);
+            }
+            
+            .impact-high {
+                background-color: var(--warning-color);
+            }
+            
+            .rating {
+                display: inline-block;
+                background-color: var(--light-bg);
+                border-radius: 12px;
+                padding: 3px 10px;
+                font-weight: 600;
+            }
+            
+            .rating-good {
+                color: var(--secondary-color);
+            }
+            
+            .rating-medium {
+                color: var(--accent-color);
+            }
+            
+            .rating-poor {
+                color: var(--warning-color);
+            }
+            
+            .lists-container {
+                display: flex;
+                margin-top: 15px;
+                gap: 15px;
+            }
+            
+            .pros-list, .cons-list {
+                flex: 1;
+                padding: 15px;
+                border-radius: var(--border-radius);
+            }
+            
+            .pros-list {
+                background-color: rgba(46, 204, 113, 0.1);
+                border-left: 4px solid var(--secondary-color);
+            }
+            
+            .cons-list {
+                background-color: rgba(231, 76, 60, 0.1);
+                border-left: 4px solid var(--warning-color);
+            }
+            
+            h3 {
+                margin-bottom: 10px;
+                font-size: 1.1rem;
+            }
+            
+            ul {
+                margin-left: 20px;
+            }
+            
+            li {
+                margin-bottom: 5px;
+            }
+            
+            footer {
+                text-align: center;
+                margin-top: 30px;
+                padding: 20px;
+                color: #666;
+                font-size: 0.9rem;
+            }
+            
+            .unique-features {
+                margin-top: 15px;
+                padding: 10px;
+                background-color: #f0f8ff;
+                border-radius: var(--border-radius);
+                font-style: italic;
+                color: #555;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <h1>Transport Options</h1>
+                <div class="journey-details">From <strong>Bath</strong> to <strong>Bristol</strong></div>
+            </header>
+            
+            <div class="transport-grid">
+    
+            <div class="transport-card">
+                <div class="card-header">
+                    <div class="transport-icon">🚄</div>
+                    <div class="transport-name">Train (Regional)</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Duration:</div>
+                    <div class="detail-value">10-15 minutes</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Cost:</div>
+                    <div class="detail-value">£5-£15</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Distance:</div>
+                    <div class="detail-value">19 km (12 miles)</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Carbon Footprint:</div>
+                    <div class="detail-value">
+                        <span class="badge impact-low">Low (Estimated 1kg CO2e)</span>
+                    </div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Comfort:</div>
+                    <div class="detail-value">
+                        <span class="rating rating-good">7/10</span>
+                    </div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Reliability:</div>
+                    <div class="detail-value">
+                        <span class="rating rating-good">9/10</span>
+                    </div>
+                </div>
+                
+                <div class="lists-container">
+                    <div class="pros-list">
+                        <h3>Pros</h3>
+                        <ul>
+        <li>Fast and efficient</li><li>Environmentally friendly</li><li>Comfortable seating</li><li>Reliable schedule</li><li>Scenic views</li>
+                        </ul>
+                    </div>
+                    <div class="cons-list">
+                        <h3>Cons</h3>
+                        <ul>
+        <li>Can be crowded during peak hours</li><li>Limited luggage space</li><li>Potential for delays (though rare)</li><li>No flexibility in route</li><li>None</li>
+                        </ul>
+                    </div>
+                </div>
+        
+                <div class="unique-features">
+                    <strong>Unique Features:</strong> Frequent departures, convenient city center stations.
+                </div>
+            
+            </div>
+        
+            <div class="transport-card">
+                <div class="card-header">
+                    <div class="transport-icon">🚌</div>
+                    <div class="transport-name">Bus (Express)</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Duration:</div>
+                    <div class="detail-value">30-45 minutes</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Cost:</div>
+                    <div class="detail-value">£3-£8</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Distance:</div>
+                    <div class="detail-value">20 km (12.5 miles)</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Carbon Footprint:</div>
+                    <div class="detail-value">
+                        <span class="badge impact-medium">Medium (Estimated 2kg CO2e)</span>
+                    </div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Comfort:</div>
+                    <div class="detail-value">
+                        <span class="rating rating-medium">6/10</span>
+                    </div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Reliability:</div>
+                    <div class="detail-value">
+                        <span class="rating rating-good">8/10</span>
+                    </div>
+                </div>
+                
+                <div class="lists-container">
+                    <div class="pros-list">
+                        <h3>Pros</h3>
+                        <ul>
+        <li>Affordable</li><li>Regular service</li><li>Multiple pick-up/drop-off points</li><li>Can offer scenic routes</li><li>None</li>
+                        </ul>
+                    </div>
+                    <div class="cons-list">
+                        <h3>Cons</h3>
+                        <ul>
+        <li>Slower than train</li><li>Can be crowded</li><li>Affected by traffic</li><li>Less comfortable than train</li><li>None</li>
+                        </ul>
+                    </div>
+                </div>
+        
+                <div class="unique-features">
+                    <strong>Unique Features:</strong> Budget-friendly, multiple bus companies offer services.
+                </div>
+            
+            </div>
+        
+            <div class="transport-card">
+                <div class="card-header">
+                    <div class="transport-icon">🚗</div>
+                    <div class="transport-name">Car (Private)</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Duration:</div>
+                    <div class="detail-value">30-45 minutes</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Cost:</div>
+                    <div class="detail-value">£5-£10 (fuel) + parking</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Distance:</div>
+                    <div class="detail-value">23 km (14 miles) (Variable depending on route)</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Carbon Footprint:</div>
+                    <div class="detail-value">
+                        <span class="badge impact-high">High (Estimated 5kg CO2e)</span>
+                    </div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Comfort:</div>
+                    <div class="detail-value">
+                        <span class="rating rating-good">8/10</span>
+                    </div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Reliability:</div>
+                    <div class="detail-value">
+                        <span class="rating rating-good">7/10</span>
+                    </div>
+                </div>
+                
+                <div class="lists-container">
+                    <div class="pros-list">
+                        <h3>Pros</h3>
+                        <ul>
+        <li>Door-to-door convenience</li><li>Flexibility</li><li>Can carry more luggage</li><li>Can travel at your own pace</li><li>None</li>
+                        </ul>
+                    </div>
+                    <div class="cons-list">
+                        <h3>Cons</h3>
+                        <ul>
+        <li>Parking can be expensive and difficult</li><li>Traffic congestion</li><li>Higher environmental impact</li><li>Requires driving license and insurance</li><li>None</li>
+                        </ul>
+                    </div>
+                </div>
+        
+                <div class="unique-features">
+                    <strong>Unique Features:</strong> Flexibility in route and schedule.
+                </div>
+            
+            </div>
+        
+            <div class="transport-card">
+                <div class="card-header">
+                    <div class="transport-icon">🚗</div>
+                    <div class="transport-name">Car (Rideshare)</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Duration:</div>
+                    <div class="detail-value">30-45 minutes</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Cost:</div>
+                    <div class="detail-value">£15-£25</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Distance:</div>
+                    <div class="detail-value">23 km (14 miles) (Variable depending on route)</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Carbon Footprint:</div>
+                    <div class="detail-value">
+                        <span class="badge impact-medium">Medium (Estimated 3kg CO2e)</span>
+                    </div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Comfort:</div>
+                    <div class="detail-value">
+                        <span class="rating rating-good">7/10</span>
+                    </div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Reliability:</div>
+                    <div class="detail-value">
+                        <span class="rating rating-good">7/10</span>
+                    </div>
+                </div>
+                
+                <div class="lists-container">
+                    <div class="pros-list">
+                        <h3>Pros</h3>
+                        <ul>
+        <li>No driving required</li><li>Convenient pick-up/drop-off</li><li>No parking hassles</li><li>Generally cheaper than a taxi</li><li>None</li>
+                        </ul>
+                    </div>
+                    <div class="cons-list">
+                        <h3>Cons</h3>
+                        <ul>
+        <li>Can be expensive during peak hours</li><li>Surge pricing during bad weather or high demand</li><li>Shared ride with strangers</li><li>Dependent on driver availability</li><li>None</li>
+                        </ul>
+                    </div>
+                </div>
+        
+                <div class="unique-features">
+                    <strong>Unique Features:</strong> Convenient pick-up/drop-off, no parking hassles.
+                </div>
+            
+            </div>
+        
+            <div class="transport-card">
+                <div class="card-header">
+                    <div class="transport-icon">🚀</div>
+                    <div class="transport-name">Taxi/Private Hire</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Duration:</div>
+                    <div class="detail-value">30-45 minutes</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Cost:</div>
+                    <div class="detail-value">£30-£50</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Distance:</div>
+                    <div class="detail-value">23 km (14 miles) (Variable depending on route)</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Carbon Footprint:</div>
+                    <div class="detail-value">
+                        <span class="badge impact-medium">Medium (Estimated 3kg CO2e)</span>
+                    </div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Comfort:</div>
+                    <div class="detail-value">
+                        <span class="rating rating-good">8/10</span>
+                    </div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Reliability:</div>
+                    <div class="detail-value">
+                        <span class="rating rating-good">8/10</span>
+                    </div>
+                </div>
+                
+                <div class="lists-container">
+                    <div class="pros-list">
+                        <h3>Pros</h3>
+                        <ul>
+        <li>Convenient and readily available</li><li>Door-to-door service</li><li>Comfortable ride</li><li>No parking hassles</li><li>None</li>
+                        </ul>
+                    </div>
+                    <div class="cons-list">
+                        <h3>Cons</h3>
+                        <ul>
+        <li>Most expensive option</li><li>Can be affected by traffic</li><li>Higher environmental impact compared to train or bus</li><li>None</li><li>None</li>
+                        </ul>
+                    </div>
+                </div>
+        
+                <div class="unique-features">
+                    <strong>Unique Features:</strong> Door-to-door service, readily available.
+                </div>
+            
+            </div>
+        
+            <div class="transport-card">
+                <div class="card-header">
+                    <div class="transport-icon">🚲</div>
+                    <div class="transport-name">Bicycle</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Duration:</div>
+                    <div class="detail-value">1.5 - 2.5 hours</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Cost:</div>
+                    <div class="detail-value">£5-£10 (rental) or free (own bike)</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Distance:</div>
+                    <div class="detail-value">20-25 km (12.5-15.5 miles) (Variable depending on route)</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Carbon Footprint:</div>
+                    <div class="detail-value">
+                        <span class="badge impact-low">Low (Near Zero kg CO2e)</span>
+                    </div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Comfort:</div>
+                    <div class="detail-value">
+                        <span class="rating rating-medium">5/10</span>
+                    </div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Reliability:</div>
+                    <div class="detail-value">
+                        <span class="rating rating-medium">6/10</span>
+                    </div>
+                </div>
+                
+                <div class="lists-container">
+                    <div class="pros-list">
+                        <h3>Pros</h3>
+                        <ul>
+        <li>Environmentally friendly</li><li>Good exercise</li><li>Scenic route</li><li>Cost-effective</li><li>None</li>
+                        </ul>
+                    </div>
+                    <div class="cons-list">
+                        <h3>Cons</h3>
+                        <ul>
+        <li>Time-consuming</li><li>Physically demanding</li><li>Can be dangerous on busy roads</li><li>Affected by weather</li><li>Requires appropriate clothing/equipment</li>
+                        </ul>
+                    </div>
+                </div>
+        
+                <div class="unique-features">
+                    <strong>Unique Features:</strong> Scenic route, good exercise.
+                </div>
+            
+            </div>
+        
+            <div class="transport-card">
+                <div class="card-header">
+                    <div class="transport-icon">🚌</div>
+                    <div class="transport-name">Walk/Hike + Bus</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Duration:</div>
+                    <div class="detail-value">2-4 hours</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Cost:</div>
+                    <div class="detail-value">£3-£8 (Bus portion)</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Distance:</div>
+                    <div class="detail-value">Variable, partially walked and partially by bus</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Carbon Footprint:</div>
+                    <div class="detail-value">
+                        <span class="badge impact-low">Low (Estimated 1kg CO2e)</span>
+                    </div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Comfort:</div>
+                    <div class="detail-value">
+                        <span class="rating rating-poor">4/10</span>
+                    </div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">Reliability:</div>
+                    <div class="detail-value">
+                        <span class="rating rating-good">7/10</span>
+                    </div>
+                </div>
+                
+                <div class="lists-container">
+                    <div class="pros-list">
+                        <h3>Pros</h3>
+                        <ul>
+        <li>Partially environmentally friendly</li><li>Good exercise</li><li>Scenic walking routes possible</li><li>Flexible start/end points</li><li>None</li>
+                        </ul>
+                    </div>
+                    <div class="cons-list">
+                        <h3>Cons</h3>
+                        <ul>
+        <li>Time-consuming</li><li>Physically demanding</li><li>Affected by weather during walking portion</li><li>Requires planning and navigating</li><li>None</li>
+                        </ul>
+                    </div>
+                </div>
+        
+                <div class="unique-features">
+                    <strong>Unique Features:</strong> Combines exercise with public transport for a portion of the journey, can incorporate scenic walking paths.
+                </div>
+            
+            </div>
+        
+            </div>
+            <footer>
+                <p>Generated by WanderMatch &copy; 2023 | Transport options are estimates and subject to change</p>
+            </footer>
+        </div>
+    </body>
+    </html>
+    
