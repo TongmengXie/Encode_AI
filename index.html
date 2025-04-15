@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WanderMatch - Travel Partner Matching</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        #submitButton {
+            padding: 15px;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        #submitButton:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        .alert-info {
+            border-left: 5px solid #0d6efd;
+        }
+        .survey-complete {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="text-center my-5">
+            <h1><span class="highlight">WanderMatch</span> Travel Partner Matching</h1>
+            <p class="lead">Find your perfect travel companion based on your preferences</p>
+            <p class="text-muted">Fill out the fields you care about - leave others blank for default values</p>
+        </header>
+        
+        <!-- Alert container for messages -->
+        <div id="alertContainer" class="mb-4"></div>
+        
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Travel Preferences Survey</h2>
+                        <p class="small text-muted mb-0">All fields are optional - empty fields will use default values</p>
+                    </div>
+                    <div class="card-body">
+                        <form id="surveyForm" method="POST">
+                            <div class="row">
+                                <!-- Basic Information Section -->
+                                <h4 class="mb-3">Basic Information</h4>
+                                
+                                <div class="question-block mb-4">
+                                    <label for="real_name" class="form-label">Your Name</label>
+                                    <input type="text" class="form-control" id="real_name" name="real_name" placeholder="John Doe">
+                                    <div class="invalid-feedback">
+                                        Please enter your name
+                                    </div>
+                                    <div class="form-text">Default: Anonymous Traveler</div>
+                                </div>
+                                
+                                <div class="question-block mb-4">
+                                    <label for="age_group" class="form-label">Age Group</label>
+                                    <select class="form-select" id="age_group" name="age_group">
+                                        <option value="" selected>Select your age group</option>
+                                        <option value="18–24">18–24</option>
+                                        <option value="25–34">25–34</option>
+                                        <option value="35–44">35–44</option>
+                                        <option value="45–54">45–54</option>
+                                        <option value="55–64">55–64</option>
+                                        <option value="65+">65+</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select your age group
+                                    </div>
+                                    <div class="form-text">Default: 25–34</div>
+                                </div>
+                                
+                                <div class="question-block mb-4">
+                                    <label for="gender" class="form-label">Gender</label>
+                                    <select class="form-select" id="gender" name="gender">
+                                        <option value="" selected>Select your gender</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Non-binary">Non-binary</option>
+                                        <option value="Prefer not to say">Prefer not to say</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select your gender
+                                    </div>
+                                    <div class="form-text text-muted">Default: Prefer not to say</div>
+                                </div>
+
+                                <div class="question-block mb-4">
+                                    <label for="nationality" class="form-label">Nationality</label>
+                                    <input type="text" class="form-control" id="nationality" name="nationality" placeholder="American">
+                                    <div class="invalid-feedback">
+                                        Please enter your nationality
+                                    </div>
+                                    <div class="form-text">Default: International</div>
+                                </div>
+                                
+                                <div class="question-block mb-4">
+                                    <label for="preferred_residence" class="form-label">Dream Destination</label>
+                                    <input type="text" class="form-control" id="preferred_residence" name="preferred_residence" placeholder="Paris, France">
+                                    <div class="invalid-feedback">
+                                        Please enter your dream destination
+                                    </div>
+                                    <div class="form-text">Default: Swiss</div>
+                                </div>
+
+                                <!-- Travel Preferences Section -->
+                                <h4 class="mt-5 mb-3">Travel Preferences</h4>
+
+                                <div class="question-block mb-4">
+                                    <label for="cultural_symbol" class="form-label">Cultural Symbol</label>
+                                    <input type="text" class="form-control" id="cultural_symbol" name="cultural_symbol" placeholder="Eiffel Tower">
+                                    <div class="invalid-feedback">
+                                        Please enter a cultural symbol
+                                    </div>
+                                    <div class="form-text">Default: Local cuisine</div>
+                                </div>
+
+                                <div class="question-block mb-4">
+                                    <label for="bucket_list" class="form-label">Bucket List Goal</label>
+                                    <input type="text" class="form-control" id="bucket_list" name="bucket_list" placeholder="See the Northern Lights">
+                                    <div class="invalid-feedback">
+                                        Please share your top bucket list goal
+                                    </div>
+                                    <div class="form-text">Default: Nature exploration</div>
+                                </div>
+
+                                <div class="question-block mb-4">
+                                    <label for="healthcare_expectations" class="form-label">Healthcare Expectations</label>
+                                    <textarea class="form-control" id="healthcare_expectations" name="healthcare_expectations" rows="3" placeholder="English-speaking doctors"></textarea>
+                                    <div class="invalid-feedback">
+                                        Please describe expected healthcare amenities
+                                    </div>
+                                    <div class="form-text">Default: Basic healthcare access</div>
+                                </div>
+
+                                <div class="question-block mb-4">
+                                    <label for="travel_budget" class="form-label">Travel Budget</label>
+                                    <select class="form-select" id="travel_budget" name="travel_budget">
+                                        <option value="" selected>Select your budget</option>
+                                        <option value="$500">$500</option>
+                                        <option value="$1000">$1000</option>
+                                        <option value="$1500">$1500</option>
+                                        <option value="$2000">$2000</option>
+                                        <option value="$3000">$3000</option>
+                                        <option value="$4000">$4000</option>
+                                        <option value="$5000">$5000</option>
+                                        <option value="$6000">$6000</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select your travel budget
+                                    </div>
+                                    <div class="form-text text-muted">Default: $1000</div>
+                                </div>
+
+                                <div class="question-block mb-4">
+                                    <label for="currency_preferences" class="form-label">Payment Preference</label>
+                                    <select class="form-select" id="currency_preferences" name="currency_preferences">
+                                        <option value="" selected>Select your payment preference</option>
+                                        <option value="Local currency">Local currency</option>
+                                        <option value="Credit card">Credit card</option>
+                                        <option value="Revolut">Revolut</option>
+                                        <option value="Wise">Wise</option>
+                                        <option value="Cash">Cash</option>
+                                        <option value="Multi-currency account">Multi-currency account</option>
+                                        <option value="Digital wallets">Digital wallets</option>
+                                        <option value="Prepaid travel card">Prepaid travel card</option>
+                                        <option value="PayPal">PayPal</option>
+                                        <option value="ATM use">ATM use</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select your payment preference
+                                    </div>
+                                    <div class="form-text text-muted">Default: Credit card</div>
+                                </div>
+
+                                <div class="question-block mb-4">
+                                    <label for="insurance_type" class="form-label">Insurance Coverage</label>
+                                    <select class="form-select" id="insurance_type" name="insurance_type">
+                                        <option value="" selected>Select insurance type</option>
+                                        <option value="Travel only">Travel only</option>
+                                        <option value="Medical only">Medical only</option>
+                                        <option value="Comprehensive">Comprehensive</option>
+                                        <option value="Basic travel">Basic travel</option>
+                                        <option value="VIP insurance">VIP insurance</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select your insurance preference
+                                    </div>
+                                    <div class="form-text text-muted">Default: Medical only</div>
+                                </div>
+
+                                <div class="question-block mb-4">
+                                    <label for="past_insurance_issues" class="form-label">Insurance Claim Issues</label>
+                                    <textarea class="form-control" id="past_insurance_issues" name="past_insurance_issues" rows="3" placeholder="No past issues"></textarea>
+                                    <div class="invalid-feedback">
+                                        Please provide information about insurance claim issues or enter 'None'
+                                    </div>
+                                    <div class="form-text">Default: None</div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg" id="submitButton">
+                                    <span class="button-text">Submit Survey</span>
+                                    <div class="spinner-border spinner-border-sm d-none" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </button>
+                            </div>
+                            
+                            <div class="alert alert-info mt-3">
+                                <p class="mb-0"><i class="bi bi-info-circle-fill me-2"></i> All fields are optional</p>
+                                <p class="small text-muted mb-0 mt-1">Fill out only the fields that matter to you - empty fields will automatically use the default values shown next to each field.</p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="text-center mt-5 mb-4">
+            <p>&copy; 2023 WanderMatch | Travel Partner Matching Platform</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="scripts.js"></script>
+</body>
+</html>
