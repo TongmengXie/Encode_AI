@@ -7,7 +7,7 @@ services:
   plan: free
   region: frankfurt
   buildCommand: bash deploy.sh
-  startCommand: gunicorn wandermatch:app
+  startCommand: gunicorn wander_match:app
   envVars:
       - key: PYTHON_VERSION
         value: 3.12.9
