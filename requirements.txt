@@ -15,18 +15,8 @@ rich==13.3.5  # For beautiful terminal output
 markdown==3.4.3  # For blog post formatting
 
 # Web functionality
-webbrowser==0.0.1  # For opening URLs
+# webbrowser==0.0.1  # For opening URLs
 flask-restful==0.3.10  # For building REST APIs
-
-# Data handling and utilities
-datetime  # For timestamp generation
-pathlib  # For file path operations
-pickle  # For saving/loading embeddings
-hashlib  # For generating hash values
-random  # For selecting random partners
-os  # For file system operations
-sys  # For system-level operations
-json  # For processing JSON data
 
 # Development tools
 ipython==8.12.0  # For interactive development
