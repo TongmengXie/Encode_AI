@@ -13,6 +13,8 @@ WanderMatch is an application that helps users find compatible travel companions
 
 ## Installation
 
+> **Note**: This application requires Python 3.12.9. Please ensure you have this version installed before proceeding.
+
 1. Clone this repository:
    ```
    git clone https://github.com/yourusername/WanderMatch.git
@@ -92,7 +94,7 @@ The transportation system provides:
 - Detailed comparison of transport modes (flight, train, bus, car)
 - Interactive HTML visualization with responsive cards
 - Color-coded carbon footprint indicators
-- Terminal-based selection interface with Rich formatting
+- Text-based terminal interface with standardized formatting
 
 ## Map Visualization
 
@@ -116,11 +118,19 @@ The blog creation system features:
 
 ## Requirements
 
-- Python 3.8+
+- Python 3.12.9 (required)
 - OpenAI API key
 - Gemini API key
 - Google Maps API key (optional, for enhanced geocoding)
 - Required packages listed in requirements.txt
+
+## Terminal Output
+
+The application uses straightforward terminal-based output with clear text formatting:
+- All console messages use standard print functions with text-based indicators
+- Status messages are prefixed with indicators like [INFO], [SUCCESS], [WARNING], etc.
+- Tabular data is formatted with basic text alignment
+- The system works consistently across all terminal types without special formatting requirements
 
 ## Fallback Mechanisms
 
@@ -131,6 +141,14 @@ The application implements robust fallback mechanisms:
 - Cascading API services (Gemini → OpenAI → templates)
 - Default transport options when API services are unavailable
 - Multiple geocoding service options if the primary service fails
+
+## Updates
+
+### Recent Changes
+- **Python Version Requirement**: Updated to require Python 3.12.9
+- **Terminal Output Simplification**: Removed rich package dependency for better compatibility across different terminals
+- **CSV Storage**: Improved server-side storage of survey responses with enhanced error handling
+- **Configuration**: Added pyproject.toml for modern Python packaging
 
 ## Troubleshooting
 

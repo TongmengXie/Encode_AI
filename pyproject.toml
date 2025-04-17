@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wandermatch"
+version = "1.0.0"
+description = "WanderMatch is an application that helps users find compatible travel companions, generate personalized itineraries, and create travel blogs based on user preferences."
+readme = "README.md"
+requires-python = ">=3.12.9"
+license = {text = "MIT"}
+authors = [
+    {name = "WanderMatch Team"}
+]
+
+[project.urls]
+"Homepage" = "https://github.com/yourusername/WanderMatch"
+"Bug Tracker" = "https://github.com/yourusername/WanderMatch/issues"
+
+[tool.setuptools]
+packages = ["wandermatch"] 
