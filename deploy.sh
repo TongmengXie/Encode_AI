@@ -25,3 +25,4 @@
 # pip install -r requirements.txt
 
 poetry install
+cd wander_match
