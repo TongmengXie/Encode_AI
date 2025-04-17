@@ -12,116 +12,154 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from datetime import datetime
 from dotenv import load_dotenv
+import csv
+import traceback
 
 # Get the current script directory path
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PARENT_DIR = os.path.dirname(SCRIPT_DIR)
 
+# Print paths for debugging
+print(f"Script directory: {SCRIPT_DIR}")
+print(f"Parent directory: {PARENT_DIR}")
+
 # Load environment variables from parent directory
 load_dotenv(os.path.join(PARENT_DIR, '.env'))
 
-# Create backend directory if it doesn't exist
+# Use the PROJECT_PATH from .env file if available
+PROJECT_PATH = os.getenv("PROJECT_PATH", PARENT_DIR)
+print(f"Using project path: {PROJECT_PATH}")
+
+# Create backend directory if it doesn't exist (for backwards compatibility)
 BACKEND_DIR = os.path.join(SCRIPT_DIR, "backend")
 os.makedirs(BACKEND_DIR, exist_ok=True)
+print(f"Backend directory: {os.path.abspath(BACKEND_DIR)}")
+
+# Create UserInfo_and_Match/survey_results directory
+USER_INFO_MATCH_DIR = os.path.join(PROJECT_PATH, "UserInfo_and_Match")
+SURVEY_RESULTS_DIR = os.path.join(USER_INFO_MATCH_DIR, "survey_results")
+os.makedirs(SURVEY_RESULTS_DIR, exist_ok=True)
+print(f"Survey results directory: {os.path.abspath(SURVEY_RESULTS_DIR)}")
+
+# Define destination suggestions for quick lookup
+DESTINATION_SUGGESTIONS = {
+    "usa": ["New York", "Los Angeles", "Chicago", "Miami", "San Francisco"],
+    "france": ["Paris", "Nice", "Lyon", "Marseille", "Bordeaux"],
+    "japan": ["Tokyo", "Kyoto", "Osaka", "Hokkaido", "Okinawa"],
+    "default": ["Switzerland", "Japan", "France", "Italy", "Canada"]
+}
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
-# Fields for the survey form (all are optional, defaults will be used if empty)
+# Survey fields - updated to match client-side fields
 SURVEY_FIELDS = [
-    'real_name', 'age_group', 'gender', 'nationality',
-    'preferred_residence', 'cultural_symbol', 'bucket_list',
-    'healthcare_expectations', 'travel_budget', 'currency_preferences',
-    'insurance_type', 'past_insurance_issues'
+    'name', 'age', 'gender', 'nationality', 'destination', 
+    'cultural_symbol', 'bucket_list', 'healthcare', 'budget', 
+    'payment_preference', 'insurance', 'insurance_issues', 
+    'travel_season', 'stay_duration', 'interests', 
+    'personality_type', 'communication_style', 'travel_style', 
+    'accommodation_preference', 'origin_city', 'destination_city'
 ]
+
+# Default values for missing fields
+DEFAULT_VALUES = {
+    'name': 'Anonymous',
+    'age': 'Not specified',
+    'gender': 'Not specified',
+    'nationality': 'Not specified',
+    'destination': 'Not specified',
+    'cultural_symbol': 'Not specified',
+    'bucket_list': 'Not specified',
+    'healthcare': 'Not specified',
+    'budget': 'Not specified',
+    'payment_preference': 'Not specified',
+    'insurance': 'Not specified',
+    'insurance_issues': 'Not specified',
+    'travel_season': 'Not specified',
+    'stay_duration': 'Not specified',
+    'interests': 'Not specified',
+    'personality_type': 'Not specified', 
+    'communication_style': 'Not specified',
+    'travel_style': 'Not specified',
+    'accommodation_preference': 'Not specified',
+    'origin_city': 'Not specified',
+    'destination_city': 'Not specified'
+}
+
+# Initialize the survey_results directory
+os.makedirs(SURVEY_RESULTS_DIR, exist_ok=True)
 
 @app.route('/')
 def home():
     return 'WanderMatch Survey API is running!'
 
-@app.route('/api/submit', methods=['POST', 'OPTIONS'])
-def submit():
-    # Handle OPTIONS request for CORS preflight
-    if request.method == 'OPTIONS':
-        response = jsonify({'status': 'success'})
-        response.headers.add('Access-Control-Allow-Origin', '*')
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-        return response
-        
+@app.route('/api/submit', methods=['POST'])
+def submit_survey():
     try:
-        # Get the data from the request
-        data = request.json
+        # Get JSON data from request
+        data = request.get_json()
         if not data:
-            print("Error: No data provided in request")
-            return jsonify({'status': 'error', 'message': 'No data provided'}), 400
+            return jsonify({'error': 'No data provided', 'file_saved': False}), 400
         
-        print(f"Received form data: {data}")
-        
-        # Process all fields, filling in defaults when empty
+        # Process the data - ensure all fields are present
+        processed_data = {}
         for field in SURVEY_FIELDS:
-            if field not in data or not data[field]:
-                if field == 'real_name':
-                    data[field] = "Anonymous Traveler"
-                elif field == 'age_group':
-                    data[field] = "25–34"
-                elif field == 'gender':
-                    data[field] = "Prefer not to say"
-                elif field == 'nationality':
-                    data[field] = "International"
-                elif field == 'preferred_residence':
-                    data[field] = "Swiss"
-                elif field == 'cultural_symbol':
-                    data[field] = "Local cuisine"
-                elif field == 'bucket_list':
-                    data[field] = "Nature exploration"
-                elif field == 'healthcare_expectations':
-                    data[field] = "Basic healthcare access"
-                elif field == 'travel_budget':
-                    data[field] = "$1000"
-                elif field == 'currency_preferences':
-                    data[field] = "Credit card"
-                elif field == 'insurance_type':
-                    data[field] = "Medical only"
-                elif field == 'past_insurance_issues':
-                    data[field] = "None"
-                else:
-                    data[field] = "Not specified"
-                print(f"Filled missing field {field} with default value: {data[field]}")
+            # Use the provided value or default
+            processed_data[field] = data.get(field, DEFAULT_VALUES.get(field, 'Not specified'))
         
-        # Generate timestamp for the file
-        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        # Create a timestamped filename for the CSV
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f"user_answer_{timestamp}.csv"
+        filepath = os.path.join(SURVEY_RESULTS_DIR, filename)
         
-        # Create a CSV file to store the data
-        output_file = os.path.join(BACKEND_DIR, f"user_answer_{timestamp}.csv")
+        # Always save on server, ignore client-side save_on_server flag
+        file_saved = False
         
-        # Convert data to DataFrame and save as CSV
-        df = pd.DataFrame([data])
-        df.to_csv(output_file, index=False)
-        print(f"User data saved to {output_file}")
+        try:
+            # Save the data to a CSV file
+            with open(filepath, 'w', newline='', encoding='utf-8') as csvfile:
+                writer = csv.DictWriter(csvfile, fieldnames=SURVEY_FIELDS)
+                writer.writeheader()
+                writer.writerow({field: processed_data.get(field, '') for field in SURVEY_FIELDS})
+            
+            file_saved = True
+            print(f"Survey data saved to {filepath}")
+        except Exception as e:
+            print(f"Error saving CSV: {str(e)}")
+            traceback.print_exc()
         
-        # Return success status
+        # Return success response WITHOUT data needed for client-side CSV generation
         return jsonify({
-            'status': 'success', 
-            'message': 'Data submitted successfully', 
-            'file': output_file
+            'success': True,
+            'message': 'Survey data processed successfully',
+            'file_saved': file_saved,
+            'filepath': filepath if file_saved else None,
+            # No processed_data or csv_fields to prevent client-side CSV generation
         })
-    
+        
     except Exception as e:
-        print(f"Error processing form submission: {str(e)}")
-        return jsonify({'status': 'error', 'message': f'Server error: {str(e)}'}), 500
+        print(f"Error processing survey: {str(e)}")
+        traceback.print_exc()
+        return jsonify({
+            'error': str(e), 
+            'file_saved': False,
+            # No data for client-side CSV generation
+        }), 500
 
 @app.route('/api/get_user', methods=['GET'])
 def get_user():
     try:
-        # Get most recent user answer file from backend directory
-        files = [f for f in os.listdir(BACKEND_DIR) if f.startswith("user_answer_") and f.endswith(".csv")]
+        # Get most recent user answer file from survey results directory
+        files = [f for f in os.listdir(SURVEY_RESULTS_DIR) if f.startswith("user_answer_") and f.endswith(".csv")]
         if not files:
-            return jsonify({'status': 'error', 'message': 'No user data found'}), 404
-        
-        # Sort files by timestamp
-        latest_file = sorted(files)[-1]
-        file_path = os.path.join(BACKEND_DIR, latest_file)
+            # Fall back to backend directory for backwards compatibility
+            files = [f for f in os.listdir(BACKEND_DIR) if f.startswith("user_answer_") and f.endswith(".csv")]
+            if not files:
+                return jsonify({'status': 'error', 'message': 'No user data found'}), 404
+            file_path = os.path.join(BACKEND_DIR, sorted(files)[-1])
+        else:
+            file_path = os.path.join(SURVEY_RESULTS_DIR, sorted(files)[-1])
         
         # Read the CSV file
         df = pd.read_csv(file_path)

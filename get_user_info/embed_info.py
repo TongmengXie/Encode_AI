@@ -29,48 +29,83 @@ PARENT_DIR = os.path.dirname(CURRENT_DIR)
 # Functions for pretty printing
 def print_header(text, emoji="✨", color="blue"):
     if HAS_RICH:
-        console.print(f"\n[bold {color}]{emoji} {text} {emoji}[/bold {color}]")
-        console.print("=" * (len(text) + 10), style=f"dim {color}")
-    else:
-        print(f"\n{emoji} {text} {emoji}")
-        print("=" * (len(text) + 10))
+        try:
+            console.print(f"\n[bold {color}]{emoji} {text} {emoji}[/bold {color}]")
+            console.print("=" * (len(text) + 10), style=f"dim {color}")
+        except UnicodeEncodeError:
+            console.print(f"\n[bold {color}]== {text} ==[/bold {color}]")
+            console.print("=" * (len(text) + 10), style=f"dim {color}")
 
 def print_info(text, emoji="ℹ️", color="cyan"):
     if HAS_RICH:
-        console.print(f"[{color}]{emoji} {text}[/{color}]")
+        try:
+            console.print(f"[{color}]{emoji} {text}[/{color}]")
+        except UnicodeEncodeError:
+            console.print(f"[{color}]INFO: {text}[/{color}]")
     else:
-        print(f"{emoji} {text}")
+        try:
+            print(f"{emoji} {text}")
+        except UnicodeEncodeError:
+            print(f"INFO: {text}")
 
 def print_success(text, emoji="✅", color="green"):
     if HAS_RICH:
-        console.print(f"[bold {color}]{emoji} {text}[/bold {color}]")
+        try:
+            console.print(f"[bold {color}]{emoji} {text}[/bold {color}]")
+        except UnicodeEncodeError:
+            # Fallback for Windows systems with GBK encoding issues
+            console.print(f"[bold {color}]SUCCESS: {text}[/bold {color}]")
     else:
-        print(f"{emoji} {text}")
+        try:
+            print(f"{emoji} {text}")
+        except UnicodeEncodeError:
+            print(f"SUCCESS: {text}")
 
 def print_error(text, emoji="❌", color="red"):
     if HAS_RICH:
-        console.print(f"[bold {color}]{emoji} {text}[/bold {color}]")
+        try:
+            console.print(f"[bold {color}]{emoji} {text}[/bold {color}]")
+        except UnicodeEncodeError:
+            console.print(f"[bold {color}]ERROR: {text}[/bold {color}]")
     else:
-        print(f"{emoji} {text}")
+        try:
+            print(f"{emoji} {text}")
+        except UnicodeEncodeError:
+            print(f"ERROR: {text}")
 
 def print_warning(text, emoji="⚠️", color="yellow"):
     if HAS_RICH:
-        console.print(f"[{color}]{emoji} {text}[/{color}]")
+        try:
+            console.print(f"[{color}]{emoji} {text}[/{color}]")
+        except UnicodeEncodeError:
+            console.print(f"[{color}]WARNING: {text}[/{color}]")
     else:
-        print(f"{emoji} {text}")
+        try:
+            print(f"{emoji} {text}")
+        except UnicodeEncodeError:
+            print(f"WARNING: {text}")
 
 def print_match(idx, name, nationality, age, score, interests):
     if HAS_RICH:
-        panel = Panel.fit(
-            f"[bold cyan]Name:[/bold cyan] {name}\n"
-            f"[bold cyan]Nationality:[/bold cyan] {nationality}\n"
-            f"[bold cyan]Age Group:[/bold cyan] {age}\n"
-            f"[bold cyan]Match Score:[/bold cyan] [green]{score:.4f}[/green]\n"
-            f"[bold cyan]Interests:[/bold cyan] [italic]{interests}[/italic]",
-            title=f"[bold]Match #{idx+1}[/bold]",
-            border_style="green"
-        )
-        console.print(panel)
+        try:
+            panel = Panel.fit(
+                f"[bold cyan]Name:[/bold cyan] {name}\n"
+                f"[bold cyan]Nationality:[/bold cyan] {nationality}\n"
+                f"[bold cyan]Age Group:[/bold cyan] {age}\n"
+                f"[bold cyan]Match Score:[/bold cyan] [green]{score:.4f}[/green]\n"
+                f"[bold cyan]Interests:[/bold cyan] [italic]{interests}[/italic]",
+                title=f"[bold]Match #{idx+1}[/bold]",
+                border_style="green"
+            )
+            console.print(panel)
+        except UnicodeEncodeError:
+            # Fallback for Windows systems with encoding issues
+            console.print(f"[bold]Match #{idx+1}[/bold]")
+            console.print(f"[bold cyan]Name:[/bold cyan] {name}")
+            console.print(f"[bold cyan]Nationality:[/bold cyan] {nationality}")
+            console.print(f"[bold cyan]Age Group:[/bold cyan] {age}")
+            console.print(f"[bold cyan]Match Score:[/bold cyan] [green]{score:.4f}[/green]")
+            console.print(f"[bold cyan]Interests:[/bold cyan] [italic]{interests}[/italic]")
     else:
         print(f"\nMatch #{idx+1}:")
         print(f"• Name: {name}")
@@ -98,25 +133,52 @@ print_success("OpenAI API key loaded successfully.")
 
 def get_latest_user_answer():
     """
-    Get the latest user answer file from the backend directory.
+    Get the latest user answer file from the survey results directory.
     
     Returns:
         tuple: (csv_path, dataframe, timestamp)
     """
-    backend_dir = os.path.join(CURRENT_DIR, "backend")
+    # Load environment variables
+    load_dotenv(os.path.join(PARENT_DIR, '.env'))
     
-    # List all user answer files
-    csv_files = [f for f in os.listdir(backend_dir) if f.startswith("user_answer") and f.endswith(".csv")]
-    if not csv_files:
-        print_error("No user answer files found.")
+    # Use PROJECT_PATH from environment variables if available, consistent with server.py
+    PROJECT_PATH = os.getenv("PROJECT_PATH", PARENT_DIR)
+    
+    # Define directories
+    backend_dir = os.path.normpath(os.path.join(CURRENT_DIR, "backend"))
+    user_info_match_dir = os.path.normpath(os.path.join(PROJECT_PATH, "UserInfo_and_Match"))
+    survey_results_dir = os.path.normpath(os.path.join(user_info_match_dir, "survey_results"))
+    
+    print_info(f"Looking for user answers in:")
+    print_info(f"- Survey Results: {os.path.abspath(survey_results_dir)}")
+    print_info(f"- Backend: {os.path.abspath(backend_dir)}")
+    
+    # First try the survey_results_dir
+    csv_files = []
+    if os.path.exists(survey_results_dir):
+        csv_files = [f for f in os.listdir(survey_results_dir) if f.startswith("user_answer") and f.endswith(".csv")]
+    
+    # If no files found, check backend directory for backwards compatibility
+    if not csv_files and os.path.exists(backend_dir):
+        csv_files = [f for f in os.listdir(backend_dir) if f.startswith("user_answer") and f.endswith(".csv")]
+        if csv_files:
+            # Sort by modified time (newest first)
+            csv_files.sort(key=lambda x: os.path.getmtime(os.path.join(backend_dir, x)), reverse=True)
+            latest_file = csv_files[0]
+            filepath = os.path.normpath(os.path.join(backend_dir, latest_file))
+            print_info(f"Using latest file from backend directory: {latest_file}")
+        else:
+            print_error("No user answer files found in any location.")
+            return None, None, None
+    elif csv_files:
+        # Sort by modified time (newest first)
+        csv_files.sort(key=lambda x: os.path.getmtime(os.path.join(survey_results_dir, x)), reverse=True)
+        latest_file = csv_files[0]
+        filepath = os.path.normpath(os.path.join(survey_results_dir, latest_file))
+        print_info(f"Using latest file from survey results directory: {latest_file}")
+    else:
+        print_error("No user answer files found in any location.")
         return None, None, None
-    
-    # Sort by modified time (newest first)
-    csv_files.sort(key=lambda x: os.path.getmtime(os.path.join(backend_dir, x)), reverse=True)
-    latest_file = csv_files[0]
-    filepath = os.path.join(backend_dir, latest_file)
-    
-    print_info(f"Using latest file: {latest_file}")
     
     # Extract timestamp
     try:
@@ -136,18 +198,71 @@ def get_latest_user_answer():
         print_success("Successfully loaded user answers.")
         
         if HAS_RICH:
-            # Display in a pretty table
-            table = Table(title="User Answers", show_header=True, header_style="bold magenta")
-            for col in df.columns:
-                table.add_column(str(col), style="cyan")
+            # Display horizontal format with field: value pairs
+            print_header("USER PROFILE", emoji="👤", color="blue")
             
-            for _, row in df.iterrows():
-                table.add_row(*[str(val) for val in row.values])
+            # Use a single row since it's typically just one user answer
+            user_data = df.iloc[0].to_dict() if not df.empty else {}
             
-            console.print(table)
+            # Display in a nicely formatted panel
+            user_profile = []
+            for field, value in user_data.items():
+                # Format the field name and value
+                field_display = f"[bold cyan]{field}:[/bold cyan]"
+                value_display = f" {str(value)}"
+                user_profile.append(f"{field_display} {value_display}")
+            
+            # Create a panel with all user data
+            panel = Panel(
+                "\n".join(user_profile),
+                title="[bold]User Information[/bold]",
+                border_style="green",
+                expand=False,
+                padding=(1, 2)
+            )
+            console.print(panel)
+            
+            # Display additional information about the user answer
+            print_info(f"File: {filepath}")
+            print_info(f"Timestamp: {user_ts}")
+        else:
+            # Fallback for when rich is not available - format horizontally
+            print("\n=== USER PROFILE ===")
+            
+            # Use a single row since it's typically just one user answer
+            user_data = df.iloc[0].to_dict() if not df.empty else {}
+            
+            # Get maximum field name length for alignment
+            max_field_length = max([len(field) for field in user_data.keys()]) if user_data else 0
+            
+            # Print each field: value pair
+            for field, value in user_data.items():
+                print(f"{field:{max_field_length + 2}}: {value}")
+                
+            print("=" * 50)
+            print(f"File: {filepath}")
+            print(f"Timestamp: {user_ts}")
     except UnicodeDecodeError:
         df = pd.read_csv(filepath, encoding="ISO-8859-1")
         print_success("Successfully loaded user answers (using ISO-8859-1 encoding).")
+        
+        # Also display formatted output for ISO-8859-1 encoding
+        if not HAS_RICH:
+            print("\n=== USER PROFILE (ISO-8859-1 encoding) ===")
+            
+            # Use a single row since it's typically just one user answer
+            user_data = df.iloc[0].to_dict() if not df.empty else {}
+            
+            # Get maximum field name length for alignment
+            max_field_length = max([len(field) for field in user_data.keys()]) if user_data else 0
+            
+            # Print each field: value pair
+            for field, value in user_data.items():
+                print(f"{field:{max_field_length + 2}}: {value}")
+                
+            print("=" * 50)
+            print(f"File: {filepath}")
+            print(f"Timestamp: {user_ts}")
     
     return filepath, df, user_ts
 
@@ -356,6 +471,11 @@ def load_cached_embeddings(user_pool_path):
     cache_file = os.path.join(cache_dir, "user_pool_embeddings.pkl")
     hash_file = os.path.join(cache_dir, "user_pool_hash.txt")
     
+    # Print absolute paths
+    print_info(f"Looking for embedding cache at: {os.path.abspath(cache_file)}")
+    print_info(f"Looking for hash file at: {os.path.abspath(hash_file)}")
+    print_info(f"User pool path: {os.path.abspath(user_pool_path)}")
+    
     # Check if cache files exist
     if not os.path.exists(cache_file) or not os.path.exists(hash_file):
         print_info("Embeddings cache not found.")
@@ -374,7 +494,7 @@ def load_cached_embeddings(user_pool_path):
     try:
         with open(cache_file, "rb") as f:
             pool_embedded_lists = pickle.load(f)
-        print_success(f"Loaded cached embeddings for {len(pool_embedded_lists)} users.")
+        print_success(f"Loaded cached embeddings for {len(pool_embedded_lists)} users from {os.path.abspath(cache_file)}")
         return pool_embedded_lists, True
     except Exception as e:
         print_warning(f"Error loading cached embeddings: {str(e)}")
@@ -394,6 +514,11 @@ def save_embeddings_cache(pool_embedded_lists, user_pool_path):
     cache_file = os.path.join(cache_dir, "user_pool_embeddings.pkl")
     hash_file = os.path.join(cache_dir, "user_pool_hash.txt")
     
+    # Print absolute paths
+    print_info(f"Saving embedding cache to: {os.path.abspath(cache_file)}")
+    print_info(f"Saving hash file to: {os.path.abspath(hash_file)}")
+    print_info(f"Using user pool from: {os.path.abspath(user_pool_path)}")
+    
     # Save embeddings
     try:
         with open(cache_file, "wb") as f:
@@ -404,12 +529,12 @@ def save_embeddings_cache(pool_embedded_lists, user_pool_path):
         with open(hash_file, "w") as f:
             f.write(current_hash)
             
-        print_success(f"Saved embeddings for {len(pool_embedded_lists)} users to cache.")
+        print_success(f"Saved embeddings for {len(pool_embedded_lists)} users to cache at {os.path.abspath(cache_file)}")
     except Exception as e:
         print_warning(f"Error saving embeddings cache: {str(e)}")
 
 
-def run_matching(user_answers=None, weights=None, top_k=5, output_dir=None):
+def run_matching(user_answers=None, weights=None, top_k=5, output_dir=None, silent=False):
     """
     Run the matching process for user answers against the user pool.
     
@@ -418,6 +543,7 @@ def run_matching(user_answers=None, weights=None, top_k=5, output_dir=None):
         weights (list, optional): List of weights for each question. If None, uses default weights.
         top_k (int): Number of top matches to return.
         output_dir (str, optional): Directory to save output files. If None, uses results directory.
+        silent (bool): Whether to suppress printing of matches.
         
     Returns:
         list: List of top matches as [(user_index, score), ...]
@@ -468,18 +594,26 @@ def run_matching(user_answers=None, weights=None, top_k=5, output_dir=None):
     # Get user pool file path to use for caching
     if hasattr(user_pool, 'filepath'):
         user_pool_path = user_pool.filepath
+        print_info(f"Using user pool filepath from DataFrame: {os.path.abspath(user_pool_path)}")
     else:
         # Find where the user pool was loaded from
-        for potential_path in [
+        potential_paths = [
             os.path.join(CURRENT_DIR, "user_pool.csv"),
             os.path.join(PARENT_DIR, "user_pool.csv")
-        ]:
+        ]
+        print_info(f"Searching for user_pool.csv in the following locations:")
+        for path in potential_paths:
+            print_info(f"  - {os.path.abspath(path)} (Exists: {os.path.exists(path)})")
+        
+        for potential_path in potential_paths:
             if os.path.exists(potential_path):
                 user_pool_path = potential_path
+                print_info(f"Found user_pool.csv at: {os.path.abspath(user_pool_path)}")
                 break
         else:
             # If we can't determine the path, use a path in the current directory
             user_pool_path = os.path.join(os.getcwd(), "user_pool.csv")
+            print_warning(f"Could not find user_pool.csv in expected locations. Using current directory: {os.path.abspath(user_pool_path)}")
     
     # Try to load cached embeddings
     pool_embedded_lists, is_cache_valid = load_cached_embeddings(user_pool_path)
@@ -550,16 +684,17 @@ def run_matching(user_answers=None, weights=None, top_k=5, output_dir=None):
     save_similarity_matrix(similarity_matrix, output_dir, f"similarity_matrix_{timestamp}.csv")
     save_top_matches(top_matches, user_pool, output_dir, f"top_matches_{timestamp}.csv")
     
-    # Print results
-    print_header("TOP TRAVEL PARTNER MATCHES", emoji="🤝", color="green")
-    for i, (idx, score) in enumerate(top_matches):
-        user_row = user_pool.iloc[idx]
-        name = user_row["real_name"] if "real_name" in user_row else f"User {idx+1}"
-        nationality = user_row["nationality"] if "nationality" in user_row else "Unknown"
-        age_group = user_row["age_group"] if "age_group" in user_row else "Unknown"
-        bucket_list = user_row["bucket_list"] if "bucket_list" in user_row else "Unknown interests"
-        
-        print_match(i, name, nationality, age_group, score, bucket_list)
+    # Print results only if not silent
+    if not silent:
+        print_header("TOP TRAVEL PARTNER MATCHES", emoji="🤝", color="green")
+        for i, (idx, score) in enumerate(top_matches):
+            user_row = user_pool.iloc[idx]
+            name = user_row["real_name"] if "real_name" in user_row else f"User {idx+1}"
+            nationality = user_row["nationality"] if "nationality" in user_row else "Unknown"
+            age_group = user_row["age_group"] if "age_group" in user_row else "Unknown"
+            bucket_list = user_row["bucket_list"] if "bucket_list" in user_row else "Unknown interests"
+            
+            print_match(i, name, nationality, age_group, score, bucket_list)
     
     return top_matches
 

@@ -106,18 +106,44 @@ print("📋 When you've finished submitting the form, you'll be redirected to a 
 print("📋 After seeing the thank you page, press Enter here to continue...")
 try:
     input("\n[Press Enter after completing the survey]\n")
+    print("Note: Survey results are now saved in the UserInfo_and_Match/survey_results directory.")
+    print("\nFile Location Information:")
+    print("---------------------------")
+    print(f"Parent Directory: {PARENT_DIR}")
+    print(f"Survey Results Directory: {os.path.join(PARENT_DIR, 'UserInfo_and_Match', 'survey_results')}")
+    print(f"Files will be named: user_answer_YYYYMMDD_HHMMSS.csv (timestamp format)")
+    print("---------------------------\n")
 except KeyboardInterrupt:
     print("\nOperation cancelled by user.")
     sys.exit(0)
 
 # Step 6: Display saved CSV files and recommendations
-csv_files = [f for f in os.listdir(backend_dir) if f.startswith("user_answer") and f.endswith(".csv")]
-csv_files.sort(reverse=True)
+# First check UserInfo_and_Match/survey_results directory
+user_info_match_dir = os.path.join(PARENT_DIR, "UserInfo_and_Match")
+survey_results_dir = os.path.join(user_info_match_dir, "survey_results")
+os.makedirs(survey_results_dir, exist_ok=True)
+
+csv_files = []
+if os.path.exists(survey_results_dir):
+    csv_files = [f for f in os.listdir(survey_results_dir) if f.startswith("user_answer") and f.endswith(".csv")]
+    if csv_files:
+        # Sort by timestamp (newest first)
+        csv_files.sort(reverse=True)
+        latest_file = csv_files[0]
+        filepath = os.path.join(survey_results_dir, latest_file)
+        print(f"\n📄 Latest saved file (from survey results directory): {latest_file}")
+
+# If no files found in survey_results_dir, check backend directory
+if not csv_files:
+    csv_files = [f for f in os.listdir(backend_dir) if f.startswith("user_answer") and f.endswith(".csv")]
+    csv_files.sort(reverse=True)
+    if csv_files:
+        latest_file = csv_files[0]
+        filepath = os.path.join(backend_dir, latest_file)
+        print(f"\n📄 Latest saved file (from backend directory): {latest_file}")
 
 if csv_files:
-    latest_file = csv_files[0]
-    filepath = os.path.join(backend_dir, latest_file)
-    print(f"\n📄 Latest saved file: {latest_file}")
+    # Use filepath that was already set above, don't overwrite it
     try:
         # Try multiple encodings to ensure proper reading
         df = None
@@ -142,6 +168,30 @@ if csv_files:
 
     if not df.empty:
         print(df.to_string(index=False))
+
+        # Try running the embed_info.py script directly to generate embeddings
+        print("\n📊 Running embedding calculations...")
+        try:
+            # Check if embed_info.py exists
+            embed_info_path = os.path.join(SCRIPT_DIR, "embed_info.py")
+            if os.path.exists(embed_info_path):
+                # Run embed_info.py as a subprocess
+                embed_result = subprocess.run(
+                    [sys.executable, embed_info_path],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    encoding='utf-8',
+                    errors='replace'
+                )
+                if embed_result.returncode == 0:
+                    print("✅ Embedding calculations completed successfully!")
+                else:
+                    print(f"⚠️ Embedding calculations ended with code {embed_result.returncode}")
+                    print(f"Error: {embed_result.stderr}")
+            else:
+                print("❌ embed_info.py not found.")
+        except Exception as e:
+            print(f"❌ Error running embedding calculations: {str(e)}")
 
         # Step 6.1: Send request to backend for recommendations
         print("\n🔍 Fetching top match recommendations from backend...")
@@ -191,6 +241,7 @@ if not os.path.exists(thank_you_path):
         <div class="text-center my-5">
             <h1>Thank You for Completing the Survey!</h1>
             <p class="lead">Your responses have been recorded.</p>
+            <p>Your survey data has been saved in the <code>UserInfo_and_Match/survey_results</code> directory.</p>
             <p>You can now close this window and return to the WanderMatch application.</p>
             <div class="mt-4">
                 <img src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Travel Scene" class="img-fluid rounded shadow">

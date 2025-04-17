@@ -43,6 +43,31 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set up destination autofill
     setupDestinationAutofill();
     
+    // Default values for survey fields
+    const defaultValues = {
+        'name': 'Anonymous',
+        'age': 'Not specified',
+        'gender': 'Not specified',
+        'nationality': 'Not specified',
+        'destination': 'Not specified',
+        'cultural_symbol': 'Not specified',
+        'bucket_list': 'Not specified',
+        'healthcare': 'Not specified',
+        'budget': 'Not specified',
+        'payment_preference': 'Not specified',
+        'insurance': 'Not specified',
+        'insurance_issues': 'Not specified',
+        'travel_season': 'Not specified',
+        'stay_duration': 'Not specified',
+        'interests': 'Not specified',
+        'personality_type': 'Not specified', 
+        'communication_style': 'Not specified',
+        'travel_style': 'Not specified',
+        'accommodation_preference': 'Not specified',
+        'origin_city': 'Not specified',
+        'destination_city': 'Not specified'
+    };
+    
     // Handle form submission
     surveyForm.addEventListener('submit', function(event) {
         console.log("Form submission started");
@@ -63,21 +88,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log("Auto-filled destination_city with destination value");
             }
             
-            // Collect form data (including empty fields - server will handle defaults)
+            // Collect form data
             const formData = {};
             const formElements = surveyForm.elements;
             
             for (let i = 0; i < formElements.length; i++) {
                 const element = formElements[i];
                 if (element.name && element.name !== '' && element.type !== 'submit') {
-                    // Include all fields, both filled and empty
                     formData[element.name] = element.value.trim();
                 }
             }
             
-            console.log('Submitting form data:', formData);
+            console.log('Collecting form data:', formData);
             
-            // Submit the form data - empty fields will be filled with defaults by the server
+            // Send data to server
             fetch('http://localhost:5000/api/submit', {
                 method: 'POST',
                 headers: {
@@ -87,36 +111,38 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: JSON.stringify(formData)
             })
             .then(response => {
-                console.log('Response status:', response.status);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
                 return response.json();
             })
             .then(data => {
-                console.log('Success data:', data);
+                console.log('Server response:', data);
                 
-                // Hide loading overlay
-                loadingOverlay.style.display = 'none';
+                if (data.error) {
+                    showAlert('warning', `Server reported an error: ${data.error}. Please try again.`);
+                    return;
+                }
                 
-                if (data.status === 'error') {
-                    // Show error message if server returns error status
-                    showAlert('danger', data.message || 'Form submission failed');
+                if (data.file_saved) {
+                    console.log('Survey data saved server-side');
+                    showAlert('success', 'Your survey has been successfully submitted and saved on the server.');
                 } else {
-                    // Show success message and redirect
-                    showAlert('success', 'Form submitted successfully! Default values used for any empty fields.');
-                    
-                    // Redirect to thank you page after a short delay
-                    setTimeout(() => {
-                        window.location.href = 'thank_you.html';
-                    }, 1500);
+                    showAlert('warning', 'Survey data could not be saved. Please try again later.');
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
-                
+                console.error('Server error:', error);
+                showAlert('danger', 'Error contacting server. Please try again later.');
+            })
+            .finally(() => {
                 // Hide loading overlay
                 loadingOverlay.style.display = 'none';
                 
-                // Show error message
-                showAlert('danger', error.message || 'An error occurred while submitting the form');
+                // Redirect to thank you page after a short delay
+                setTimeout(() => {
+                    window.location.href = 'thank_you.html';
+                }, 3000);
             });
         } catch (error) {
             console.error('Error in form submission:', error);

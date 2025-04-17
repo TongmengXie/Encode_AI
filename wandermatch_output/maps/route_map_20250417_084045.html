@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_0690c52f42dd901902dc26fa6d833b30 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.Default.css"/>
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_0690c52f42dd901902dc26fa6d833b30" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_0690c52f42dd901902dc26fa6d833b30 = L.map(
+                "map_0690c52f42dd901902dc26fa6d833b30",
+                {
+                    center: [35.0183601, 121.92161095],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 6,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_5ec27c07f6ee71b40d8542696156f70b = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_5ec27c07f6ee71b40d8542696156f70b.addTo(map_0690c52f42dd901902dc26fa6d833b30);
+        
+    
+            var marker_afee0f837aeb88a254fb1e2258b12e7f = L.marker(
+                [41.3785479, 122.4268343],
+                {
+}
+            ).addTo(map_0690c52f42dd901902dc26fa6d833b30);
+        
+    
+            var icon_b5bb200f3adbd5ecf19112d6c2a2b698 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_15b568f3e1deaa15bfcda2a4f2a7f395 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_e3b7a04c6ee0863fc640cfa8fdac441d = $(`<div id="html_e3b7a04c6ee0863fc640cfa8fdac441d" style="width: 100.0%; height: 100.0%;">                 <div style="width: 200px; height: auto;">                     <h4>Taian</h4>                 </div>                 </div>`)[0];
+                popup_15b568f3e1deaa15bfcda2a4f2a7f395.setContent(html_e3b7a04c6ee0863fc640cfa8fdac441d);
+            
+        
+
+        marker_afee0f837aeb88a254fb1e2258b12e7f.bindPopup(popup_15b568f3e1deaa15bfcda2a4f2a7f395)
+        ;
+
+        
+    
+    
+            marker_afee0f837aeb88a254fb1e2258b12e7f.bindTooltip(
+                `<div>
+                     Taian
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_afee0f837aeb88a254fb1e2258b12e7f.setIcon(icon_b5bb200f3adbd5ecf19112d6c2a2b698);
+            
+    
+            var marker_7a195e8196e5aed6d1b72c249da39327 = L.marker(
+                [34.59210367920761, 122.42033100140368],
+                {
+}
+            ).addTo(map_0690c52f42dd901902dc26fa6d833b30);
+        
+    
+            var icon_aa873dcaf35fbe1ecb3f127d93a59670 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_ea58ecd4f616b8c381d2511a5f6181a1 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_ed3f9e853c0ba6c9d2608d58a53647e0 = $(`<div id="html_ed3f9e853c0ba6c9d2608d58a53647e0" style="width: 100.0%; height: 100.0%;">                 <div style="width: 200px; height: auto;">                     <h4>Scenic Stop</h4>                 </div>                 </div>`)[0];
+                popup_ea58ecd4f616b8c381d2511a5f6181a1.setContent(html_ed3f9e853c0ba6c9d2608d58a53647e0);
+            
+        
+
+        marker_7a195e8196e5aed6d1b72c249da39327.bindPopup(popup_ea58ecd4f616b8c381d2511a5f6181a1)
+        ;
+
+        
+    
+    
+            marker_7a195e8196e5aed6d1b72c249da39327.bindTooltip(
+                `<div>
+                     Scenic Stop
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_7a195e8196e5aed6d1b72c249da39327.setIcon(icon_aa873dcaf35fbe1ecb3f127d93a59670);
+            
+    
+            var marker_8f955c28683982fe04a1799d3e258482 = L.marker(
+                [34.73924551897223, 121.69121013359381],
+                {
+}
+            ).addTo(map_0690c52f42dd901902dc26fa6d833b30);
+        
+    
+            var icon_022d89121aa67659baacd14e51f151ee = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_f0663b505135af74818454c2f9a50f87 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_641678af91717e5ea30e96ddbd0d2cad = $(`<div id="html_641678af91717e5ea30e96ddbd0d2cad" style="width: 100.0%; height: 100.0%;">                 <div style="width: 200px; height: auto;">                     <h4>Scenic Stop</h4>                 </div>                 </div>`)[0];
+                popup_f0663b505135af74818454c2f9a50f87.setContent(html_641678af91717e5ea30e96ddbd0d2cad);
+            
+        
+
+        marker_8f955c28683982fe04a1799d3e258482.bindPopup(popup_f0663b505135af74818454c2f9a50f87)
+        ;
+
+        
+    
+    
+            marker_8f955c28683982fe04a1799d3e258482.bindTooltip(
+                `<div>
+                     Scenic Stop
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_8f955c28683982fe04a1799d3e258482.setIcon(icon_022d89121aa67659baacd14e51f151ee);
+            
+    
+            var marker_6771bcd277504e248c57e2992e6a4344 = L.marker(
+                [28.6581723, 121.4163876],
+                {
+}
+            ).addTo(map_0690c52f42dd901902dc26fa6d833b30);
+        
+    
+            var icon_1c60502b653ffe3984f00be5b5a6283a = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_e19f4a03a8bcc79b152b4ce042815d19 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_0d73b7cb1779b0c34056ccf7a30d4798 = $(`<div id="html_0d73b7cb1779b0c34056ccf7a30d4798" style="width: 100.0%; height: 100.0%;">                 <div style="width: 200px; height: auto;">                     <h4>Taizhou</h4>                 </div>                 </div>`)[0];
+                popup_e19f4a03a8bcc79b152b4ce042815d19.setContent(html_0d73b7cb1779b0c34056ccf7a30d4798);
+            
+        
+
+        marker_6771bcd277504e248c57e2992e6a4344.bindPopup(popup_e19f4a03a8bcc79b152b4ce042815d19)
+        ;
+
+        
+    
+    
+            marker_6771bcd277504e248c57e2992e6a4344.bindTooltip(
+                `<div>
+                     Taizhou
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_6771bcd277504e248c57e2992e6a4344.setIcon(icon_1c60502b653ffe3984f00be5b5a6283a);
+            
+    
+            var poly_line_a7724dfc262d84cf9e34d48c243bb586 = L.polyline(
+                [[41.3785479, 122.4268343], [34.59210367920761, 122.42033100140368], [34.73924551897223, 121.69121013359381], [28.6581723, 121.4163876]],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "red", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.7, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_0690c52f42dd901902dc26fa6d833b30);
+        
+    
+            poly_line_a7724dfc262d84cf9e34d48c243bb586.bindTooltip(
+                `<div>
+                     Train route
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_cluster_2522a6f6c30946c1fdabf92861373490 = L.markerClusterGroup(
+                {
+}
+            );
+        
+    
+            var marker_88a16d74ce8209829a5dd665a1630ddc = L.marker(
+                [28.661401909458675, 121.42006114274153],
+                {
+}
+            ).addTo(marker_cluster_2522a6f6c30946c1fdabf92861373490);
+        
+    
+            var icon_2c8270a4bb5b896984c50b40ed7a41ff = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "green",
+  "iconColor": "white",
+  "icon": "star",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_610db282238e620467047598e5a2a0bc = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_55c6c3ca2748e92106a3eea9d05ab6e6 = $(`<div id="html_55c6c3ca2748e92106a3eea9d05ab6e6" style="width: 100.0%; height: 100.0%;">                     <div style="width: 200px; height: auto;">                         <h4>Taizhou Museum</h4>                         <p>Learn about the local history and culture</p>                     </div>                     </div>`)[0];
+                popup_610db282238e620467047598e5a2a0bc.setContent(html_55c6c3ca2748e92106a3eea9d05ab6e6);
+            
+        
+
+        marker_88a16d74ce8209829a5dd665a1630ddc.bindPopup(popup_610db282238e620467047598e5a2a0bc)
+        ;
+
+        
+    
+    
+            marker_88a16d74ce8209829a5dd665a1630ddc.bindTooltip(
+                `<div>
+                     Taizhou Museum
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_88a16d74ce8209829a5dd665a1630ddc.setIcon(icon_2c8270a4bb5b896984c50b40ed7a41ff);
+            
+    
+            var marker_4bad19f1342c7ae804bece8688f8dd5b = L.marker(
+                [28.666759811401093, 121.40267139684882],
+                {
+}
+            ).addTo(marker_cluster_2522a6f6c30946c1fdabf92861373490);
+        
+    
+            var icon_02b2ccd2527f046e1acd0f5cf813581c = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "green",
+  "iconColor": "white",
+  "icon": "star",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_2e7ea8da17af231f8dd262a0102273be = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_97cbb816a9a2e9e3ec63587e53a01674 = $(`<div id="html_97cbb816a9a2e9e3ec63587e53a01674" style="width: 100.0%; height: 100.0%;">                     <div style="width: 200px; height: auto;">                         <h4>Taizhou Central Park</h4>                         <p>Relax and enjoy nature in the heart of the city</p>                     </div>                     </div>`)[0];
+                popup_2e7ea8da17af231f8dd262a0102273be.setContent(html_97cbb816a9a2e9e3ec63587e53a01674);
+            
+        
+
+        marker_4bad19f1342c7ae804bece8688f8dd5b.bindPopup(popup_2e7ea8da17af231f8dd262a0102273be)
+        ;
+
+        
+    
+    
+            marker_4bad19f1342c7ae804bece8688f8dd5b.bindTooltip(
+                `<div>
+                     Taizhou Central Park
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_4bad19f1342c7ae804bece8688f8dd5b.setIcon(icon_02b2ccd2527f046e1acd0f5cf813581c);
+            
+    
+            var marker_51922933f9361d0fc5e42828b9517013 = L.marker(
+                [28.678084002687907, 121.40310084991178],
+                {
+}
+            ).addTo(marker_cluster_2522a6f6c30946c1fdabf92861373490);
+        
+    
+            var icon_47c70b4ee70b159c577b334ace5ca8ad = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "green",
+  "iconColor": "white",
+  "icon": "star",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_c315a2f618cacfca4c5190e878400077 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_3353fbdbee53ac6f9264c30800c7e4f3 = $(`<div id="html_3353fbdbee53ac6f9264c30800c7e4f3" style="width: 100.0%; height: 100.0%;">                     <div style="width: 200px; height: auto;">                         <h4>Historic District</h4>                         <p>Explore the charming old town area</p>                     </div>                     </div>`)[0];
+                popup_c315a2f618cacfca4c5190e878400077.setContent(html_3353fbdbee53ac6f9264c30800c7e4f3);
+            
+        
+
+        marker_51922933f9361d0fc5e42828b9517013.bindPopup(popup_c315a2f618cacfca4c5190e878400077)
+        ;
+
+        
+    
+    
+            marker_51922933f9361d0fc5e42828b9517013.bindTooltip(
+                `<div>
+                     Historic District
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_51922933f9361d0fc5e42828b9517013.setIcon(icon_47c70b4ee70b159c577b334ace5ca8ad);
+            
+    
+            var marker_25d46b85740fb8ac81e70f3adaaccfa5 = L.marker(
+                [28.650569802070777, 121.40850419815271],
+                {
+}
+            ).addTo(marker_cluster_2522a6f6c30946c1fdabf92861373490);
+        
+    
+            var icon_0ba710e2088fbaaf179db61bdaef8a39 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "green",
+  "iconColor": "white",
+  "icon": "star",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_aefbbb09bb8f2c92776d7da23e18ec4d = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_3f47ecf2adf2dfdca1fffaf9be50aa0d = $(`<div id="html_3f47ecf2adf2dfdca1fffaf9be50aa0d" style="width: 100.0%; height: 100.0%;">                     <div style="width: 200px; height: auto;">                         <h4>Local Market</h4>                         <p>Experience authentic food and crafts</p>                     </div>                     </div>`)[0];
+                popup_aefbbb09bb8f2c92776d7da23e18ec4d.setContent(html_3f47ecf2adf2dfdca1fffaf9be50aa0d);
+            
+        
+
+        marker_25d46b85740fb8ac81e70f3adaaccfa5.bindPopup(popup_aefbbb09bb8f2c92776d7da23e18ec4d)
+        ;
+
+        
+    
+    
+            marker_25d46b85740fb8ac81e70f3adaaccfa5.bindTooltip(
+                `<div>
+                     Local Market
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_25d46b85740fb8ac81e70f3adaaccfa5.setIcon(icon_0ba710e2088fbaaf179db61bdaef8a39);
+            
+    
+            marker_cluster_2522a6f6c30946c1fdabf92861373490.addTo(map_0690c52f42dd901902dc26fa6d833b30);
+        
+    
+            var layer_control_bff7ce447f45c3b64049e0c923094aa2_layers = {
+                base_layers : {
+                    "openstreetmap" : tile_layer_5ec27c07f6ee71b40d8542696156f70b,
+                },
+                overlays :  {
+                    "Attractions" : marker_cluster_2522a6f6c30946c1fdabf92861373490,
+                },
+            };
+            let layer_control_bff7ce447f45c3b64049e0c923094aa2 = L.control.layers(
+                layer_control_bff7ce447f45c3b64049e0c923094aa2_layers.base_layers,
+                layer_control_bff7ce447f45c3b64049e0c923094aa2_layers.overlays,
+                {
+  "position": "topright",
+  "collapsed": true,
+  "autoZIndex": true,
+}
+            ).addTo(map_0690c52f42dd901902dc26fa6d833b30);
+
+        
+</script>
+</html>

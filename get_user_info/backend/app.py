@@ -1,3 +1,20 @@
+# WARNING: This is a legacy implementation and should not be used.
+# Please use the main server.py file in the parent directory instead.
+# Run 'python start_server.py' in the parent directory to ensure proper server operation.
+#
+# If you're seeing this message, it means someone is trying to run the legacy server.
+# This file is kept for reference purposes only.
+
+print("\n⚠️ WARNING: This is a legacy implementation and should not be used! ⚠️")
+print("Please use the main server.py file in the parent directory instead.")
+print("Run 'python start_server.py' in the parent directory to ensure proper server operation.")
+print("Exiting...")
+import sys
+sys.exit(1)
+
+# Legacy code below (kept for reference purposes only)
+# DO NOT USE THIS SERVER IMPLEMENTATION
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import pandas as pd

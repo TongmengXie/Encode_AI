@@ -79,6 +79,10 @@ def load_cached_embeddings(user_pool_path, cache_dir):
     cache_file = os.path.join(cache_dir, "user_pool_embeddings.pkl")
     hash_file = os.path.join(cache_dir, "user_pool_hash.txt")
     
+    # Print absolute paths
+    print_info(f"Looking for embedding cache at: {os.path.abspath(cache_file)}")
+    print_info(f"Looking for hash file at: {os.path.abspath(hash_file)}")
+    
     # Check if cache files exist
     if not os.path.exists(cache_file) or not os.path.exists(hash_file):
         print_info("Embeddings cache not found.")
@@ -97,7 +101,7 @@ def load_cached_embeddings(user_pool_path, cache_dir):
     try:
         with open(cache_file, "rb") as f:
             pool_embedded_lists = pickle.load(f)
-        print_success(f"Loaded cached embeddings for {len(pool_embedded_lists)} users.")
+        print_success(f"Loaded cached embeddings for {len(pool_embedded_lists)} users from {os.path.abspath(cache_file)}")
         return pool_embedded_lists, True
     except Exception as e:
         print_warning(f"Error loading cached embeddings: {str(e)}")
@@ -109,6 +113,10 @@ def save_embeddings_cache(pool_embedded_lists, user_pool_path, cache_dir):
     cache_file = os.path.join(cache_dir, "user_pool_embeddings.pkl")
     hash_file = os.path.join(cache_dir, "user_pool_hash.txt")
     
+    # Print absolute paths
+    print_info(f"Saving embedding cache to: {os.path.abspath(cache_file)}")
+    print_info(f"Saving hash file to: {os.path.abspath(hash_file)}")
+    
     # Save embeddings
     try:
         with open(cache_file, "wb") as f:
@@ -119,6 +127,6 @@ def save_embeddings_cache(pool_embedded_lists, user_pool_path, cache_dir):
         with open(hash_file, "w") as f:
             f.write(current_hash)
             
-        print_success(f"Saved embeddings for {len(pool_embedded_lists)} users to cache.")
+        print_success(f"Saved embeddings for {len(pool_embedded_lists)} users to cache at {os.path.abspath(cache_file)}")
     except Exception as e:
         print_warning(f"Error saving embeddings cache: {str(e)}") 
