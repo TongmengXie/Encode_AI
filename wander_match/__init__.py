@@ -22,7 +22,7 @@ import re
 import time
 
 # Import local modules
-from utils import (
+from .utils import (
     print_header, print_info, print_success, 
     print_error, print_warning, get_env_var
 )
