@@ -1,2 +1,2 @@
 cd wander_match
-gunicorn wander_match:app
+gunicorn app:app
