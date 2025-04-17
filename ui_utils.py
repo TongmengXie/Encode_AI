@@ -22,14 +22,14 @@ def print_header(text, emoji="[HEADER]", color="blue", centered=True):
                 terminal_width = 80
             
             # Center the text
-            line = f"{emoji} {text} {emoji}"
+            line = f"[HEADER] {text} [HEADER]"
             padding = (terminal_width - len(line)) // 2
             if padding > 0:
                 print(" " * padding + line)
             else:
                 print(line)
         else:
-            print(f"{emoji} {text}")
+            print(f"[HEADER] {text}")
     except UnicodeEncodeError:
         # Fallback for terminals that don't support emojis
         print(f"== {text} ==")
@@ -64,4 +64,4 @@ def input_prompt(prompt_text, default=None):
 
 def print_progress(text, emoji="[PROGRESS]", color="blue"):
     """Print a progress message."""
-    print(f"{emoji} {text}") 
+    print(f"[PROGRESS] {text}") 

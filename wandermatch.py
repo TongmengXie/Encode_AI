@@ -62,7 +62,7 @@ def check_environment():
 def main():
     """Main function to run the WanderMatch application"""
     clear_screen()
-    print_header("WanderMatch", emoji="✈️", color="green")
+    print_header("WanderMatch", emoji="[TRAVEL]", color="green")
     
     # Check environment variables
     if not check_environment():
@@ -76,43 +76,43 @@ def main():
     # Get user info
     user_info = get_user_info()
     
-    # Display potential travel partners and let user choose
-    partner_info = select_travel_partner(user_info)
+    # # Display potential travel partners and let user choose
+    # partner_info = select_travel_partner(user_info)
     
-    # Select origin and destination
-    origin_city = input_prompt("Enter your origin city: ")
-    destination_city = input_prompt("Enter your destination city: ")
+    # # Select origin and destination
+    # origin_city = input_prompt("Enter your origin city: ")
+    # destination_city = input_prompt("Enter your destination city: ")
     
-    # Store these in user_info for later use
-    user_info['origin_city'] = origin_city
-    user_info['destination_city'] = destination_city
+    # # Store these in user_info for later use
+    # user_info['origin_city'] = origin_city
+    # user_info['destination_city'] = destination_city
     
-    # Select transport mode
-    transport_option = select_transport_mode(origin_city, destination_city)
+    # # Select transport mode
+    # transport_option = select_transport_mode(origin_city, destination_city)
     
-    # Generate travel route
-    route_info = generate_travel_route(user_info, partner_info, transport_option)
+    # # Generate travel route
+    # route_info = generate_travel_route(user_info, partner_info, transport_option)
     
-    # Generate blog post
-    blog_result = generate_blog_post(user_info, partner_info, route_info)
+    # # Generate blog post
+    # blog_result = generate_blog_post(user_info, partner_info, route_info)
     
-    # Create output directories
-    output_dir = os.path.join(WORKSPACE_DIR, "wandermatch_output")
-    blogs_dir = os.path.join(output_dir, "blogs")
-    maps_dir = os.path.join(output_dir, "maps")
-    for directory in [output_dir, blogs_dir, maps_dir]:
-        os.makedirs(directory, exist_ok=True)
+    # # Create output directories
+    # output_dir = os.path.join(WORKSPACE_DIR, "wandermatch_output")
+    # blogs_dir = os.path.join(output_dir, "blogs")
+    # maps_dir = os.path.join(output_dir, "maps")
+    # for directory in [output_dir, blogs_dir, maps_dir]:
+    #     os.makedirs(directory, exist_ok=True)
     
-    # Display summary
-    print_header("Your WanderMatch Journey is Ready!", emoji="✨", color="green")
-    print_success(f"Origin: {origin_city}")
-    print_success(f"Destination: {destination_city}")
-    if partner_info:
-        print_success(f"Travel Partner: {partner_info.get('name', 'Travel Companion')}")
-    else:
-        print_success("Travel Mode: Solo")
-    print_success(f"Transportation: {transport_option.get('mode', 'Custom')}")
-    print_success(f"Blog saved to: {blog_result.get('html_path', 'wandermatch_output/blogs/')}")
+    # # Display summary
+    # print_header("Your WanderMatch Journey is Ready!", emoji="[SPARKLE]", color="green")
+    # print_success(f"Origin: {origin_city}")
+    # print_success(f"Destination: {destination_city}")
+    # if partner_info:
+    #     print_success(f"Travel Partner: {partner_info.get('name', 'Travel Companion')}")
+    # else:
+    #     print_success("Travel Mode: Solo")
+    # print_success(f"Transportation: {transport_option.get('mode', 'Custom')}")
+    # print_success(f"Blog saved to: {blog_result.get('html_path', 'wandermatch_output/blogs/')}")
     
     print_info("\nThank you for using WanderMatch! Safe travels!")
 
