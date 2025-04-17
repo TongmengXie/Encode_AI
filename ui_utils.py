@@ -3,53 +3,65 @@
 UI utility functions for WanderMatch application.
 Contains functions for displaying information to the user through the terminal.
 """
-from rich.console import Console
-from rich.panel import Panel
-from rich.table import Table
-from rich.progress import track
-from rich.markdown import Markdown
-from rich.prompt import Prompt, Confirm
+import os
 from typing import Dict, Any, Optional, Tuple, List
-
-# Initialize console
-console = Console()
 
 def clear_screen():
     """Clear the terminal screen for better readability."""
     import os
     os.system('cls' if os.name == 'nt' else 'clear')
 
-def print_header(text, emoji="🌍", color="blue", centered=True):
+def print_header(text, emoji="[HEADER]", color="blue", centered=True):
     """Print a formatted header with emoji."""
-    if centered:
-        console.print(f"[bold {color}]{emoji} {text} {emoji}[/bold {color}]", justify="center")
-    else:
-        console.print(f"[bold {color}]{emoji} {text}[/bold {color}]")
+    try:
+        if centered:
+            # Calculate width based on terminal size or default to 80
+            try:
+                terminal_width = os.get_terminal_size().columns
+            except:
+                terminal_width = 80
+            
+            # Center the text
+            line = f"{emoji} {text} {emoji}"
+            padding = (terminal_width - len(line)) // 2
+            if padding > 0:
+                print(" " * padding + line)
+            else:
+                print(line)
+        else:
+            print(f"{emoji} {text}")
+    except UnicodeEncodeError:
+        # Fallback for terminals that don't support emojis
+        print(f"== {text} ==")
 
 def print_subheader(text):
     """Print a formatted subheader."""
-    console.print(f"[bold cyan]== {text} ==[/bold cyan]")
+    print(f"== {text} ==")
 
 def print_info(text):
     """Print information text."""
-    console.print(f"[cyan]ℹ️ {text}[/cyan]")
+    print(f"[INFO] {text}")
 
 def print_success(text):
     """Print success text."""
-    console.print(f"[green]✅ {text}[/green]")
+    print(f"[SUCCESS] {text}")
 
 def print_warning(text):
     """Print warning text."""
-    console.print(f"[yellow]⚠️ {text}[/yellow]")
+    print(f"[WARNING] {text}")
 
 def print_error(text):
     """Print error text."""
-    console.print(f"[red]❌ {text}[/red]")
+    print(f"[ERROR] {text}")
 
 def input_prompt(prompt_text, default=None):
     """Display a styled input prompt with optional default value."""
-    return Prompt.ask(f"[bold blue]?[/bold blue] {prompt_text}", default=default)
+    if default:
+        user_input = input(f"[INPUT] {prompt_text} (default: {default}): ")
+        return user_input if user_input else default
+    else:
+        return input(f"[INPUT] {prompt_text}: ")
 
-def print_progress(text, emoji="🔄", color="blue"):
+def print_progress(text, emoji="[PROGRESS]", color="blue"):
     """Print a progress message."""
-    console.print(f"[{color}]{emoji} {text}[/{color}]") 
+    print(f"{emoji} {text}") 

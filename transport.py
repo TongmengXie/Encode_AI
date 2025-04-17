@@ -90,51 +90,35 @@ def select_transport_mode(origin_city, destination_city):
     
     # Display transport options in a visually appealing way
     try:
-        from rich.console import Console
-        from rich.table import Table
-        
-        console = Console()
-        
-        # Create a table for transport options
-        table = Table(show_header=True, header_style="bold cyan", box=None, padding=(0, 2), expand=True)
-        table.add_column("#", style="dim", width=3)
-        table.add_column("Mode", style="green")
-        table.add_column("Duration", style="magenta")
-        table.add_column("Cost", style="yellow")
-        table.add_column("🌱 Carbon", style="blue")
-        table.add_column("⭐ Comfort", style="cyan")
-        
-        # Add rows for each transport option
+        # Use plain text fallback instead of rich
+        # Fallback to simple selection
         for i, option in enumerate(transport_options, 1):
-            # Get values with fallbacks
-            mode = option.get("mode", "Unknown")
-            duration = option.get("duration", "Unknown")
-            cost = option.get("cost", "Unknown")
-            carbon = option.get("carbon_footprint", "Unknown")
-            comfort = option.get("comfort_level", 3)
+            print(f"{i}. {option.get('mode', 'Option ' + str(i))}")
+            print(f"   Duration: {option.get('duration', 'Unknown')}")
+            print(f"   Cost: {option.get('cost', 'Unknown')}")
+            print(f"   Carbon Footprint: {option.get('carbon_footprint', 'Unknown')}")
             
             # Convert comfort rating to stars
-            comfort_stars = "⭐" * min(int(comfort), 5)
+            comfort = option.get('comfort_level', 3)
+            comfort_stars = "[*]" * min(int(comfort), 5)
+            print(f"   Comfort: {comfort_stars}")
             
-            table.add_row(
-                str(i),
-                mode,
-                duration,
-                cost,
-                carbon,
-                comfort_stars
-            )
+            # Print pros and cons if available
+            pros = option.get('pros', [])
+            if pros:
+                print(f"   Pros: {', '.join(pros)}")
+                
+            cons = option.get('cons', [])
+            if cons:
+                print(f"   Cons: {', '.join(cons)}")
+                
+            print()
         
-        console.print(table)
-        
-        # Let user select a transport option
         selection = input_prompt(f"Select a transport option (1-{len(transport_options)})", default="1")
         try:
             idx = int(selection) - 1
             if 0 <= idx < len(transport_options):
-                selected_option = transport_options[idx]
-                print_success(f"You selected: {selected_option.get('mode', 'Custom transport')}")
-                return selected_option
+                return transport_options[idx]
             else:
                 print_warning(f"Invalid selection. Using option 1 by default.")
                 return transport_options[0]
@@ -142,8 +126,9 @@ def select_transport_mode(origin_city, destination_city):
             print_warning(f"Invalid selection. Using option 1 by default.")
             return transport_options[0]
             
-    except ImportError:
-        # Fallback to simple selection
+    except Exception as e:
+        # Fallback if above code fails
+        print_warning(f"Error displaying transport options: {str(e)}")
         for i, option in enumerate(transport_options, 1):
             print(f"{i}. {option.get('mode', 'Option ' + str(i))}")
             print(f"   Duration: {option.get('duration', 'Unknown')}")
@@ -559,7 +544,7 @@ def generate_transport_html(origin_city, destination_city, transport_options):
             carbon_class = "low"
         
         # Generate comfort stars
-        comfort_stars = "★" * min(int(comfort), 5) + "☆" * (5 - min(int(comfort), 5))
+        comfort_stars = "[*]" * min(int(comfort), 5)
         
         # Create pros and cons HTML
         pros_html = "<ul>" + "".join([f"<li>{pro}</li>" for pro in pros]) + "</ul>"

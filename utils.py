@@ -8,38 +8,45 @@ import json
 import time
 import hashlib
 import pickle
-from rich.console import Console
-from rich.panel import Panel
-from rich.table import Table
-from rich.progress import track
-from rich.markdown import Markdown
-from rich.prompt import Prompt, Confirm
 from typing import Dict, Any, Optional, Tuple, List
 
-# Initialize console
-console = Console()
-
 # Helper print functions
-def print_header(text, emoji="✨", color="blue", centered=False):
-    if centered:
-        console.print(f"[bold {color}]{emoji} {text} {emoji}[/bold {color}]", justify="center")
-    else:
-        console.print(f"[bold {color}]{emoji} {text}[/bold {color}]")
+def print_header(text, emoji="[HEADER]", color="blue", centered=False):
+    try:
+        if centered:
+            # Calculate width based on terminal size or default to 80
+            try:
+                terminal_width = os.get_terminal_size().columns
+            except:
+                terminal_width = 80
+            
+            # Center the text
+            line = f"{emoji} {text} {emoji}"
+            padding = (terminal_width - len(line)) // 2
+            if padding > 0:
+                print(" " * padding + line)
+            else:
+                print(line)
+        else:
+            print(f"{emoji} {text}")
+    except UnicodeEncodeError:
+        # Fallback for terminals that don't support emojis
+        print(f"== {text} ==")
 
-def print_info(text, emoji="ℹ️", color="cyan"):
-    console.print(f"[{color}]{emoji} {text}[/{color}]")
+def print_info(text, emoji="[INFO]", color="cyan"):
+    print(f"{emoji} {text}")
 
-def print_success(text, emoji="✅", color="green"):
-    console.print(f"[{color}]{emoji} {text}[/{color}]")
+def print_success(text, emoji="[SUCCESS]", color="green"):
+    print(f"{emoji} {text}")
 
-def print_error(text, emoji="❌", color="red"):
-    console.print(f"[{color}]{emoji} {text}[/{color}]")
+def print_error(text, emoji="[ERROR]", color="red"):
+    print(f"{emoji} {text}")
 
-def print_warning(text, emoji="⚠️", color="yellow"):
-    console.print(f"[{color}]{emoji} {text}[/{color}]")
+def print_warning(text, emoji="[WARNING]", color="yellow"):
+    print(f"{emoji} {text}")
 
-def print_progress(text, emoji="🔄", color="blue"):
-    console.print(f"[{color}]{emoji} {text}[/{color}]")
+def print_progress(text, emoji="[PROGRESS]", color="blue"):
+    print(f"{emoji} {text}")
 
 # Environment variable helper
 def get_env_var(key, default=None):

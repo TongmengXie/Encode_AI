@@ -30,7 +30,7 @@ def get_user_info():
     Returns:
         Dictionary containing user information
     """
-    print_header("User Information Collection", emoji="👤")
+    print_header("User Information Collection", emoji="[USER]")
     
     # Path to get_user_info folder
     get_user_info_dir = os.path.join(WORKSPACE_DIR, "get_user_info")
@@ -150,7 +150,7 @@ def get_user_info():
                         print_success("User data collected successfully!")
                         
                         # Print user information summary
-                        print_header("User Information Summary", emoji="📋")
+                        print_header("User Information Summary", emoji="[USER]")
                         for key, value in user_info.items():
                             # Skip columns with special characters or empty values
                             if pd.notna(value) and str(value).strip() and not key.startswith("Unnamed"):
@@ -263,7 +263,7 @@ def fallback_user_info():
                     print_success("Existing user data loaded successfully!")
                     
                     # Print user information summary
-                    print_header("User Information", emoji="📋")
+                    print_header("User Information", emoji="[USER]")
                     for key, value in user_info.items():
                         # Skip columns with special characters or empty values
                         if pd.notna(value) and str(value).strip() and not key.startswith("Unnamed"):
@@ -313,7 +313,7 @@ def fallback_user_info():
     user_info["nationality"] = input_prompt("What is your nationality?", default="International")
     
     # Travel preferences
-    print_header("Travel Preferences", emoji="✈️")
+    print_header("Travel Preferences", emoji="[TRAVEL]")
     user_info["travel_style"] = input_prompt("What is your travel style?", default="Mix of popular sites and hidden gems")
     user_info["budget"] = input_prompt("What is your travel budget? (Daily in USD)", default="$100-200")
     user_info["interests"] = input_prompt("What are your main travel interests?", default="Food, culture, nature")
@@ -375,7 +375,7 @@ def select_travel_partner(user_info):
     Returns:
         dict: Selected partner info or None if traveling solo
     """
-    print_header("Travel Partner Selection", emoji="🤝")
+    print_header("Travel Partner Selection", emoji="[PARTNER]")
     
     # Try to use get_user_info directory's partner selection
     try:
@@ -408,66 +408,14 @@ def select_travel_partner(user_info):
                         }
                         potential_partners.append(partner)
                     
-                    # Display partners using rich formatting if available
-                    try:
-                        from rich.console import Console
-                        from rich.panel import Panel
-                        from rich.table import Table
-                        from rich.columns import Columns
-                        from rich.align import Align
-                        from rich.text import Text
-                        
-                        console = Console()
-                        console.print("\n")
-                        console.print(Align.center("[bold cyan]Your Potential Travel Partners[/bold cyan]"))
-                        console.print("\n")
-                        
-                        # Create panels for each partner
-                        panels = []
-                        for i, partner in enumerate(potential_partners, 1):
-                            # Create a summary table
-                            table = Table(show_header=False, box=None, padding=(0, 1), expand=True)
-                            table.add_column("Attribute", style="dim")
-                            table.add_column("Value", style="green")
-                            
-                            table.add_row("Age", f"{partner['age']}")
-                            table.add_row("Nationality", f"{partner['nationality']}")
-                            
-                            # Format interests nicely
-                            interests = ", ".join(partner['interests'])
-                            table.add_row("Interests", interests)
-                            
-                            # Create match indicator
-                            match_percentage = partner['match_percentage']
-                            match_color = "green" if match_percentage > 85 else "yellow" if match_percentage > 70 else "red"
-                            match_text = Text(f"Match: {match_percentage}%", style=match_color)
-                            
-                            # Create panel with table
-                            title = f"[bold]Option {i}: {partner['name']}[/bold]"
-                            panel = Panel(
-                                table,
-                                title=title,
-                                title_align="left",
-                                subtitle=match_text,
-                                subtitle_align="right",
-                                width=40,
-                                border_style=match_color
-                            )
-                            panels.append(panel)
-                        
-                        # Display panels in columns
-                        console.print(Columns(panels, equal=True, expand=True))
-                        console.print("\n")
-                    
-                    except ImportError:
-                        # Fallback to plain text if rich is not available
-                        print_header("Your Potential Travel Partners", emoji="🧳")
-                        for i, partner in enumerate(potential_partners, 1):
-                            print(f"{i}. {partner['name']} - Match Score: {partner['match_percentage']}%")
-                            print(f"   Nationality: {partner['nationality']}")
-                            print(f"   Age: {partner['age']}")
-                            print(f"   Interests: {', '.join(partner['interests'])}")
-                            print()
+                    # Display partners using simple text formatting
+                    print_header("Your Potential Travel Partners", emoji="[PARTNERS]")
+                    for i, partner in enumerate(potential_partners, 1):
+                        print(f"{i}. {partner['name']} - Match Score: {partner['match_percentage']}%")
+                        print(f"   Nationality: {partner['nationality']}")
+                        print(f"   Age: {partner['age']}")
+                        print(f"   Interests: {', '.join(partner['interests'])}")
+                        print()
                     
                     # Ask user to select a partner
                     selection = input_prompt("Select a travel partner by number (or 0 to travel solo)", default="1")
