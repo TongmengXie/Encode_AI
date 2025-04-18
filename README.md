@@ -1,205 +1,296 @@
-# WanderMatch: Travel Partner Matching & Route Planning
+# WanderMatch
 
-WanderMatch is an AI-powered travel platform that helps users find compatible travel companions, generate personalized travel routes, and create shareable blog posts about their journeys.
+WanderMatch is an application that helps users find compatible travel companions, generate personalized itineraries, and create travel blogs based on user preferences.
 
-## Features
+## New React Deployment
 
-1. **User Profile Creation** - Create a traveler profile with your preferences and travel interests
-2. **Partner Matching** - Find ideal travel companions using semantic embeddings with cached user pools
-3. **Route Generation** - Get personalized travel routes based on your preferences and destination
-4. **Blog Generation** - Generate shareable travel blog posts with highlights of your journey
-5. **Interactive HTML Maps** - Visualize your travel routes with interactive maps
-6. **Transport Comparison** - Compare different transport options with detailed pros and cons
-
-## Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/wandermatch.git
-cd wandermatch
-```
-
-2. Install the required dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-3. Create a `.env` file in the root directory with the following API keys:
-```
-OPENAI_API_KEY=your_openai_api_key        # Required for embeddings and route generation
-GEMINI_API_KEY=your_gemini_api_key        # Required for content generation
-PORTIA_API_KEY=your_portia_api_key        # Required for blog post generation
-ORS_API_KEY=your_ors_api_key              # Required for mapping services
-GOOGLE_API_KEY=your_google_api_key        # Required for places API
-```
-
-4. Create required directories for outputs:
-```bash
-mkdir -p get_user_info/results wandermatch_output/maps wandermatch_output/blogs
-```
-
-## Usage
-
-### Running the Application
-
-To run the complete WanderMatch platform:
+This project now includes a React-based web deployment for public use. To start the application:
 
 ```bash
-python wandermatch.py
+# Run the launcher script from the root directory
+python start_wandermatch.py
 ```
 
 This will:
-1. Guide you through creating your travel profile (via web survey or terminal input)
-2. Find your ideal travel partner using cached embeddings for efficiency
-3. Generate a personalized travel route based on your preferences
-4. Create a travel blog post markdown file that you can share
-5. Visualize transport options with an interactive HTML display
+1. Verify that your environment has all the necessary dependencies
+2. Check for the correct directory structure
+3. Start both the backend API and frontend React app
+4. Open the application in your browser
 
-### Online Survey
+## Prerequisites
 
-The application launches a web server to collect user information through a friendly online form:
+- **Python 3.12+** with Flask, Flask-CORS, pandas, and requests packages
+- **Node.js 14+** installed and added to your PATH environment variable
+- npm (comes with Node.js installation)
 
-1. A Flask server starts on port 5000 to handle form submissions
-2. A simple HTTP server starts on port 8000 to serve the survey form
-3. Your browser opens to display the form (or you can navigate to http://localhost:8000)
-4. After completing the form, you'll see a thank you page
-5. Return to the terminal and press Enter to continue
+## Original Features
 
-### Travel Partner Selection Process
+- **User Profile Creation**: Collect travel preferences and personal information through an interactive survey
+- **Partner Matching**: Match users with compatible travel companions using AI-powered similarity analysis
+- **Transport Comparison**: Compare different transportation options (flight, train, bus, car) with detailed information on duration, cost, carbon footprint, comfort level, and pros/cons
+- **Interactive Maps**: Visualize travel routes with interactive Folium maps showing attractions and travel paths
+- **Blog Generation**: Automatically create travel blogs using AI (Gemini or OpenAI) with personalized content based on user profile and travel details
+- **Itinerary Planning**: Generate customized travel plans with attractions, route points, and timelines
 
-The partner matching system works through:
+## Installation
 
-1. **Embedding Generation**: User answers are converted to vector embeddings using OpenAI's API
-2. **Similarity Calculation**: Cosine similarity measures compatibility between user vectors
-3. **Weighted Matching**: Different profile attributes are weighted by importance
-4. **Partner Recommendation**: Top matches are displayed with compatibility scores
-5. **Manual Selection**: Users can choose a partner or travel solo
+> **Note**: This application requires Python 3.12+. Please ensure you have this version installed before proceeding.
 
-### Transport Options
+1. Clone this repository:
+   ```
+   git clone https://github.com/yourusername/WanderMatch.git
+   cd WanderMatch
+   ```
 
-The transport comparison system:
+2. Install dependencies:
+   ```
+   pip install -r requirements.txt
+   ```
 
-1. Attempts to generate options using Gemini or OpenAI
-2. Falls back to predefined routes if API generation fails
-3. Creates an interactive HTML visualization of options
-4. Displays a comparison table in the terminal
-5. Allows selection of preferred transport mode
+   The core dependencies needed for embedding calculation and web features are:
+   - flask
+   - flask-cors
+   - pandas
+   - python-dotenv
+   - openai
+   - numpy
 
-### Cached Embeddings
+3. Set up API keys in a `.env` file:
+   ```
+   OPENAI_API_KEY=your_openai_api_key
+   GEMINI_API_KEY=your_gemini_api_key
+   GOOGLE_API_KEY=your_google_maps_api_key (optional)
+   ```
 
-To improve performance, WanderMatch caches user pool embeddings. The system:
+   **Important**: The OpenAI API key is required for embedding calculation and partner matching.
 
-1. Checks for existing cached embeddings in the `user_pool_embeddings.pkl` file
-2. Validates cache with a hash of the current user pool (`user_pool_hash.txt`)
-3. Only recalculates embeddings when the user pool changes
-4. Stores embeddings in the `/get_user_info/` directory
+4. Ensure required directories exist:
+   ```
+   mkdir -p UserInfo_and_Match/survey_results
+   mkdir -p get_user_info/backend
+   mkdir -p wandermatch_output/maps
+   mkdir -p wandermatch_output/blogs
+   ```
 
-### Output Files
+## Original Usage
 
-The application generates several output files:
+1. Start the original command-line application:
+   ```
+   python wandermatch.py
+   ```
 
-1. **User Answers**: Stored in `/get_user_info/backend/` with timestamp-based filenames
-2. **Similarity Matrices**: Generated in `/get_user_info/results/` with timestamp
-3. **Top Matches**: Partner matching results saved in `/get_user_info/results/`
-4. **Route Maps**: Interactive maps saved in `/wandermatch_output/maps/`
-5. **Blog Posts**: Generated blogs saved in `/wandermatch_output/blogs/`
-6. **Transport Options**: Interactive HTML comparison in `/wandermatch_output/`
+2. Complete the online survey:
+   - Navigate to http://localhost:5000 in your browser
+   - Fill out your travel preferences and personal information
+   - Submit the form to create your profile
+
+3. Select a travel companion or choose to travel solo
+
+4. Enter your origin and destination cities
+
+5. Compare transportation options:
+   - View an interactive HTML comparison of different transport modes
+   - See details about duration, cost, carbon footprint, and comfort
+   - Select your preferred option
+
+6. Review your generated travel route:
+   - An interactive map will open in your browser
+   - View the route, attractions, and key information
+   
+7. Explore your personalized travel blog:
+   - Read a detailed travel narrative generated by AI
+   - The blog adapts to your chosen destination, transport, and travel partner
+
+## Web Deployment Usage
+
+1. Run the launcher script:
+   ```
+   python start_wandermatch.py
+   ```
+
+   **For Windows Users**: A batch file has been provided for easier startup:
+   ```
+   start_wandermatch.bat
+   ```
+   The batch file will check for Python installation and activate Conda environments if available before launching the application.
+
+   **Using the Web Survey Launcher**:
+   ```
+   start_web_survey.bat
+   ```
+   or
+   ```
+   python serve_survey.py
+   ```
+   The web survey launcher provides a user-friendly interface with:
+   - A button to open the survey in a new window
+   - Ability to run embedding calculations
+   - Travel partner matching and selection
+   - Note: Embedding calculation requires an OpenAI API key in the .env file
+
+2. When the application opens in your browser:
+   - Click the "Launch Survey" button
+   - Fill out your travel preferences
+   - Submit the form to save your data
+   - You'll return to the home page with a "Calculate Travel Match" button
+
+## Troubleshooting
+
+### Node.js and npm Issues
+
+If you encounter errors related to Node.js or npm:
+
+1. **Verify Node.js Installation**
+   - Ensure Node.js is installed by running: `node --version`
+   - If not installed, download it from https://nodejs.org/
+   - Ensure you install the LTS (Long Term Support) version
+
+2. **Path Issues**
+   - Make sure Node.js is in your PATH environment variable
+   - On Windows, the installer should add it automatically
+   - You may need to restart your terminal or computer after installation
+
+3. **npm Not Found**
+   - npm comes with Node.js installation but might not be in the PATH
+   - On Windows, check if npm.cmd exists in the same folder as node.exe
+   - Try reinstalling Node.js if npm is missing
+
+4. **Permission Issues**
+   - On Linux/Mac, you might need to run commands with sudo
+   - On Windows, try running your terminal as administrator
+
+5. **Manual Installation Verification**
+   - Our verification script can help diagnose issues:
+   ```
+   cd deploy
+   python verify_setup.py
+   ```
+
+### Other Common Issues
+
+- **Survey data not saving**
+   - Check the console output for the path where data is being saved
+   - Ensure the directory exists and is writable
+   - The backend tries to save to the original location at `../../UserInfo_and_Match/survey_results`
+
+- **API connection issues**: Verify API keys and internet connectivity
+- **Map display problems**: Ensure Folium is properly installed and browser access is available
+- **Transport API failures**: The system will automatically use default transport options
 
 ## Project Structure
 
 ```
-wandermatch/
-├── wandermatch.py           # Main application file
-├── utils.py                 # Utility functions for formatting and file handling
-├── get_user_info/           # User profile collection module
-│   ├── embed_info.py        # OpenAI embedding and semantic matching logic
-│   ├── user_pool.csv        # Database of potential travel partners
-│   ├── user_pool_embeddings.pkl # Cached embeddings for faster matching
-│   ├── user_pool_hash.txt   # Hash to validate cache freshness
-│   ├── server.py            # Flask server for online survey and recommendations
-│   ├── run_info.py          # Frontend launcher and server manager
-│   ├── results/             # Directory for similarity and matching results
-│   ├── frontend/            # Web interface files
-│   │   ├── index.html       # Survey form with responsive design
-│   │   ├── thank_you.html   # Submission confirmation page
-│   │   ├── scripts.js       # Frontend functionality and validation
-│   │   └── styles.css       # CSS styling for user interface
-│   └── backend/             # Survey response storage
-│       ├── app.py           # API for recommendations and vector matching
-│       └── user_answer_*.csv # User responses with timestamp
-├── wandermatch_output/      # Generated output files
-│   ├── maps/                # Interactive travel route maps
-│   ├── blogs/               # Generated travel blog posts in HTML and markdown
-│   └── transport_options.html # Transport comparison visualization
-├── .env                     # Environment variables and API keys
-├── requirements.txt         # Python package dependencies
-└── README.md                # This file
+WanderMatch/
+├── wandermatch.py            # Main application entry point
+├── get_user_info/            # User survey and information collection
+├── UserInfo_and_Match/       # Profile management and matching algorithm
+├── map_utils.py              # Map generation with Folium
+├── transport.py              # Transportation options comparison
+├── route_generator.py        # Travel route planning
+├── blog_generator.py         # AI-powered travel blog creation
+├── ui_utils.py               # Terminal UI utilities
+├── deploy/                   # React web deployment
+│   ├── backend/              # Flask API backend
+│   └── frontend/             # React frontend
+├── requirements.txt          # Project dependencies
+└── wandermatch_output/       # Generated maps, blogs, and visualizations
 ```
+
+## Transportation Features
+
+The transportation system provides:
+- AI-generated transport options using Gemini and OpenAI
+- Fallback to default options when APIs are unavailable
+- Detailed comparison of transport modes (flight, train, bus, car)
+- Interactive HTML visualization with responsive cards
+- Color-coded carbon footprint indicators
+- Text-based terminal interface with standardized formatting
+
+## Map Visualization
+
+The map generation system offers:
+- Interactive Folium maps of travel routes
+- Markers for origin, destination, and attractions
+- Popup information for key locations
+- Clustering of nearby attractions
+- Color-coded route lines based on transport mode
+- Support for multiple geocoding services
+
+## Blog Generation
+
+The blog creation system features:
+- AI-powered blog generation using Gemini or OpenAI
+- Templated blog generation as a fallback
+- Personalization based on user profile and travel details
+- Markdown formatting with structured sections
+- Conversion to HTML with styled presentation
+- Automatic browser opening to display blogs
 
 ## Requirements
 
-- Python 3.8+
-- OpenAI API Key (for embeddings and content generation)
-- Gemini API Key (for route generation)
-- Portia API Key (for blog generation)
-- ORS API Key (for mapping)
-- Google API Key (for places and maps)
-- Internet connection
+- Python 3.12.9 (required)
+- OpenAI API key
+- Gemini API key
+- Google Maps API key (optional, for enhanced geocoding)
+- Required packages listed in requirements.txt
+
+## Terminal Output
+
+The application uses straightforward terminal-based output with clear text formatting:
+- All console messages use standard print functions with text-based indicators
+- Status messages are prefixed with indicators like [INFO], [SUCCESS], [WARNING], etc.
+- Tabular data is formatted with basic text alignment
+- The system works consistently across all terminal types without special formatting requirements
 
 ## Fallback Mechanisms
 
-WanderMatch includes robust fallback mechanisms:
-1. If API-based partner matching fails, it falls back to using the local user pool
-2. If all recommendation systems fail, it provides default travel partners
-3. For transport options, predefined routes are available when API calls fail
-4. Route generation can work with minimal location data if detailed preferences are unavailable
-5. Multiple encoding strategies are tried when handling CSV files
+The application implements robust fallback mechanisms:
+- Server-side storage with proper error handling and reporting
+- Multiple encoding attempts for CSV files to prevent Unicode errors
+- Directory path validation with alternative paths if standard paths are unavailable
+- Cascading API services (Gemini → OpenAI → templates)
+- Default transport options when API services are unavailable
+- Multiple geocoding service options if the primary service fails
 
-## Troubleshooting
+## Updates
 
-### Encoding Issues
-If you encounter encoding errors, particularly on Windows systems:
-- The application now handles multiple encodings (UTF-8, ISO-8859-1, CP1252)
-- CSV files are explicitly saved with UTF-8 encoding
-- Any problematic characters during file operations are gracefully handled with replacements
-- Subprocess calls use `errors='replace'` to prevent crashes on unusual characters
-
-### JSON Parsing Errors
-If route generation fails due to malformed JSON:
-- The application includes enhanced JSON repair logic
-- Multiple parsing attempts are made with progressive fixes
-- The system will fall back to default route generation if all parsing attempts fail
-
-### API Connectivity
-If API requests fail:
-- Check your internet connection
-- Verify API keys in your `.env` file
-- Ensure no firewalls are blocking API requests
-- The application will automatically use fallback mechanisms for core functionality
-
-### Common Error Messages
-- **"No user answer files found"**: Run the survey first using `python -c "from get_user_info import run_info; run_info.main()"`
-- **"Embeddings cache not found"**: This is normal on first run, embeddings will be calculated
-- **"Error parsing JSON response"**: The AI service returned malformed data, the app will use fallbacks
-
-## Running Individual Components
-
-You can run specific components separately:
-
-```bash
-# Run just the user survey and matching
-python -c "from get_user_info import run_info; run_info.main()"
-
-# Generate embeddings for user pool
-python -c "from get_user_info import embed_info; embed_info.main()"
-
-# Test transport mode generation
-python -c "import wandermatch; wandermatch.select_transport_mode('London', 'Paris')"
-
-# Generate a route between two cities
-python -c "import wandermatch; user_info={'name':'Test User'}; wandermatch.generate_travel_route(user_info, None, {'mode':'Train'})"
-```
+### Recent Changes
+- **Python Version Requirement**: Updated to require Python 3.12.9
+- **Terminal Output Simplification**: Removed rich package dependency for better compatibility across different terminals
+- **CSV Storage**: Improved server-side storage of survey responses with enhanced error handling
+- **Configuration**: Added pyproject.toml for modern Python packaging
 
 ## License
 
-MIT License
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## OpenAI API Quota Management
+
+### Current Issue
+
+The application uses OpenAI's embedding model to calculate similarity between survey responses. If you encounter an error like:
+
+```
+Error running embedding calculation: Server responded with status: 429
+```
+
+This means the API key has reached its usage limit. OpenAI imposes rate limits and quota limits on API keys.
+
+### Solutions
+
+1. **Use a different API key**: Update the `.env` file with a new API key.
+
+2. **Use the demo mode**: The application now has a fallback demo mode that uses pre-calculated matches when the API quota is exceeded. You'll be prompted to enable this mode when an API quota error occurs.
+
+3. **Wait and try again later**: Quotas often reset after a certain period (typically monthly).
+
+4. **Increase your OpenAI API usage tier**: Visit the [OpenAI billing page](https://platform.openai.com/account/billing/overview) to increase your usage limits.
+
+### For Developers
+
+If you're extending this application, consider implementing:
+
+- Local caching of embeddings (already implemented)
+- Batch processing to optimize API calls
+- Alternative embedding models, like those from Hugging Face that can run locally
+- Fallback mechanisms for when the API is unavailable

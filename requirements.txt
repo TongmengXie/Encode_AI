@@ -1,33 +1,59 @@
+# Python Version
+# Requires Python 3.12.9
+# ----------------------
+
+# Critical dependencies - install first
+pandas==2.2.3
+numpy==2.2.4
+
 # Core dependencies
-pandas==2.0.0
-numpy==1.24.3
-requests==2.28.2
-python-dotenv==1.0.0
+python-dotenv==1.1.0
 
 # API integrations
-openai==1.3.0  # For embeddings and content generation
-google-generativeai==0.3.0  # For Gemini API integration
-flask==2.3.2  # For recommendation API
-flask-cors==4.0.0  # For CORS handling in Flask API
+openai==1.72.0
+google-generativeai==0.8.4
+flask==2.0.1
+flask-cors==3.0.10
+requests==2.32.3
 
-# Terminal UI enhancements
-rich==13.3.5  # For beautiful terminal output
-markdown==3.4.3  # For blog post formatting
+# Web & deployment
+gunicorn==20.1.0
+werkzeug==2.0.3
+flask-restful==0.3.10
 
-# Web functionality
-# webbrowser==0.0.1  # For opening URLs
-flask-restful==0.3.10  # For building REST APIs
+# Data processing and visualization
+pytz==2025.2
+folium==0.19.5
+markdown==3.8
+pillow==11.1.0
+branca==0.8.1
+shapely==2.1.0
+contourpy==1.3.1
+reportlab==4.3.1
+matplotlib==3.10.1
 
-# Data handling and utilities
-datetime  # For timestamp generation
-pathlib  # For file path operations
-pickle  # For saving/loading embeddings
-hashlib  # For generating hash values
-random  # For selecting random partners
-os  # For file system operations
-sys  # For system-level operations
-json  # For processing JSON data
+# Development and testing
+ipython==8.12.0
+pytest==8.3.5
+pytest-mock==3.14.0
 
-# Development tools
-ipython==8.12.0  # For interactive development
-pytest==7.3.1  # For testing 
+# Process management
+psutil==7.0.0
+
+# Additional dependencies found in your environment
+jinja2==3.1.6
+pydantic==2.11.3
+pydantic-core==2.33.1
+typing-extensions==4.13.2
+certifi==2025.1.31
+idna==3.10
+urllib3==2.4.0
+six==1.17.0
+markupsafe==3.0.2
+setuptools==75.8.0
+wheel==0.45.0
+
+# Note: Standard library modules don't need to be in requirements.txt:
+# datetime, pathlib, pickle, hashlib, random, os, sys, json, re, time, math, 
+# traceback, http.server, socketserver, threading, signal, platform, 
+# webbrowser, shutil, subprocess 
