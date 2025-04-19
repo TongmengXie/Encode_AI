@@ -249,8 +249,11 @@
                 <li>Complete the survey with your travel preferences and submit it.</li>
                 <li>After successful submission, close the survey window.</li>
                 <li>Return to this page to see the confirmation message.</li>
-                <li>After saving survey results, you can click "Launch Embedding Calculation" to process your data.</li>
+                <li>After saving survey results, you can click "Launch Embedding Calculation" to process your data.
+                   <strong>Note:</strong> If embedding calculation fails, you can use the Demo Mode button for pre-calculated matches.</li>
                 <li>Once a partner is selected, you can enter your origin and destination cities.</li>
+                <li>Click "Launch Route Generation" to see transportation options for your trip.</li>
+                <li>Click "Launch Blog Assistant" to generate a personalized blog content for your trip based on your profile and selected route.</li>
                 <li>When you are done, click the "Close Application" button to shut down the server.</li>
             </ol>
         </div>
@@ -262,6 +265,12 @@
         
         <!-- Demo mode button -->
         <button id="demoModeBtn" class="btn" style="background-color: #f39c12; margin-top: 10px; display: none;">Use Demo Mode</button>
+        
+        <!-- New Route Generation button -->
+        <button id="routeGenerationBtn" class="btn" style="background-color: #9b59b6; margin-top: 10px;">Launch Route Generation</button>
+
+        <!-- New Blog Assistant button -->
+        <button id="blogAssistantBtn" class="btn" style="background-color: #3498db; margin-top: 10px;">Launch Blog Assistant</button>
         
         <!-- New button for closing application -->
         <button id="closeAppBtn" class="btn" style="background-color: #e74c3c; margin-top: 10px; display: inline-block; width: 200px;">Close Application</button>
@@ -325,6 +334,14 @@
                 <!-- City selection details will be shown here -->
             </div>
         </div>
+        
+        <!-- Selected route display -->
+        <div id="selectedRouteDisplay" class="city-result" style="display: none; background-color: #e8fff0; border-color: #27ae60;">
+            <h3>Your Selected Transportation</h3>
+            <div id="selectedRouteDetails">
+                <!-- Selected route details will be shown here -->
+            </div>
+        </div>
     </div>
     
     <script>
@@ -333,6 +350,8 @@
         const launchBtn = document.getElementById('launchBtn');
         const embeddingBtn = document.getElementById('embeddingBtn');
         const demoModeBtn = document.getElementById('demoModeBtn');
+        const routeGenerationBtn = document.getElementById('routeGenerationBtn');
+        const blogAssistantBtn = document.getElementById('blogAssistantBtn');
         const successMessage = document.getElementById('successMessage');
         const loadingIndicator = document.getElementById('loadingIndicator');
         const matchesContainer = document.getElementById('matchesContainer');
@@ -346,6 +365,8 @@
         const submitCitiesBtn = document.getElementById('submitCitiesBtn');
         const cityResult = document.getElementById('cityResult');
         const cityResultDetails = document.getElementById('cityResultDetails');
+        const selectedRouteDisplay = document.getElementById('selectedRouteDisplay');
+        const selectedRouteDetails = document.getElementById('selectedRouteDetails');
         const demoModeIndicator = document.getElementById('demoModeIndicator');
         
         // Store matches data
@@ -714,6 +735,82 @@
         // Add event listener to demo mode button
         demoModeBtn.addEventListener('click', usePreCalculatedMatches);
         
+        // Add event listener to route generation button
+        routeGenerationBtn.addEventListener('click', function() {
+            // Get origin and destination cities from input fields if they exist
+            let originCity = 'London';
+            let destinationCity = 'Paris';
+            
+            // If the user has already entered cities, use those instead
+            if (originCityInput && originCityInput.value.trim()) {
+                originCity = originCityInput.value.trim();
+            }
+            
+            if (destinationCityInput && destinationCityInput.value.trim()) {
+                destinationCity = destinationCityInput.value.trim();
+            }
+            
+            // Open the route generation page in a new window
+            window.open(`route_generation.html?origin=${encodeURIComponent(originCity)}&destination=${encodeURIComponent(destinationCity)}`, 
+                        'RouteGenerationWindow', 
+                        'width=1000,height=800,resizable=yes,scrollbars=yes');
+        });
+        
+        // Add event listener to blog assistant button
+        blogAssistantBtn.addEventListener('click', function() {
+            // Get origin and destination cities from input fields if they exist
+            let originCity = 'London';
+            let destinationCity = 'Paris';
+            
+            // If the user has already entered cities, use those instead
+            if (originCityInput && originCityInput.value.trim()) {
+                originCity = originCityInput.value.trim();
+            }
+            
+            if (destinationCityInput && destinationCityInput.value.trim()) {
+                destinationCity = destinationCityInput.value.trim();
+            }
+            
+            // Prepare route data
+            let routeData = {
+                origin: originCity,
+                destination: destinationCity
+            };
+            
+            // If a route was selected, include that data
+            const selectedRouteInfo = localStorage.getItem('selectedRoute');
+            if (selectedRouteInfo) {
+                try {
+                    routeData = JSON.parse(selectedRouteInfo);
+                } catch (e) {
+                    console.warn('Error parsing saved route:', e);
+                }
+            }
+            
+            // Open the blog assistant page in a new window
+            const blogWindow = window.open('blog_assistant.html', 'BlogAssistantWindow', 
+                'width=1000,height=800,resizable=yes,scrollbars=yes');
+            
+            // Send data to the blog assistant window once it's loaded
+            if (blogWindow) {
+                blogWindow.onload = function() {
+                    // Send route data
+                    blogWindow.postMessage({
+                        type: 'ROUTE_SELECTED',
+                        route: routeData
+                    }, '*');
+                    
+                    // If a partner was selected, send that data too
+                    if (selectedMatch) {
+                        blogWindow.postMessage({
+                            type: 'PARTNER_SELECTED',
+                            partner: selectedMatch
+                        }, '*');
+                    }
+                };
+            }
+        });
+        
         // On page load, check if we should show the demo mode button
         window.addEventListener('load', function() {
             // For Render deployments, make demo mode more accessible
@@ -721,11 +818,9 @@
                 window.location.hostname.includes('onrender.com')) {
                 demoModeBtn.style.display = 'block';
                 
-                // Add a note about demo mode to the instructions
-                const instructionsList = document.querySelector('.instructions ol');
-                const demoNote = document.createElement('li');
-                demoNote.innerHTML = '<strong>Note:</strong> If embedding calculation fails, you can use the Demo Mode button for pre-calculated matches.';
-                instructionsList.appendChild(demoNote);
+                // We don't need to add the note here anymore since it's already in the HTML
+                // But we'll ensure the demo mode button is visible
+                console.log('Render deployment detected - showing demo mode button');
             }
             
             // Ensure the close button is visible
@@ -737,6 +832,98 @@
                 console.error('Close application button not found in DOM');
             }
         });
+        
+        // Listen for messages from the route generation window
+        window.addEventListener('message', function(event) {
+            // Check if the message is a route selection
+            if (event.data && event.data.type === 'ROUTE_SELECTED') {
+                const route = event.data.route;
+                
+                // Display the selected route
+                displaySelectedRoute(route);
+            }
+        });
+        
+        // Function to display the selected route
+        function displaySelectedRoute(route) {
+            // Get transport mode data with fallbacks
+            const mode = route.mode || 'Custom Transport';
+            const duration = route.duration || 'Varies';
+            const cost = route.cost || 'Variable';
+            const carbon = route.carbon_footprint || 'Unknown';
+            const comfort = route.comfort_level || 3;
+            const pros = route.pros || ['Convenient option'];
+            const cons = route.cons || ['Varies by conditions'];
+            const origin = route.origin || 'Origin';
+            const destination = route.destination || 'Destination';
+            
+            // Generate comfort stars
+            const comfortStars = "⭐".repeat(Math.min(parseInt(comfort), 5));
+            
+            // Format the HTML
+            let html = `
+                <h4>${origin} to ${destination}</h4>
+                <div style="background-color: #f5f5f5; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                    <div style="font-size: 1.2em; font-weight: bold; margin-bottom: 10px;">
+                        <span style="font-size: 24px; margin-right: 10px;">
+                            ${getTransportIcon(mode)}
+                        </span>
+                        ${mode}
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span style="font-weight: bold; color: #7f8c8d;">Duration:</span>
+                        <span>⏱️ ${duration}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span style="font-weight: bold; color: #7f8c8d;">Cost:</span>
+                        <span>💰 ${cost}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span style="font-weight: bold; color: #7f8c8d;">Comfort:</span>
+                        <span>${comfortStars}</span>
+                    </div>
+                </div>
+                <p>Your transportation has been selected. You're ready for your WanderMatch journey!</p>
+            `;
+            
+            // Update the container
+            selectedRouteDetails.innerHTML = html;
+            
+            // Show the selected route display
+            selectedRouteDisplay.style.display = 'block';
+            
+            // Scroll to the selected route display
+            selectedRouteDisplay.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Function to get transport icon (copied from route_generation.html)
+        function getTransportIcon(transportMode) {
+            transportMode = transportMode.toLowerCase();
+            
+            if (transportMode.includes('plane') || transportMode.includes('flight') || transportMode.includes('air')) {
+                return "✈️";
+            } else if (transportMode.includes('train') || transportMode.includes('rail')) {
+                return "🚆";
+            } else if (transportMode.includes('bus') || transportMode.includes('coach')) {
+                return "🚌";
+            } else if (transportMode.includes('car') || transportMode.includes('drive') || transportMode.includes('taxi')) {
+                return "🚗";
+            } else if (transportMode.includes('boat') || transportMode.includes('ferry') || transportMode.includes('ship')) {
+                return "⛴️";
+            } else if (transportMode.includes('bike') || transportMode.includes('bicycle') || transportMode.includes('cycle')) {
+                return "🚲";
+            } else if (transportMode.includes('walk') || transportMode.includes('foot') || transportMode.includes('hiking')) {
+                return "🚶";
+            } else if (transportMode.includes('subway') || transportMode.includes('metro') || transportMode.includes('underground')) {
+                return "🚇";
+            } else if (transportMode.includes('tram') || transportMode.includes('streetcar')) {
+                return "🚊";
+            } else if (transportMode.includes('motorcycle') || transportMode.includes('motorbike')) {
+                return "🏍️";
+            } else {
+                return "🚀";
+            }
+        }
     </script>
 </body>
 </html> 

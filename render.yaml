@@ -64,6 +64,8 @@ services:
       # Copy survey forms to public directory so they're included in the build
       cp ../../test_survey_form.html public/ || echo "Test form not found"
       cp ../../survey_launcher.html public/ || echo "Survey launcher not found"
+      cp ../../route_generation.html public/ || echo "Route generation page not found"
+      cp ../../blog_assistant.html public/ || echo "Blog assistant page not found"
       npm run build
       echo "Frontend build completed"
     staticPublishPath: ./deploy/frontend/build
