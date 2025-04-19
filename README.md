@@ -2,6 +2,10 @@
 
 WanderMatch is an application that helps users find compatible travel companions, generate personalized itineraries, and create travel blogs based on user preferences.
 
+## Demo
+
+![WanderMatch Demo](DemoInput/WanderMatch_Demo.png)
+
 ## New React Deployment
 
 This project now includes a React-based web deployment for public use. To start the application:

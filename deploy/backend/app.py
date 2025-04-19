@@ -19,15 +19,26 @@ if os.environ.get('ENVIRONMENT') == 'production':
     allowed_origins = [
         'https://wandermatch-frontend-b17a.onrender.com',
         'https://wandermatch-frontend.onrender.com',
-        'https://wandermatch-frontend-*'  # Wildcard for any Render frontend instance
+        'https://wandermatch-frontend-*.onrender.com'  # Explicit pattern for Render subdomains
     ]
     
     # Get allowed origin from environment if available
     if os.environ.get('ALLOWED_ORIGINS'):
         allowed_origins.append(os.environ.get('ALLOWED_ORIGINS'))
+        
+    # Add http variations for testing
+    allowed_origins.extend([
+        'http://wandermatch-frontend-b17a.onrender.com',
+        'http://wandermatch-frontend.onrender.com',
+        'http://wandermatch-frontend-*.onrender.com'
+    ])
     
     print(f"Configuring CORS for production with specific origins: {allowed_origins}")
-    CORS(app, origins=allowed_origins, supports_credentials=True)
+    # Log more detailed CORS configuration
+    print(f"ALLOWED_ORIGINS from environment: {os.environ.get('ALLOWED_ORIGINS')}")
+    
+    # Use a more permissive CORS configuration for Render
+    CORS(app, origins=allowed_origins, supports_credentials=True, allow_headers="*", expose_headers="*")
 else:
     # In development, allow all origins
     CORS(app)
@@ -84,7 +95,8 @@ def root():
             {"path": "/api/health", "methods": ["GET"], "description": "Health check endpoint"},
             {"path": "/api/survey", "methods": ["POST"], "description": "Submit survey responses"},
             {"path": "/api/embedding", "methods": ["GET"], "description": "Calculate embeddings and find matches"},
-            {"path": "/api/generate_blog", "methods": ["POST"], "description": "Generate a travel blog"}
+            {"path": "/api/generate_blog", "methods": ["POST"], "description": "Generate a travel blog"},
+            {"path": "/api/answer_question", "methods": ["POST"], "description": "Answer travel-related questions using LLM providers"}
         ],
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
     }
@@ -728,31 +740,77 @@ def generate_blog():
     try:
         # Log the incoming request
         print(f"Received blog generation request at {time.strftime('%Y-%m-%d %H:%M:%S')}")
+        print(f"Environment: {os.environ.get('ENVIRONMENT', 'development')}")
         
-        # Import the blog generator module from project root
-        # Make sure PROJECT_ROOT is in sys.path
+        # Set up paths properly - multiple ways to ensure blog_generator.py is found
+        # 1. First try using PROJECT_ROOT
         if PROJECT_ROOT not in sys.path:
             sys.path.insert(0, PROJECT_ROOT)
             print(f"Added project root to sys.path: {PROJECT_ROOT}")
         
-        # Check that the blog_generator.py file exists
-        blog_generator_path = os.path.join(PROJECT_ROOT, "blog_generator.py")
-        if not os.path.exists(blog_generator_path):
-            error_msg = f"blog_generator.py not found at: {blog_generator_path}"
+        # 2. Also try the parent directory of deploy/backend
+        parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
+        if parent_dir not in sys.path:
+            sys.path.insert(0, parent_dir)
+            print(f"Added parent directory to sys.path: {parent_dir}")
+        
+        # 3. Add current working directory as fallback
+        cwd = os.getcwd()
+        if cwd not in sys.path:
+            sys.path.insert(0, cwd)
+            print(f"Added current working directory to sys.path: {cwd}")
+            
+        # Try all possible locations for blog_generator.py
+        possible_paths = [
+            os.path.join(PROJECT_ROOT, "blog_generator.py"),
+            os.path.join(parent_dir, "blog_generator.py"),
+            os.path.join(cwd, "blog_generator.py"),
+            "blog_generator.py" # Relative to current directory
+        ]
+        
+        blog_generator_path = None
+        for path in possible_paths:
+            if os.path.exists(path):
+                blog_generator_path = path
+                print(f"Found blog_generator.py at: {blog_generator_path}")
+                break
+                
+        if not blog_generator_path:
+            error_msg = f"blog_generator.py not found in any of these locations: {possible_paths}"
             print(error_msg)
             return jsonify({'success': False, 'error': error_msg}), 404
         
-        print(f"Found blog_generator.py at: {blog_generator_path}")
-        
         # Try importing with detailed error handling
         try:
+            print(f"Python sys.path: {sys.path}")
+            print(f"Attempting to import blog_generator from {os.path.dirname(blog_generator_path)}")
+            
+            # Add the directory containing blog_generator.py to the path
+            blog_dir = os.path.dirname(blog_generator_path)
+            if blog_dir and blog_dir not in sys.path:
+                sys.path.insert(0, blog_dir)
+            
+            # Try direct import
             from blog_generator import generate_blog_post
             print("Successfully imported generate_blog_post function")
         except ImportError as e:
             error_msg = f"Error importing blog_generator: {str(e)}"
             print(error_msg)
             print(traceback.format_exc())
-            return jsonify({'success': False, 'error': error_msg}), 500
+            
+            # Try a fallback approach - load the module directly from file
+            try:
+                import importlib.util
+                spec = importlib.util.spec_from_file_location("blog_generator", blog_generator_path)
+                blog_generator = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(blog_generator)
+                generate_blog_post = blog_generator.generate_blog_post
+                print("Successfully imported generate_blog_post function using importlib")
+            except Exception as e2:
+                error_msg = f"Failed to import blog_generator.py using alternative methods: {str(e2)}"
+                print(error_msg)
+                print(traceback.format_exc())
+                return jsonify({'success': False, 'error': error_msg}), 500
         
         # Get JSON data from request
         data = request.json
@@ -769,6 +827,11 @@ def generate_blog():
         # Get user information from the latest survey file
         user_info = {}
         try:
+            # Make sure survey results directory exists
+            if not os.path.exists(survey_results_dir):
+                os.makedirs(survey_results_dir, exist_ok=True)
+                print(f"Created survey_results_dir: {survey_results_dir}")
+            
             # Get most recent user answer file
             files = [f for f in os.listdir(survey_results_dir) if f.startswith("user_answer_") and f.endswith(".csv")]
             
@@ -799,32 +862,47 @@ def generate_blog():
                 if 'destination' in route_info:
                     user_info['destination_city'] = route_info['destination']
         
-        # Call the blog generator
-        print("Calling blog generator with:")
-        print(f"User info: {user_info}")
-        print(f"Partner info: {partner_info}")
-        print(f"Route info: {route_info}")
-        
-        # Create output directory if it doesn't exist
+        # Create blog output directory with proper error handling
         blog_output_dir = os.path.join(PROJECT_ROOT, "wandermatch_output", "blogs")
-        os.makedirs(blog_output_dir, exist_ok=True)
-        
-        # Ensure the directory has write permissions
         try:
-            os.chmod(blog_output_dir, 0o777)
-            print(f"Set permissions on blog output directory: {blog_output_dir}")
+            os.makedirs(blog_output_dir, exist_ok=True)
+            print(f"Ensured blog output directory exists: {blog_output_dir}")
             
-            # Write a test file to verify permissions
-            test_file = os.path.join(blog_output_dir, "write_test.txt")
-            with open(test_file, 'w') as f:
-                f.write("Write test successful")
-            os.remove(test_file)
-            print(f"Successfully verified write permissions on {blog_output_dir}")
+            # Check if directory was actually created
+            if not os.path.exists(blog_output_dir):
+                error_msg = f"Failed to create blog output directory: {blog_output_dir}"
+                print(error_msg)
+                return jsonify({'success': False, 'error': error_msg}), 500
+                
+            # Set directory permissions
+            try:
+                os.chmod(blog_output_dir, 0o777)
+                print(f"Set permissions on blog output directory: {blog_output_dir}")
+                
+                # Verify permissions with a test file
+                test_file = os.path.join(blog_output_dir, "write_test.txt")
+                with open(test_file, 'w') as f:
+                    f.write("Write test successful")
+                os.remove(test_file)
+                print(f"Successfully verified write permissions on {blog_output_dir}")
+            except Exception as e:
+                print(f"Warning: Could not set permissions on blog directory: {str(e)}")
+                print(traceback.format_exc())
+                # Continue anyway - it might still work
         except Exception as e:
-            print(f"Warning: Could not set permissions on blog directory: {str(e)}")
+            error_msg = f"Error creating blog output directory: {str(e)}"
+            print(error_msg)
+            print(traceback.format_exc())
+            return jsonify({'success': False, 'error': error_msg}), 500
         
-        # Call the blog generator function
+        # Call the blog generator function with detailed logging
+        print("Calling generate_blog_post with:")
+        print(f"User info: {json.dumps(user_info, indent=2)}")
+        print(f"Partner info: {partner_info}")
+        print(f"Route info: {json.dumps(route_info, indent=2)}")
+        
         result = generate_blog_post(user_info, partner_info, route_info)
+        print(f"Blog generator returned: {json.dumps(result, indent=2)}")
         
         # Return the result
         return jsonify({
@@ -847,6 +925,85 @@ def favicon():
     Returns a 204 No Content response instead of a 404.
     """
     return '', 204
+
+@app.route('/api/cors-test', methods=['GET', 'POST', 'OPTIONS'])
+def cors_test():
+    """
+    Simple endpoint to test CORS configuration.
+    This endpoint will always return success and includes detailed request information.
+    """
+    response_data = {
+        "success": True,
+        "message": "CORS test successful",
+        "request": {
+            "method": request.method,
+            "headers": {k: v for k, v in request.headers.items()},
+            "origin": request.headers.get('Origin', 'Unknown'),
+            "referrer": request.headers.get('Referer', 'Unknown')
+        },
+        "server": {
+            "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+            "environment": os.environ.get('ENVIRONMENT', 'development'),
+            "allowed_origins": os.environ.get('ALLOWED_ORIGINS', 'Not set')
+        }
+    }
+    
+    return jsonify(response_data)
+
+@app.route('/api/answer_question', methods=['POST'])
+def answer_question():
+    """
+    API endpoint to answer travel-related questions using LLM providers.
+    
+    This endpoint attempts to use multiple LLM providers in sequence:
+    1. OpenAI GPT-3.5-turbo
+    2. Google Gemini 1.5
+    3. Fallback approach
+    
+    Returns:
+        JSON with the answer and information about which provider was used
+    """
+    try:
+        # Log the incoming request
+        print(f"Received question answering request at {time.strftime('%Y-%m-%d %H:%M:%S')}")
+        
+        # Import the LLM service
+        from llm_service import LLMService
+        
+        # Get JSON data from request
+        data = request.json
+        if not data:
+            print("ERROR: No JSON data received for question answering")
+            return jsonify({'success': False, 'error': 'No data provided'}), 400
+        
+        # Get the question
+        question = data.get('question')
+        if not question:
+            print("ERROR: No question provided")
+            return jsonify({'success': False, 'error': 'No question provided'}), 400
+        
+        # Get context information if provided
+        context = data.get('context', {})
+        
+        # Create LLM service instance
+        llm_service = LLMService()
+        
+        # Get answer
+        print(f"Calling LLM service to answer question: {question}")
+        result = llm_service.answer_question(question, context)
+        
+        # Return the result
+        return jsonify({
+            'success': True,
+            'answer': result['answer'],
+            'provider': result['provider']
+        })
+    
+    except Exception as e:
+        error_msg = f"Error answering question: {str(e)}"
+        print(error_msg)
+        print(traceback.format_exc())
+        return jsonify({'success': False, 'error': error_msg}), 500
 
 if __name__ == '__main__':
     # Get port from environment variable or use default

@@ -252,7 +252,7 @@
                 <li>After saving survey results, you can click "Launch Embedding Calculation" to process your data.
                    <strong>Note:</strong> If embedding calculation fails, you can use the Demo Mode button for pre-calculated matches.</li>
                 <li>Once a partner is selected, you can enter your origin and destination cities.</li>
-                <li>Click "Launch Route Generation" to see transportation options for your trip.</li>
+                <li>Click "Launch Route Generation" to see transportation options for your trip and select your preferred route.</li>
                 <li>Click "Launch Blog Assistant" to generate a personalized blog content for your trip based on your profile and selected route.</li>
                 <li>When you are done, click the "Close Application" button to shut down the server.</li>
             </ol>
@@ -342,6 +342,31 @@
                 <!-- Selected route details will be shown here -->
             </div>
         </div>
+        
+        <!-- Question and Answer Section -->
+        <div id="qaSectionContainer" class="qa-section" style="margin-top: 30px; display: none;">
+            <h3>Ask Travel Questions</h3>
+            <p>Ask any travel-related questions about your trip:</p>
+            
+            <div class="form-group" style="margin-bottom: 15px;">
+                <textarea id="questionInput" placeholder="E.g., What are the best restaurants in Paris? What should I pack for this trip?" style="width: 100%; padding: 10px; min-height: 100px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; resize: vertical;"></textarea>
+            </div>
+            
+            <button id="submitQuestionBtn" class="btn" style="background-color: #3498db; width: auto;">Submit Question</button>
+            
+            <!-- Answer loading indicator -->
+            <div id="answerLoading" class="loading" style="display: none; margin-top: 20px;">
+                <div class="loading-spinner"></div>
+                <p>Finding the answer to your question...</p>
+                <p>This may take a moment. Please wait.</p>
+            </div>
+            
+            <!-- Answer display -->
+            <div id="answerContainer" style="margin-top: 20px; padding: 15px; background-color: #f0f7ff; border-radius: 8px; border-left: 4px solid #3498db; display: none;">
+                <div id="answerText" style="margin-bottom: 10px;"></div>
+                <div id="answerProvider" style="font-size: 12px; color: #888; text-align: right; font-style: italic;"></div>
+            </div>
+        </div>
     </div>
     
     <script>
@@ -372,6 +397,16 @@
         // Store matches data
         let matchesData = [];
         let selectedMatch = null;
+        let selectedRoute = null;
+        
+        // Add elements for question answering
+        const qaSectionContainer = document.getElementById('qaSectionContainer');
+        const questionInput = document.getElementById('questionInput');
+        const submitQuestionBtn = document.getElementById('submitQuestionBtn');
+        const answerLoading = document.getElementById('answerLoading');
+        const answerContainer = document.getElementById('answerContainer');
+        const answerText = document.getElementById('answerText');
+        const answerProvider = document.getElementById('answerProvider');
         
         // Function to close application
         async function closeApplication() {
@@ -833,14 +868,19 @@
             }
         });
         
-        // Listen for messages from the route generation window
+        // Add route selection event handler
         window.addEventListener('message', function(event) {
-            // Check if the message is a route selection
-            if (event.data && event.data.type === 'ROUTE_SELECTED') {
-                const route = event.data.route;
+            if (event.data && event.data.type === 'ROUTE_SELECTED' && event.data.route) {
+                console.log("Route data received from route generation window:", event.data.route);
                 
-                // Display the selected route
-                displaySelectedRoute(route);
+                // Store the selected route
+                selectedRoute = event.data.route;
+                
+                // Format and display the route details
+                displaySelectedRoute(event.data.route);
+                
+                // Show the Q&A section now that we have route information
+                qaSectionContainer.style.display = 'block';
             }
         });
         
@@ -924,6 +964,91 @@
                 return "🚀";
             }
         }
+        
+        // Function to submit questions and display answers
+        async function submitQuestion() {
+            const question = questionInput.value.trim();
+            
+            if (!question) {
+                alert('Please enter a question');
+                return;
+            }
+            
+            // Show loading and hide previous answer
+            answerLoading.style.display = 'block';
+            answerContainer.style.display = 'none';
+            submitQuestionBtn.disabled = true;
+            
+            try {
+                // Prepare context from saved data
+                const context = {};
+                
+                // Add route information if available
+                if (selectedRoute) {
+                    context.route = selectedRoute;
+                }
+                
+                // Add partner information if available
+                if (selectedMatch) {
+                    context.partner = selectedMatch;
+                }
+                
+                console.log("Submitting question with context:", context);
+                
+                // Call the API
+                const response = await fetch(`${API_URL}/api/answer_question`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        question: question,
+                        context: context
+                    })
+                });
+                
+                // Check response status
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status} ${response.statusText}`);
+                }
+                
+                // Parse the response
+                const result = await response.json();
+                console.log("API response:", result);
+                
+                // Display the answer
+                if (result.success) {
+                    answerText.textContent = result.answer;
+                    answerProvider.textContent = `Powered by: ${result.provider}`;
+                    answerContainer.style.display = 'block';
+                } else {
+                    answerText.textContent = `Error: ${result.error || 'Unknown error'}`;
+                    answerProvider.textContent = 'Error';
+                    answerContainer.style.display = 'block';
+                }
+            } catch (error) {
+                console.error("Error submitting question:", error);
+                answerText.textContent = `Error: ${error.message}`;
+                answerProvider.textContent = 'Error';
+                answerContainer.style.display = 'block';
+            } finally {
+                // Hide loading and enable submit button
+                answerLoading.style.display = 'none';
+                submitQuestionBtn.disabled = false;
+            }
+        }
+        
+        // Event listener for question submission
+        submitQuestionBtn.addEventListener('click', submitQuestion);
+        
+        // Also submit on Enter key while in the textarea (with Shift+Enter for newlines)
+        questionInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                submitQuestion();
+            }
+        });
     </script>
 </body>
 </html> 

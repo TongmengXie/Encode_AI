@@ -141,12 +141,20 @@
                 const frontendUrl = window.location.origin;
                 console.log('Frontend URL:', frontendUrl);
                 
-                // Extract the subdomain pattern correctly using regex
-                // This handles wandermatch-frontend, wandermatch-frontend-b17a, etc.
-                const apiUrl = frontendUrl.replace(
-                    /wandermatch-frontend[^.]*\./, 
-                    'wandermatch-api.'
-                );
+                // Improved domain transformation for render.com 
+                let apiUrl;
+                
+                // Try to handle both explicit Render domains and custom domains
+                if (frontendUrl.includes('wandermatch-frontend')) {
+                    // First check if it's a standard Render subdomain pattern
+                    apiUrl = frontendUrl.replace(
+                        /wandermatch-frontend([^.]*)\./, 
+                        'wandermatch-api$1.'
+                    );
+                } else {
+                    // Use frontend URL directly but with /api appended
+                    apiUrl = `${frontendUrl}/api`;
+                }
                 
                 console.log('Render deployment detected - using API URL:', apiUrl);
                 return apiUrl;
@@ -188,17 +196,45 @@
                     if (savedPartner) {
                         partnerInfo = JSON.parse(savedPartner);
                         console.log('Partner info loaded from localStorage:', partnerInfo);
+                    } else {
+                        console.warn('No partner information found in localStorage');
                     }
                 } catch (e) {
                     console.warn('Error parsing saved partner:', e);
                 }
                 
-                // Add some diagnostic information
+                // Add detailed diagnostic information
                 console.log(`Calling API endpoint: ${API_URL}/api/generate_blog`);
+                console.log('Current window.location:', window.location.toString());
+                console.log('Current hostname:', window.location.hostname);
+                
+                // Test connection to backend with a simpler endpoint first
+                try {
+                    console.log(`Testing API connection with health check: ${API_URL}/api/health`);
+                    const healthCheck = await fetch(`${API_URL}/api/health`, {
+                        method: 'GET',
+                        headers: { 'Accept': 'application/json' },
+                        mode: 'cors'
+                    });
+                    
+                    if (healthCheck.ok) {
+                        const healthData = await healthCheck.json();
+                        console.log('Health check successful:', healthData);
+                    } else {
+                        console.warn(`Health check failed with status: ${healthCheck.status}`);
+                    }
+                } catch (healthError) {
+                    console.warn('Health check error:', healthError);
+                }
                 
                 // Call the API endpoint with additional error handling
                 let response;
                 try {
+                    console.log('Sending blog generation request with data:', {
+                        route_info: routeInfo,
+                        partner_info: partnerInfo
+                    });
+                    
                     response = await fetch(`${API_URL}/api/generate_blog`, {
                         method: 'POST',
                         headers: {
@@ -217,12 +253,27 @@
                     
                     // Check for response status before trying to parse JSON
                     if (!response.ok) {
-                        throw new Error(`Server returned ${response.status} ${response.statusText}`);
+                        if (response.status === 0) {
+                            throw new Error('Network error: Likely a CORS issue. Check that the API server allows cross-origin requests from this domain.');
+                        } else if (response.status === 404) {
+                            throw new Error('The API endpoint was not found. Check that /api/generate_blog exists on the server.');
+                        } else if (response.status === 500) {
+                            throw new Error(`Server error: The API server encountered an internal error. Details: ${response.statusText}`);
+                        } else {
+                            throw new Error(`Server returned ${response.status} ${response.statusText}`);
+                        }
                     }
                 } catch (fetchError) {
                     // More detailed error handling for network/CORS issues
                     console.error('Fetch error:', fetchError);
-                    throw new Error(`Network error: ${fetchError.message}. This might be due to CORS issues or the API server being unavailable.`);
+                    
+                    // Try to determine the specific error type
+                    let errorMessage = fetchError.message;
+                    if (fetchError.name === 'TypeError' && errorMessage.includes('Failed to fetch')) {
+                        errorMessage = 'Network error: Cannot connect to the API server. This might be due to CORS restrictions, the API server being offline, or network connectivity issues.';
+                    }
+                    
+                    throw new Error(errorMessage);
                 }
                 
                 // Process response
@@ -273,7 +324,7 @@
                 // Hide loading
                 loadingDiv.style.display = 'none';
                 
-                // Show error with more diagnostic information
+                // Show error with comprehensive diagnostic information
                 resultContainer.style.display = 'block';
                 resultMessage.innerHTML = `
                     <p class="error-message">Error: ${error.message}</p>
@@ -283,8 +334,12 @@
                         <li>API URL: ${API_URL}</li>
                         <li>Current host: ${window.location.hostname}</li>
                         <li>Error type: ${error.name}</li>
+                        <li>Origin: ${window.location.origin}</li>
+                        <li>Protocol: ${window.location.protocol}</li>
+                        <li>Path: ${window.location.pathname}</li>
                     </ul>
                     <p>This may be due to a CORS issue, connection problem, or server error.</p>
+                    <p>Try refreshing the page or going back to the main application and starting again.</p>
                 `;
                 
                 // Re-enable the button
