@@ -35,6 +35,7 @@ This will:
 - **Interactive Maps**: Visualize travel routes with interactive Folium maps showing attractions and travel paths
 - **Blog Generation**: Automatically create travel blogs using AI (Gemini or OpenAI) with personalized content based on user profile and travel details
 - **Itinerary Planning**: Generate customized travel plans with attractions, route points, and timelines
+- **Travel Q&A**: Ask travel-related questions and get AI-powered answers about your chosen destinations and routes
 
 ## Installation
 
@@ -80,7 +81,7 @@ This will:
 
 1. Start the original command-line application:
    ```
-   python wandermatch.py
+   python serve_survey.py
    ```
 
 2. Complete the online survey:
@@ -108,22 +109,8 @@ This will:
 ## Web Deployment Usage
 
 1. Run the launcher script:
-   ```
-   python start_wandermatch.py
-   ```
-
-   **For Windows Users**: A batch file has been provided for easier startup:
-   ```
-   start_wandermatch.bat
-   ```
-   The batch file will check for Python installation and activate Conda environments if available before launching the application.
-
    **Using the Web Survey Launcher**:
-   ```
-   start_web_survey.bat
-   ```
-   or
-   ```
+    ```
    python serve_survey.py
    ```
    The web survey launcher provides a user-friendly interface with:
@@ -139,6 +126,25 @@ This will:
    - You'll return to the home page with a "Calculate Travel Match" button
 
 ## Troubleshooting
+
+### Network and CORS Issues
+
+If you encounter errors related to NetworkError or CORS:
+
+1. **Check the browser console** for detailed error messages
+2. **Verify API URLs**: Ensure the frontend is correctly connecting to the backend
+3. **CORS Configuration**: The backend has built-in CORS support but may need adjustments for custom domains
+4. **Test Connection**: Use the `/api/health` or `/api/cors-test` endpoints to diagnose connection issues
+
+### Blog Generation Issues
+
+If blog generation fails:
+
+1. **Check API keys**: Both OpenAI and Gemini keys should be valid
+2. **Verify module imports**: Ensure blog_generator.py is accessible to the backend
+3. **Check file permissions**: The output directory needs write permissions
+4. **Examine server logs**: Detailed error information is logged on the server side
+5. **Network connectivity**: Ensure the frontend can reach the backend API
 
 ### Node.js and npm Issues
 
@@ -185,7 +191,7 @@ If you encounter errors related to Node.js or npm:
 
 ```
 WanderMatch/
-├── wandermatch.py            # Main application entry point
+├── serve_survey.py           # Main application entry point
 ├── get_user_info/            # User survey and information collection
 ├── UserInfo_and_Match/       # Profile management and matching algorithm
 ├── map_utils.py              # Map generation with Folium
@@ -229,6 +235,35 @@ The blog creation system features:
 - Markdown formatting with structured sections
 - Conversion to HTML with styled presentation
 - Automatic browser opening to display blogs
+- Enhanced error handling with detailed diagnostics
+- Cross-origin request support for deployed environments
+
+## Travel Q&A Feature
+
+The travel question answering system provides:
+- Context-aware answers based on your selected route and partner
+- Integration with multiple LLM providers (OpenAI GPT-3.5, Google Gemini)
+- Automatic fallback mechanisms if one service is unavailable
+- Elegant UI that displays the source of information
+- Seamless integration with the rest of your travel planning process
+
+## Deployment Options
+
+### Local Deployment
+
+Follow the installation and usage instructions above to run the application locally.
+
+### Render Cloud Deployment
+
+WanderMatch is optimized for deployment on Render's cloud platform:
+
+1. **Blueprint-based Deployment**: Using the included `render.yaml` file
+2. **Multi-service Architecture**:
+   - Backend API service with Python Flask
+   - Frontend static site for a responsive UI
+3. **Automated Configuration**: Environment variables, CORS settings, and service connectivity
+
+For detailed deployment instructions, see [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md)
 
 ## Requirements
 
