@@ -12,7 +12,7 @@ This project now includes a React-based web deployment for public use. To start 
 
 ```bash
 # Run the launcher script from the root directory
-python start_wandermatch.py
+python serve_survey.py
 ```
 
 This will:
