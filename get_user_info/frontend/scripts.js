@@ -43,6 +43,31 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set up destination autofill
     setupDestinationAutofill();
     
+    // Default values for survey fields
+    const defaultValues = {
+        'name': 'Anonymous',
+        'age': 'Not specified',
+        'gender': 'Not specified',
+        'nationality': 'Not specified',
+        'destination': 'Not specified',
+        'cultural_symbol': 'Not specified',
+        'bucket_list': 'Not specified',
+        'healthcare': 'Not specified',
+        'budget': 'Not specified',
+        'payment_preference': 'Not specified',
+        'insurance': 'Not specified',
+        'insurance_issues': 'Not specified',
+        'travel_season': 'Not specified',
+        'stay_duration': 'Not specified',
+        'interests': 'Not specified',
+        'personality_type': 'Not specified', 
+        'communication_style': 'Not specified',
+        'travel_style': 'Not specified',
+        'accommodation_preference': 'Not specified',
+        'origin_city': 'Not specified',
+        'destination_city': 'Not specified'
+    };
+    
     // Handle form submission
     surveyForm.addEventListener('submit', function(event) {
         console.log("Form submission started");
@@ -63,21 +88,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log("Auto-filled destination_city with destination value");
             }
             
-            // Collect form data (including empty fields - server will handle defaults)
+            // Collect form data
             const formData = {};
             const formElements = surveyForm.elements;
             
             for (let i = 0; i < formElements.length; i++) {
                 const element = formElements[i];
                 if (element.name && element.name !== '' && element.type !== 'submit') {
-                    // Include all fields, both filled and empty
                     formData[element.name] = element.value.trim();
                 }
             }
             
-            console.log('Submitting form data:', formData);
+            console.log('Collecting form data:', formData);
             
-            // Submit the form data - empty fields will be filled with defaults by the server
+            // Send data to server
             fetch('http://localhost:5000/api/submit', {
                 method: 'POST',
                 headers: {
@@ -87,36 +111,136 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: JSON.stringify(formData)
             })
             .then(response => {
-                console.log('Response status:', response.status);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
                 return response.json();
             })
             .then(data => {
-                console.log('Success data:', data);
+                console.log('Server response:', data);
                 
-                // Hide loading overlay
-                loadingOverlay.style.display = 'none';
+                if (data.error) {
+                    showAlert('warning', `Server reported an error: ${data.error}. Please try again.`);
+                    return;
+                }
                 
-                if (data.status === 'error') {
-                    // Show error message if server returns error status
-                    showAlert('danger', data.message || 'Form submission failed');
-                } else {
-                    // Show success message and redirect
-                    showAlert('success', 'Form submitted successfully! Default values used for any empty fields.');
+                if (data.file_saved) {
+                    console.log('Survey data saved server-side');
                     
-                    // Redirect to thank you page after a short delay
-                    setTimeout(() => {
-                        window.location.href = 'thank_you.html';
-                    }, 1500);
+                    // Create a success message with file path information
+                    const filepath = data.filepath || "Unknown path";
+                    const filename = data.filename || "Unknown file";
+                    const directory = data.directory || "Unknown directory";
+                    
+                    const successHtml = `
+                        <div class="alert alert-success" role="alert">
+                            <h4 class="alert-heading">Survey Submitted Successfully!</h4>
+                            <p>Your survey data has been saved.</p>
+                            <hr>
+                            <div class="file-path-info">
+                                <p class="mb-1"><strong>File:</strong> ${filename}</p>
+                                <p class="mb-1"><strong>Directory:</strong> ${directory}</p>
+                                <p class="mb-0"><strong>Full path:</strong> ${filepath}</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Create a survey completion section
+                    const completionSection = document.createElement('div');
+                    completionSection.className = 'survey-complete mt-4 p-4 border rounded';
+                    completionSection.innerHTML = successHtml;
+                    
+                    // Add a "Start New Survey" button
+                    const resetButton = document.createElement('button');
+                    resetButton.className = 'btn btn-primary mt-3';
+                    resetButton.textContent = 'Start New Survey';
+                    resetButton.addEventListener('click', function() {
+                        window.location.reload();
+                    });
+                    completionSection.appendChild(resetButton);
+                    
+                    // Add a "Copy Path" button
+                    const copyButton = document.createElement('button');
+                    copyButton.className = 'btn btn-secondary mt-3 ms-2';
+                    copyButton.textContent = 'Copy File Path';
+                    copyButton.addEventListener('click', function() {
+                        navigator.clipboard.writeText(filepath)
+                            .then(() => {
+                                copyButton.textContent = 'Copied!';
+                                setTimeout(() => { copyButton.textContent = 'Copy File Path'; }, 2000);
+                            })
+                            .catch(err => {
+                                console.error('Could not copy text: ', err);
+                                copyButton.textContent = 'Failed to copy';
+                                setTimeout(() => { copyButton.textContent = 'Copy File Path'; }, 2000);
+                            });
+                    });
+                    completionSection.appendChild(copyButton);
+                    
+                    // Replace form with completion message
+                    const formContainer = surveyForm.parentNode;
+                    formContainer.insertBefore(completionSection, surveyForm);
+                    surveyForm.style.display = 'none';
+                    
+                    // Show success message in the alert container too
+                    showAlert('success', 'Your survey has been successfully submitted and saved.');
+                    
+                    // Send message to parent window if it exists
+                    if (window.opener && !window.opener.closed) {
+                        try {
+                            const message = {
+                                type: 'survey_complete',
+                                filepath: filepath,
+                                filename: filename,
+                                directory: directory
+                            };
+                            window.opener.postMessage(message, '*');
+                            console.log('Notified parent window of survey completion');
+                        } catch (e) {
+                            console.error('Failed to notify parent window:', e);
+                        }
+                    }
+                    
+                    // Also send the information directly to the parent app's server
+                    try {
+                        fetch('http://localhost:4000/survey-file-info', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                filepath: filepath,
+                                filename: filename,
+                                directory: directory
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('File information sent to parent app:', data);
+                        })
+                        .catch(error => {
+                            console.error('Error sending file information to parent app:', error);
+                        });
+                    } catch (e) {
+                        console.error('Failed to send file information to parent app:', e);
+                    }
+                    
+                    // Scroll to top to show the message
+                    window.scrollTo(0, 0);
+                } else {
+                    showAlert('warning', 'Survey data could not be saved. Please try again later.');
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error('Server error:', error);
+                showAlert('danger', 'Error contacting server. Please try again later.');
                 
+                // Hide loading overlay on error
+                loadingOverlay.style.display = 'none';
+            })
+            .finally(() => {
                 // Hide loading overlay
                 loadingOverlay.style.display = 'none';
-                
-                // Show error message
-                showAlert('danger', error.message || 'An error occurred while submitting the form');
             });
         } catch (error) {
             console.error('Error in form submission:', error);

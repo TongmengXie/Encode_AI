@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_a50e641c12148bfadd91b36e39464721 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.Default.css"/>
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_a50e641c12148bfadd91b36e39464721" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_a50e641c12148bfadd91b36e39464721 = L.map(
+                "map_a50e641c12148bfadd91b36e39464721",
+                {
+                    center: [31.060067099999998, 104.389722],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 6,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_b651d2ad900d6960391cb03bf3bf32bb = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_b651d2ad900d6960391cb03bf3bf32bb.addTo(map_a50e641c12148bfadd91b36e39464721);
+        
+    
+            var marker_9b65c71a90a38a1fe75e6925056b6fbe = L.marker(
+                [30.6598628, 104.0633717],
+                {
+}
+            ).addTo(map_a50e641c12148bfadd91b36e39464721);
+        
+    
+            var icon_2ebfbf0b76a5c852929444faf1e96409 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_9e2851f34d86708ea705af86cf6552c7 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_fc8b4a5732b06d1c994e0f92be086fa3 = $(`<div id="html_fc8b4a5732b06d1c994e0f92be086fa3" style="width: 100.0%; height: 100.0%;">                 <div style="width: 200px; height: auto;">                     <h4>chengdu</h4>                 </div>                 </div>`)[0];
+                popup_9e2851f34d86708ea705af86cf6552c7.setContent(html_fc8b4a5732b06d1c994e0f92be086fa3);
+            
+        
+
+        marker_9b65c71a90a38a1fe75e6925056b6fbe.bindPopup(popup_9e2851f34d86708ea705af86cf6552c7)
+        ;
+
+        
+    
+    
+            marker_9b65c71a90a38a1fe75e6925056b6fbe.bindTooltip(
+                `<div>
+                     chengdu
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_9b65c71a90a38a1fe75e6925056b6fbe.setIcon(icon_2ebfbf0b76a5c852929444faf1e96409);
+            
+    
+            var marker_2dbff1166618f2c78f716419674475b1 = L.marker(
+                [31.464051133517184, 104.2112596403071],
+                {
+}
+            ).addTo(map_a50e641c12148bfadd91b36e39464721);
+        
+    
+            var icon_d4c1b486e404de1e13f51a4935c5da8b = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_4817036cacdd3d34f8ac9ee4199085cd = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_cb128945dcd28703a47d016603c4de03 = $(`<div id="html_cb128945dcd28703a47d016603c4de03" style="width: 100.0%; height: 100.0%;">                 <div style="width: 200px; height: auto;">                     <h4>Scenic Stop</h4>                 </div>                 </div>`)[0];
+                popup_4817036cacdd3d34f8ac9ee4199085cd.setContent(html_cb128945dcd28703a47d016603c4de03);
+            
+        
+
+        marker_2dbff1166618f2c78f716419674475b1.bindPopup(popup_4817036cacdd3d34f8ac9ee4199085cd)
+        ;
+
+        
+    
+    
+            marker_2dbff1166618f2c78f716419674475b1.bindTooltip(
+                `<div>
+                     Scenic Stop
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_2dbff1166618f2c78f716419674475b1.setIcon(icon_d4c1b486e404de1e13f51a4935c5da8b);
+            
+    
+            var marker_6634fda560d384ed68f0b5398f5fe797 = L.marker(
+                [31.071269171811036, 104.19035018530623],
+                {
+}
+            ).addTo(map_a50e641c12148bfadd91b36e39464721);
+        
+    
+            var icon_7f3d6e41d06680c58713ca3cd98ccc36 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_0951c37491991e98140202364a4db5f5 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_48074d8c23375a98cdb0636a2737fd0e = $(`<div id="html_48074d8c23375a98cdb0636a2737fd0e" style="width: 100.0%; height: 100.0%;">                 <div style="width: 200px; height: auto;">                     <h4>Scenic Stop</h4>                 </div>                 </div>`)[0];
+                popup_0951c37491991e98140202364a4db5f5.setContent(html_48074d8c23375a98cdb0636a2737fd0e);
+            
+        
+
+        marker_6634fda560d384ed68f0b5398f5fe797.bindPopup(popup_0951c37491991e98140202364a4db5f5)
+        ;
+
+        
+    
+    
+            marker_6634fda560d384ed68f0b5398f5fe797.bindTooltip(
+                `<div>
+                     Scenic Stop
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_6634fda560d384ed68f0b5398f5fe797.setIcon(icon_7f3d6e41d06680c58713ca3cd98ccc36);
+            
+    
+            var marker_280edaa7025e206f8afa01a2d308e6c2 = L.marker(
+                [31.4602714, 104.7160723],
+                {
+}
+            ).addTo(map_a50e641c12148bfadd91b36e39464721);
+        
+    
+            var icon_62f28c4d018fb0537ea1c2bdfbbd41b9 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_e9d92a4fafd87ffa9a472382af75bd33 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_b75da7bdd32ad4b6b9664303c213fa19 = $(`<div id="html_b75da7bdd32ad4b6b9664303c213fa19" style="width: 100.0%; height: 100.0%;">                 <div style="width: 200px; height: auto;">                     <h4>mianyang</h4>                 </div>                 </div>`)[0];
+                popup_e9d92a4fafd87ffa9a472382af75bd33.setContent(html_b75da7bdd32ad4b6b9664303c213fa19);
+            
+        
+
+        marker_280edaa7025e206f8afa01a2d308e6c2.bindPopup(popup_e9d92a4fafd87ffa9a472382af75bd33)
+        ;
+
+        
+    
+    
+            marker_280edaa7025e206f8afa01a2d308e6c2.bindTooltip(
+                `<div>
+                     mianyang
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_280edaa7025e206f8afa01a2d308e6c2.setIcon(icon_62f28c4d018fb0537ea1c2bdfbbd41b9);
+            
+    
+            var poly_line_1f29df0c81a6591388a6cd64cf2e7a15 = L.polyline(
+                [[30.6598628, 104.0633717], [31.464051133517184, 104.2112596403071], [31.071269171811036, 104.19035018530623], [31.4602714, 104.7160723]],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "red", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.7, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_a50e641c12148bfadd91b36e39464721);
+        
+    
+            poly_line_1f29df0c81a6591388a6cd64cf2e7a15.bindTooltip(
+                `<div>
+                     High-Speed Train route
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_cluster_ac82ff0b0272a9bf3dcb437cf2695295 = L.markerClusterGroup(
+                {
+}
+            );
+        
+    
+            var marker_8d25c2ee1329b90204c6bb08c78ce35b = L.marker(
+                [31.448004172644247, 104.71877400891542],
+                {
+}
+            ).addTo(marker_cluster_ac82ff0b0272a9bf3dcb437cf2695295);
+        
+    
+            var icon_7aa08f0ab7784b134c18e70fa877e2b7 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "green",
+  "iconColor": "white",
+  "icon": "star",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_512703a1d31210e2d1f46b60c228de2b = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_0f1ab91ede0a6b85442b145afea84652 = $(`<div id="html_0f1ab91ede0a6b85442b145afea84652" style="width: 100.0%; height: 100.0%;">                     <div style="width: 200px; height: auto;">                         <h4>mianyang Museum</h4>                         <p>Learn about the local history and culture</p>                     </div>                     </div>`)[0];
+                popup_512703a1d31210e2d1f46b60c228de2b.setContent(html_0f1ab91ede0a6b85442b145afea84652);
+            
+        
+
+        marker_8d25c2ee1329b90204c6bb08c78ce35b.bindPopup(popup_512703a1d31210e2d1f46b60c228de2b)
+        ;
+
+        
+    
+    
+            marker_8d25c2ee1329b90204c6bb08c78ce35b.bindTooltip(
+                `<div>
+                     mianyang Museum
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_8d25c2ee1329b90204c6bb08c78ce35b.setIcon(icon_7aa08f0ab7784b134c18e70fa877e2b7);
+            
+    
+            var marker_ed4b0d822a0edde8a681c9f98300e446 = L.marker(
+                [31.451566681447776, 104.70117903356106],
+                {
+}
+            ).addTo(marker_cluster_ac82ff0b0272a9bf3dcb437cf2695295);
+        
+    
+            var icon_98b9defe671e9d207f6f58e9098053f9 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "green",
+  "iconColor": "white",
+  "icon": "star",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_23cfbdd212397993aaf68489859fcb00 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_a00a66b64a57c15cff9606362e3050b6 = $(`<div id="html_a00a66b64a57c15cff9606362e3050b6" style="width: 100.0%; height: 100.0%;">                     <div style="width: 200px; height: auto;">                         <h4>mianyang Central Park</h4>                         <p>Relax and enjoy nature in the heart of the city</p>                     </div>                     </div>`)[0];
+                popup_23cfbdd212397993aaf68489859fcb00.setContent(html_a00a66b64a57c15cff9606362e3050b6);
+            
+        
+
+        marker_ed4b0d822a0edde8a681c9f98300e446.bindPopup(popup_23cfbdd212397993aaf68489859fcb00)
+        ;
+
+        
+    
+    
+            marker_ed4b0d822a0edde8a681c9f98300e446.bindTooltip(
+                `<div>
+                     mianyang Central Park
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_ed4b0d822a0edde8a681c9f98300e446.setIcon(icon_98b9defe671e9d207f6f58e9098053f9);
+            
+    
+            var marker_e7395d27a33a9ed4139a6a727c5857f3 = L.marker(
+                [31.446467100757584, 104.7031858392276],
+                {
+}
+            ).addTo(marker_cluster_ac82ff0b0272a9bf3dcb437cf2695295);
+        
+    
+            var icon_bd4b75423b061d90e13c2e6f5692f259 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "green",
+  "iconColor": "white",
+  "icon": "star",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_470780c54f0c3dd4cb0f998796a2f2e7 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_8388a1b16c156ef24cd85a1a8ce46919 = $(`<div id="html_8388a1b16c156ef24cd85a1a8ce46919" style="width: 100.0%; height: 100.0%;">                     <div style="width: 200px; height: auto;">                         <h4>Historic District</h4>                         <p>Explore the charming old town area</p>                     </div>                     </div>`)[0];
+                popup_470780c54f0c3dd4cb0f998796a2f2e7.setContent(html_8388a1b16c156ef24cd85a1a8ce46919);
+            
+        
+
+        marker_e7395d27a33a9ed4139a6a727c5857f3.bindPopup(popup_470780c54f0c3dd4cb0f998796a2f2e7)
+        ;
+
+        
+    
+    
+            marker_e7395d27a33a9ed4139a6a727c5857f3.bindTooltip(
+                `<div>
+                     Historic District
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_e7395d27a33a9ed4139a6a727c5857f3.setIcon(icon_bd4b75423b061d90e13c2e6f5692f259);
+            
+    
+            var marker_53052d59ec5eaa9701c266dc08970f7e = L.marker(
+                [31.461053401537644, 104.72378361486626],
+                {
+}
+            ).addTo(marker_cluster_ac82ff0b0272a9bf3dcb437cf2695295);
+        
+    
+            var icon_fabf97194264571d45de0e748b9db560 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "green",
+  "iconColor": "white",
+  "icon": "star",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_7ed0cbe832d3738d4cece3123dc3079f = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_9493e6f1f71a85e060963f157c407713 = $(`<div id="html_9493e6f1f71a85e060963f157c407713" style="width: 100.0%; height: 100.0%;">                     <div style="width: 200px; height: auto;">                         <h4>Local Market</h4>                         <p>Experience authentic food and crafts</p>                     </div>                     </div>`)[0];
+                popup_7ed0cbe832d3738d4cece3123dc3079f.setContent(html_9493e6f1f71a85e060963f157c407713);
+            
+        
+
+        marker_53052d59ec5eaa9701c266dc08970f7e.bindPopup(popup_7ed0cbe832d3738d4cece3123dc3079f)
+        ;
+
+        
+    
+    
+            marker_53052d59ec5eaa9701c266dc08970f7e.bindTooltip(
+                `<div>
+                     Local Market
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_53052d59ec5eaa9701c266dc08970f7e.setIcon(icon_fabf97194264571d45de0e748b9db560);
+            
+    
+            marker_cluster_ac82ff0b0272a9bf3dcb437cf2695295.addTo(map_a50e641c12148bfadd91b36e39464721);
+        
+    
+            var layer_control_79cd9562d2ea8679ef716e9e447dc15a_layers = {
+                base_layers : {
+                    "openstreetmap" : tile_layer_b651d2ad900d6960391cb03bf3bf32bb,
+                },
+                overlays :  {
+                    "Attractions" : marker_cluster_ac82ff0b0272a9bf3dcb437cf2695295,
+                },
+            };
+            let layer_control_79cd9562d2ea8679ef716e9e447dc15a = L.control.layers(
+                layer_control_79cd9562d2ea8679ef716e9e447dc15a_layers.base_layers,
+                layer_control_79cd9562d2ea8679ef716e9e447dc15a_layers.overlays,
+                {
+  "position": "topright",
+  "collapsed": true,
+  "autoZIndex": true,
+}
+            ).addTo(map_a50e641c12148bfadd91b36e39464721);
+
+        
+</script>
+</html>

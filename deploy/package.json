@@ -1,0 +1,21 @@
+{
+  "name": "wandermatch-deploy",
+  "version": "1.0.0",
+  "description": "WanderMatch Travel Companion App",
+  "scripts": {
+    "start:backend": "cd backend && python app.py",
+    "start:frontend": "cd frontend && npm start",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "install:frontend": "cd frontend && npm install",
+    "install:all": "npm install && npm run install:frontend",
+    "build:frontend": "cd frontend && npm run build",
+    "setup": "npm run install:all"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.0"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+} 

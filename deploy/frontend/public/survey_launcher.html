@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WanderMatch Survey Launcher</title>
+    <script>
+        // Update the API URL to be environment-aware
+        const API_URL = (() => {
+            // Check if we're in the Render environment
+            if (window.location.hostname.includes('render.com') || 
+                window.location.hostname.includes('onrender.com')) {
+                // Use absolute URL with the correct Render service subdomain
+                // Pattern is typically: https://service-name.onrender.com
+                const frontendUrl = window.location.origin;
+                const apiUrl = frontendUrl.replace('wandermatch-frontend', 'wandermatch-api');
+                console.log('Render deployment detected - using API URL:', apiUrl);
+                return apiUrl;
+            } else if (window.location.hostname === 'localhost') {
+                // Local development - use the port defined in serve_survey.py
+                return 'http://localhost:5000';
+            } else {
+                // Fallback - try relative API
+                return '/api';
+            }
+        })();
+        console.log("Using API URL:", API_URL);
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 20px auto;
+            width: 200px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        .success-message {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f8f5;
+            border: 1px solid #2ecc71;
+            border-radius: 4px;
+            color: #27ae60;
+            display: none;
+        }
+        .instructions {
+            text-align: left;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-left: 4px solid #3498db;
+        }
+        /* Styles for partner matching display */
+        .matches-container {
+            margin-top: 30px;
+            display: none;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        .match-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .match-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: #3498db;
+        }
+        .match-card.selected {
+            border: 2px solid #2ecc71;
+            background-color: #e8f8f5;
+        }
+        .match-name {
+            font-weight: bold;
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .match-details {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .match-score {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        .match-interests {
+            font-style: italic;
+            color: #34495e;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #selectPartnerBtn {
+            background-color: #2ecc71;
+            display: none;
+        }
+        .partner-selected {
+            background-color: #e8f8f5;
+            border: 1px solid #2ecc71;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+            display: none;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        .loading-spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Styles for city input form */
+        .city-form {
+            margin-top: 30px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            display: none;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+        .city-result {
+            margin-top: 20px;
+            background-color: #e8f7ff;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            padding: 20px;
+            display: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .city-result h3 {
+            color: #2980b9;
+            margin-top: 0;
+        }
+        .city-result h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        .city-result p {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .city-result p:last-child {
+            margin-top: 15px;
+            font-weight: bold;
+            color: #27ae60;
+        }
+        /* Demo mode indicator styles */
+        .demo-mode-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: #f39c12;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-weight: bold;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- Demo mode indicator banner -->
+    <div id="demoModeIndicator" class="demo-mode-indicator">
+        DEMO MODE: Using pre-calculated matches instead of real-time API calculation
+    </div>
+    
+    <h1>WanderMatch Survey Launcher</h1>
+    
+    <div class="container">
+        <div class="instructions">
+            <h3>Instructions:</h3>
+            <ol>
+                <li>Click the "Launch Survey" button to open the survey form in a new window.</li>
+                <li>Complete the survey with your travel preferences and submit it.</li>
+                <li>After successful submission, close the survey window.</li>
+                <li>Return to this page to see the confirmation message.</li>
+                <li>After saving survey results, you can click "Launch Embedding Calculation" to process your data.</li>
+                <li>Once a partner is selected, you can enter your origin and destination cities.</li>
+                <li>When you are done, click the "Close Application" button to shut down the server.</li>
+            </ol>
+        </div>
+        
+        <button id="launchBtn" class="btn">Launch Survey</button>
+        
+        <!-- New button for embedding calculation -->
+        <button id="embeddingBtn" class="btn" style="background-color: #27ae60; margin-top: 10px;">Launch Embedding Calculation</button>
+        
+        <!-- Demo mode button -->
+        <button id="demoModeBtn" class="btn" style="background-color: #f39c12; margin-top: 10px; display: none;">Use Demo Mode</button>
+        
+        <!-- New button for closing application -->
+        <button id="closeAppBtn" class="btn" style="background-color: #e74c3c; margin-top: 10px; display: inline-block; width: 200px;">Close Application</button>
+        
+        <div id="successMessage" class="success-message">
+            <h3>Survey Results Saved Successfully!</h3>
+            <p>Thank you for completing the WanderMatch Travel Survey. Your preferences have been saved.</p>
+        </div>
+        
+        <!-- Loading indicator -->
+        <div id="loadingIndicator" class="loading">
+            <div class="loading-spinner"></div>
+            <p>Calculating embeddings and finding your perfect travel partners...</p>
+            <p>This may take a moment. Please wait.</p>
+        </div>
+        
+        <!-- Matches display container -->
+        <div id="matchesContainer" class="matches-container">
+            <h3>Your Top Travel Partner Matches</h3>
+            <p>Select a partner that interests you to view more details:</p>
+            
+            <div id="matchesList">
+                <!-- Partner matches will be inserted here -->
+            </div>
+            
+            <div class="button-container">
+                <button id="selectPartnerBtn" class="btn">Select This Partner</button>
+            </div>
+        </div>
+        
+        <!-- Selected partner display -->
+        <div id="selectedPartner" class="partner-selected">
+            <h3>Your Selected Travel Partner</h3>
+            <div id="selectedPartnerDetails">
+                <!-- Selected partner details will be inserted here -->
+            </div>
+        </div>
+        
+        <!-- City input form (initially hidden) -->
+        <div id="cityForm" class="city-form">
+            <h3>Enter Your Travel Cities</h3>
+            <p>Please specify your origin and destination cities for your trip:</p>
+            
+            <div class="form-group">
+                <label for="originCity">Origin City:</label>
+                <input type="text" id="originCity" name="originCity" placeholder="New York" value="New York">
+            </div>
+            
+            <div class="form-group">
+                <label for="destinationCity">Destination City:</label>
+                <input type="text" id="destinationCity" name="destinationCity" placeholder="Paris" value="Paris">
+            </div>
+            
+            <button id="submitCitiesBtn" class="btn" style="background-color: #e67e22;">Confirm Cities</button>
+        </div>
+        
+        <!-- City result display -->
+        <div id="cityResult" class="city-result">
+            <h3>Your Travel Plan is Complete!</h3>
+            <div id="cityResultDetails">
+                <!-- City selection details will be shown here -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Variables to track the survey window and process
+        let surveyWindow = null;
+        const launchBtn = document.getElementById('launchBtn');
+        const embeddingBtn = document.getElementById('embeddingBtn');
+        const demoModeBtn = document.getElementById('demoModeBtn');
+        const successMessage = document.getElementById('successMessage');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const matchesContainer = document.getElementById('matchesContainer');
+        const matchesList = document.getElementById('matchesList');
+        const selectPartnerBtn = document.getElementById('selectPartnerBtn');
+        const selectedPartner = document.getElementById('selectedPartner');
+        const selectedPartnerDetails = document.getElementById('selectedPartnerDetails');
+        const cityForm = document.getElementById('cityForm');
+        const originCityInput = document.getElementById('originCity');
+        const destinationCityInput = document.getElementById('destinationCity');
+        const submitCitiesBtn = document.getElementById('submitCitiesBtn');
+        const cityResult = document.getElementById('cityResult');
+        const cityResultDetails = document.getElementById('cityResultDetails');
+        const demoModeIndicator = document.getElementById('demoModeIndicator');
+        
+        // Store matches data
+        let matchesData = [];
+        let selectedMatch = null;
+        
+        // Function to close application
+        async function closeApplication() {
+            if (confirm('Are you sure you want to close the application? This will shut down all server processes.')) {
+                try {
+                    console.log('Attempting to shut down the servers...');
+                    
+                    // First shut down the backend server
+                    try {
+                        const backendResponse = await fetch(`${API_URL}/api/shutdown`, {
+                            method: 'POST',
+                            headers: {
+                                'Cache-Control': 'no-cache'
+                            }
+                        });
+                        
+                        if (backendResponse.ok) {
+                            console.log('Backend server shutting down successfully');
+                        } else {
+                            console.warn(`Backend shutdown responded with status: ${backendResponse.status}`);
+                        }
+                    } catch (backendError) {
+                        console.warn('Error shutting down backend:', backendError);
+                    }
+                    
+                    // Short delay to allow backend to shut down
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    
+                    // Then shut down the frontend HTTP server
+                    if (window.location.hostname === 'localhost') {
+                        try {
+                            const frontendResponse = await fetch('http://localhost:8000/shutdown', {
+                                method: 'POST',
+                                headers: {
+                                    'Cache-Control': 'no-cache'
+                                }
+                            });
+                            
+                            if (frontendResponse.ok) {
+                                console.log('Frontend server shutting down successfully');
+                            } else {
+                                console.warn(`Frontend shutdown responded with status: ${frontendResponse.status}`);
+                            }
+                        } catch (frontendError) {
+                            console.warn('Error shutting down frontend:', frontendError);
+                        }
+                    }
+                    
+                    // Show a message to the user
+                    alert('Application servers have been shut down. You can close this browser tab.');
+                    
+                } catch (error) {
+                    console.error('Error during shutdown process:', error);
+                    alert('Error shutting down application: ' + error.message + '\n\nPlease close this window and manually terminate the server processes (Ctrl+C in the terminal).');
+                }
+            }
+        }
+        
+        // Function to launch the survey
+        function launchSurvey() {
+            // Open survey in a new window
+            surveyWindow = window.open('test_survey_form.html', 'SurveyWindow', 
+                'width=900,height=800,resizable=yes,scrollbars=yes');
+            
+            // Check if window was blocked by popup blocker
+            if (!surveyWindow || surveyWindow.closed || typeof surveyWindow.closed === 'undefined') {
+                alert('Survey window was blocked. Please allow popups for this site.');
+                return;
+            }
+            
+            // Set up listener to check when survey window is closed
+            const checkWindowClosed = setInterval(() => {
+                if (surveyWindow.closed) {
+                    clearInterval(checkWindowClosed);
+                    checkSurveySubmission();
+                }
+            }, 500);
+            
+            // Disable the launch button while survey is open
+            launchBtn.disabled = true;
+            launchBtn.textContent = 'Survey In Progress...';
+        }
+        
+        // Function to check if survey was submitted (using localStorage for communication)
+        function checkSurveySubmission() {
+            // For simplicity, we'll show success message when window closes
+            // In a production environment, you would check server-side or use localStorage
+            
+            // Re-enable the launch button
+            launchBtn.disabled = false;
+            launchBtn.textContent = 'Launch Survey';
+            
+            // Check localStorage for survey submission status
+            const surveySubmitted = localStorage.getItem('surveySubmitted');
+            
+            if (surveySubmitted === 'true') {
+                // Show success message
+                successMessage.style.display = 'block';
+                
+                // Clear the flag
+                localStorage.removeItem('surveySubmitted');
+            }
+        }
+        
+        // Function for embedding calculation
+        async function launchEmbeddingCalculation() {
+            // Show loading indicator
+            loadingIndicator.style.display = 'block';
+            embeddingBtn.disabled = true;
+            embeddingBtn.textContent = 'Calculating...';
+            
+            try {
+                // Add a timestamp parameter to avoid caching issues
+                const timestamp = new Date().getTime();
+                // Log URL to console for debugging
+                console.log(`Calling API at: ${API_URL}/api/embedding?t=${timestamp}`);
+                
+                // Call the backend API to run embedding calculation
+                const response = await fetch(`${API_URL}/api/embedding?t=${timestamp}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    },
+                    mode: 'cors',
+                    credentials: 'include'
+                });
+                
+                // Hide loading indicator
+                loadingIndicator.style.display = 'none';
+                
+                // Process response
+                const result = await response.json();
+                
+                if (response.status === 429 || (result.error_type && result.error_type === 'quota_exceeded')) {
+                    // Special handling for API quota exceeded
+                    const errorMessage = "OpenAI API usage limit has been reached. The embedding calculation service is currently unavailable.\n\nWould you like to use a demo mode with pre-calculated matches instead?";
+                    
+                    // Show the demo mode button
+                    demoModeBtn.style.display = 'block';
+                    
+                    if (confirm(errorMessage)) {
+                        // Use demo data immediately
+                        usePreCalculatedMatches();
+                    } else {
+                        embeddingBtn.disabled = false;
+                        embeddingBtn.textContent = 'Launch Embedding Calculation';
+                    }
+                    return;
+                }
+                
+                if (!response.ok) {
+                    throw new Error(`Server responded with status: ${response.status} - ${result.message || 'Unknown error'}`);
+                }
+                
+                if (result.success) {
+                    // Store the matches data
+                    matchesData = result.matches;
+                    
+                    // Display matches
+                    displayMatches(matchesData);
+                    
+                    // Reset embedding button
+                    embeddingBtn.disabled = false;
+                    embeddingBtn.textContent = 'Recalculate Partners';
+                } else {
+                    alert(`Error: ${result.message}`);
+                    embeddingBtn.disabled = false;
+                    embeddingBtn.textContent = 'Launch Embedding Calculation';
+                }
+            } catch (error) {
+                loadingIndicator.style.display = 'none';
+                alert(`Error running embedding calculation: ${error.message}`);
+                console.error('Embedding calculation error:', error);
+                
+                embeddingBtn.disabled = false;
+                embeddingBtn.textContent = 'Launch Embedding Calculation';
+            }
+        }
+        
+        // Function to use pre-calculated matches as fallback
+        function usePreCalculatedMatches() {
+            // Demo data with pre-calculated matches
+            const demoMatches = [
+                {
+                    id: 0,
+                    name: "Qing Zhou",
+                    nationality: "International",
+                    age_group: "25–34",
+                    interests: "Nature exploration",
+                    score: 98.5
+                },
+                {
+                    id: 1,
+                    name: "Anonymous Traveler",
+                    nationality: "International",
+                    age_group: "25–34",
+                    interests: "Nature exploration",
+                    score: 98.5
+                },
+                {
+                    id: 2,
+                    name: "Jie Zhang",
+                    nationality: "Chinese",
+                    age_group: "18–24",
+                    interests: "Nature exploration", 
+                    score: 94.3
+                },
+                {
+                    id: 3,
+                    name: "Takashi Mori",
+                    nationality: "Japanese",
+                    age_group: "45–54",
+                    interests: "Travel the Silk Road from Xi'an to Samarkand",
+                    score: 84.5
+                },
+                {
+                    id: 4,
+                    name: "Nokuthula Dlamini",
+                    nationality: "South African",
+                    age_group: "25–34",
+                    interests: "Snorkel in the Great Barrier Reef",
+                    score: 83.5
+                }
+            ];
+            
+            // Store and display the matches
+            matchesData = demoMatches;
+            displayMatches(matchesData);
+            
+            // Reset embedding button
+            embeddingBtn.disabled = false;
+            embeddingBtn.textContent = 'Demo Mode (Pre-calculated)';
+            embeddingBtn.style.backgroundColor = '#f39c12';
+            
+            // Show the demo mode indicator
+            demoModeIndicator.style.display = 'block';
+            
+            // Add demo mode class to the container for visual styling
+            document.querySelector('.container').classList.add('demo-mode');
+            
+            // Inform user they're in demo mode
+            alert("Using demo mode with pre-calculated matches. The real embedding calculation is unavailable due to API limits.");
+        }
+        
+        // Function to display the selected partner
+        function displaySelectedPartner(match) {
+            // Display the selected partner
+            selectedPartnerDetails.innerHTML = `
+                <h4>${match.name}</h4>
+                <p><strong>Nationality:</strong> ${match.nationality}</p>
+                <p><strong>Age Group:</strong> ${match.age_group}</p>
+                <p><strong>Match Score:</strong> ${match.score}%</p>
+                <p><strong>Interests:</strong> ${match.interests}</p>
+                <p>Congratulations on finding your travel partner! Now you can specify your travel cities below.</p>
+            `;
+            
+            // Show the selected partner container
+            selectedPartner.style.display = 'block';
+            
+            // Hide matches container once a partner is selected
+            matchesContainer.style.display = 'none';
+            
+            // Show city input form after partner selection
+            cityForm.style.display = 'block';
+        }
+        
+        // Function to display matches
+        function displayMatches(matches) {
+            // Clear previous matches
+            matchesList.innerHTML = '';
+            
+            // Create a card for each match
+            matches.forEach((match, index) => {
+                const matchCard = document.createElement('div');
+                matchCard.className = 'match-card';
+                matchCard.dataset.index = index;
+                
+                matchCard.innerHTML = `
+                    <div class="match-name">${match.name}</div>
+                    <div class="match-details">
+                        <span>${match.nationality}</span> | <span>${match.age_group}</span>
+                    </div>
+                    <div class="match-score">Match Score: ${match.score}%</div>
+                    <div class="match-interests">Interests: ${match.interests}</div>
+                `;
+                
+                // Add click event to select this match
+                matchCard.addEventListener('click', () => selectMatch(index));
+                
+                matchesList.appendChild(matchCard);
+            });
+            
+            // Show the matches container
+            matchesContainer.style.display = 'block';
+        }
+        
+        // Function to select a match
+        function selectMatch(index) {
+            // Update selected match
+            selectedMatch = matchesData[index];
+            
+            // Update UI to show selected match
+            const matchCards = document.querySelectorAll('.match-card');
+            matchCards.forEach(card => card.classList.remove('selected'));
+            matchCards[index].classList.add('selected');
+            
+            // Show select button
+            selectPartnerBtn.style.display = 'block';
+        }
+        
+        // Function to confirm partner selection
+        function confirmPartnerSelection() {
+            if (!selectedMatch) {
+                alert('Please select a travel partner first.');
+                return;
+            }
+            
+            // Display the selected partner
+            displaySelectedPartner(selectedMatch);
+        }
+        
+        // Function to handle city submission
+        function submitCities() {
+            const originCity = originCityInput.value.trim() || 'New York';
+            const destinationCity = destinationCityInput.value.trim() || 'Paris';
+            
+            // Display the selected cities
+            cityResultDetails.innerHTML = `
+                <h4>Your Journey Details:</h4>
+                <p><strong>From:</strong> ${originCity}</p>
+                <p><strong>To:</strong> ${destinationCity}</p>
+                <p><strong>Travel Partner:</strong> ${selectedMatch ? selectedMatch.name : 'Solo'}</p>
+                <p>Your travel plan is complete! All details have been confirmed. You're all set for your WanderMatch adventure!</p>
+            `;
+            
+            // Hide the city input form
+            cityForm.style.display = 'none';
+            
+            // Show the city result container
+            cityResult.style.display = 'block';
+            
+            // Scroll to the city result
+            cityResult.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Add event listener to launch button
+        launchBtn.addEventListener('click', launchSurvey);
+        
+        // Add event listener to embedding button
+        embeddingBtn.addEventListener('click', launchEmbeddingCalculation);
+        
+        // Add event listener to select partner button
+        selectPartnerBtn.addEventListener('click', confirmPartnerSelection);
+        
+        // Add event listener to submit cities button
+        submitCitiesBtn.addEventListener('click', submitCities);
+        
+        // Add event listener to close application button
+        document.getElementById('closeAppBtn').addEventListener('click', closeApplication);
+        
+        // Add event listener to demo mode button
+        demoModeBtn.addEventListener('click', usePreCalculatedMatches);
+        
+        // On page load, check if we should show the demo mode button
+        window.addEventListener('load', function() {
+            // For Render deployments, make demo mode more accessible
+            if (window.location.hostname.includes('render.com') || 
+                window.location.hostname.includes('onrender.com')) {
+                demoModeBtn.style.display = 'block';
+                
+                // Add a note about demo mode to the instructions
+                const instructionsList = document.querySelector('.instructions ol');
+                const demoNote = document.createElement('li');
+                demoNote.innerHTML = '<strong>Note:</strong> If embedding calculation fails, you can use the Demo Mode button for pre-calculated matches.';
+                instructionsList.appendChild(demoNote);
+            }
+            
+            // Ensure the close button is visible
+            const closeButton = document.getElementById('closeAppBtn');
+            if (closeButton) {
+                closeButton.style.display = 'block';
+                console.log('Close application button is visible');
+            } else {
+                console.error('Close application button not found in DOM');
+            }
+        });
+    </script>
+</body>
+</html> 

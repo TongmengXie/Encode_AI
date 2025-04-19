@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transportation Routes</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background-color: #3498db;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        .card.selected {
+            border: 3px solid #27ae60;
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        .card-header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .label {
+            font-weight: bold;
+            color: #7f8c8d;
+        }
+        .value {
+            text-align: right;
+            color: #2c3e50;
+        }
+        .pros-cons {
+            margin-top: 15px;
+        }
+        .pros, .cons {
+            margin-bottom: 10px;
+        }
+        .pros h4, .cons h4 {
+            margin-bottom: 5px;
+            color: #555;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+        .pros ul {
+            color: #27ae60;
+        }
+        .cons ul {
+            color: #e74c3c;
+        }
+        ul {
+            padding-left: 20px;
+            margin: 5px 0;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+        .icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        .carbon {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .carbon.high {
+            background-color: #ffebee;
+            color: #e53935;
+        }
+        .carbon.medium {
+            background-color: #fff8e1;
+            color: #ffb300;
+        }
+        .carbon.low {
+            background-color: #e8f5e9;
+            color: #43a047;
+        }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 20px auto;
+            width: 200px;
+            display: block;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+        .loading-spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Transportation Routes</h1>
+        <h2 id="route-title">London to Paris</h2>
+        <div id="method-indicator" style="margin-top: 5px; font-size: 0.8em; opacity: 0.8;">
+            Generating routes...
+        </div>
+    </div>
+    
+    <div id="loading" class="loading">
+        <div class="loading-spinner"></div>
+        <p>Generating transportation routes...</p>
+    </div>
+    
+    <div id="routesContainer" class="container">
+        <!-- Route cards will be inserted here -->
+    </div>
+    
+    <div class="button-container" style="display: flex; justify-content: center; gap: 20px;">
+        <button id="selectRouteBtn" class="btn" style="background-color: #27ae60; display: none;">Select This Route</button>
+        <button id="closeBtn" class="btn" style="background-color: #e74c3c;">Close</button>
+    </div>
+    
+    <div class="footer">
+        <p>Generated by WanderMatch Route Generator</p>
+    </div>
+
+    <script>
+        // Parse URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const originCity = urlParams.get('origin') || 'London';
+        const destinationCity = urlParams.get('destination') || 'Paris';
+        
+        // Variables to store selected route
+        let selectedRouteIndex = -1;
+        let transportOptions = [];
+        
+        // Update the route title
+        document.getElementById('route-title').textContent = `${originCity} to ${destinationCity}`;
+        
+        // Function to close the window
+        document.getElementById('closeBtn').addEventListener('click', function() {
+            window.close();
+        });
+        
+        // Function to select a route and send it back to parent
+        document.getElementById('selectRouteBtn').addEventListener('click', function() {
+            if (selectedRouteIndex >= 0 && selectedRouteIndex < transportOptions.length) {
+                const selectedRoute = transportOptions[selectedRouteIndex];
+                
+                // Add origin and destination to the route object
+                selectedRoute.origin = originCity;
+                selectedRoute.destination = destinationCity;
+                
+                // Send message to parent window
+                if (window.opener && !window.opener.closed) {
+                    window.opener.postMessage({
+                        type: 'ROUTE_SELECTED',
+                        route: selectedRoute
+                    }, '*');
+                    
+                    // Close this window
+                    window.close();
+                } else {
+                    alert('Cannot communicate with parent window. It may be closed.');
+                }
+            }
+        });
+        
+        // Function to get transport icon
+        function getTransportIcon(transportMode) {
+            transportMode = transportMode.toLowerCase();
+            
+            if (transportMode.includes('plane') || transportMode.includes('flight') || transportMode.includes('air')) {
+                return "✈️";
+            } else if (transportMode.includes('train') || transportMode.includes('rail')) {
+                return "🚆";
+            } else if (transportMode.includes('bus') || transportMode.includes('coach')) {
+                return "🚌";
+            } else if (transportMode.includes('car') || transportMode.includes('drive') || transportMode.includes('taxi')) {
+                return "🚗";
+            } else if (transportMode.includes('boat') || transportMode.includes('ferry') || transportMode.includes('ship')) {
+                return "⛴️";
+            } else if (transportMode.includes('bike') || transportMode.includes('bicycle') || transportMode.includes('cycle')) {
+                return "🚲";
+            } else if (transportMode.includes('walk') || transportMode.includes('foot') || transportMode.includes('hiking')) {
+                return "🚶";
+            } else if (transportMode.includes('subway') || transportMode.includes('metro') || transportMode.includes('underground')) {
+                return "🚇";
+            } else if (transportMode.includes('tram') || transportMode.includes('streetcar')) {
+                return "🚊";
+            } else if (transportMode.includes('motorcycle') || transportMode.includes('motorbike')) {
+                return "🏍️";
+            } else {
+                return "🚀";
+            }
+        }
+        
+        // Function to generate HTML for a transport option card
+        function generateTransportCard(option, index) {
+            // Get transport mode data with fallbacks
+            const mode = option.mode || 'Custom Transport';
+            const duration = option.duration || 'Varies';
+            const cost = option.cost || 'Variable';
+            const carbon = option.carbon_footprint || 'Unknown';
+            const comfort = option.comfort_level || 3;
+            const pros = option.pros || ['Convenient option'];
+            const cons = option.cons || ['Varies by conditions'];
+            
+            // Determine carbon footprint class
+            let carbonClass = "medium";
+            if (carbon.toLowerCase().includes("high")) {
+                carbonClass = "high";
+            } else if (carbon.toLowerCase().includes("low")) {
+                carbonClass = "low";
+            }
+            
+            // Generate comfort stars
+            const comfortStars = "⭐".repeat(Math.min(parseInt(comfort), 5));
+            
+            // Create pros and cons HTML
+            const prosHtml = "<ul>" + pros.map(pro => `<li>${pro}</li>`).join("") + "</ul>";
+            const consHtml = "<ul>" + cons.map(con => `<li>${con}</li>`).join("") + "</ul>";
+            
+            // Get the appropriate icon
+            const icon = getTransportIcon(mode);
+            
+            // Return the card HTML
+            return `
+            <div class="card">
+                <div class="card-header">
+                    <span class="icon">${icon}</span> ${mode}
+                </div>
+                <div class="card-body">
+                    <div class="info-row">
+                        <span class="label">Duration:</span>
+                        <span class="value">⏱️ ${duration}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Cost:</span>
+                        <span class="value">💰 ${cost}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Carbon:</span>
+                        <span class="value"><span class="carbon ${carbonClass}">${carbon}</span></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Comfort:</span>
+                        <span class="value">${comfortStars}</span>
+                    </div>
+                    <div class="pros-cons">
+                        <div class="pros">
+                            <h4>✅ Pros</h4>
+                            ${prosHtml}
+                        </div>
+                        <div class="cons">
+                            <h4>❌ Cons</h4>
+                            ${consHtml}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+        
+        // Function to load transport options
+        function loadTransportOptions() {
+            // Get the API URL using the same mechanism as survey_launcher.html
+            const apiUrl = (() => {
+                // Check if we're in the Render environment
+                if (window.location.hostname.includes('render.com') || 
+                    window.location.hostname.includes('onrender.com')) {
+                    // Use absolute URL with the correct Render service subdomain
+                    const frontendUrl = window.location.origin;
+                    const apiUrl = frontendUrl.replace('wandermatch-frontend', 'wandermatch-api');
+                    console.log('Render deployment detected - using API URL:', apiUrl);
+                    return apiUrl;
+                } else if (window.location.hostname === 'localhost') {
+                    // Local development - use the port defined in serve_survey.py
+                    return 'http://localhost:5000';
+                } else {
+                    // Fallback - try relative API
+                    return '/api';
+                }
+            })();
+            
+            // Fetch transport options from API
+            return fetch(`${apiUrl}/api/routes?origin=${encodeURIComponent(originCity)}&destination=${encodeURIComponent(destinationCity)}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                },
+                mode: 'cors',
+                credentials: 'include'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`API request failed with status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success && data.routes && data.routes.length > 0) {
+                    console.log(`Received ${data.routes.length} route options from API using ${data.method_used} method`);
+                    
+                    // Update method indicator
+                    updateMethodIndicator(data.method_used);
+                    
+                    return data.routes;
+                } else {
+                    console.warn('API returned success but no valid routes, using default options');
+                    
+                    // Update method indicator to default
+                    updateMethodIndicator('default');
+                    
+                    throw new Error('No valid routes in API response');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching transport options:', error);
+                console.log('Falling back to default transport options');
+                
+                // Update method indicator to default
+                updateMethodIndicator('default');
+                
+                // Fallback to default options
+                return [
+                    {
+                        "mode": "Flight",
+                        "duration": "1h 30m - 4h",
+                        "cost": "$150-400",
+                        "carbon_footprint": "High",
+                        "comfort_level": 4,
+                        "pros": ["Fastest option", "Most reliable for long distances"],
+                        "cons": ["Environmental impact", "Airport hassles"]
+                    },
+                    {
+                        "mode": "Train",
+                        "duration": "3h - 8h",
+                        "cost": "$40-120",
+                        "carbon_footprint": "Medium",
+                        "comfort_level": 3,
+                        "pros": ["Scenic views", "City center to city center"],
+                        "cons": ["Limited schedules", "Can be delayed"]
+                    },
+                    {
+                        "mode": "Bus",
+                        "duration": "4h - 10h",
+                        "cost": "$20-60",
+                        "carbon_footprint": "Medium-Low",
+                        "comfort_level": 2,
+                        "pros": ["Budget-friendly", "Flexible booking"],
+                        "cons": ["Longer travel time", "Less comfort for long journeys"]
+                    },
+                    {
+                        "mode": "Car Rental",
+                        "duration": "Flexible",
+                        "cost": "$80-150 per day",
+                        "carbon_footprint": "Medium-High",
+                        "comfort_level": 4,
+                        "pros": ["Maximum flexibility", "Door-to-door convenience"],
+                        "cons": ["Parking challenges", "Driver fatigue on long trips"]
+                    }
+                ];
+            });
+        }
+        
+        // Function to update the method indicator
+        function updateMethodIndicator(method) {
+            const methodIndicator = document.getElementById('method-indicator');
+            let indicatorText = '';
+            let indicatorColor = '';
+            
+            switch(method) {
+                case 'openai':
+                    indicatorText = 'Routes generated by OpenAI';
+                    indicatorColor = '#10a37f'; // OpenAI green
+                    break;
+                case 'gemini':
+                    indicatorText = 'Routes generated by Google Gemini';
+                    indicatorColor = '#4285f4'; // Google blue
+                    break;
+                case 'default':
+                    indicatorText = 'Routes generated using default options';
+                    indicatorColor = '#95a5a6'; // Gray
+                    break;
+                default:
+                    indicatorText = 'Routes generated';
+                    indicatorColor = '#95a5a6';
+            }
+            
+            methodIndicator.textContent = indicatorText;
+            methodIndicator.style.color = indicatorColor;
+        }
+        
+        // Function to display transport options
+        function displayTransportOptions() {
+            // Show loading indicator
+            document.getElementById('loading').style.display = 'block';
+            
+            // Load transport options from API
+            loadTransportOptions()
+                .then(options => {
+                    // Store the routes
+                    transportOptions = options;
+                    
+                    // Hide loading indicator
+                    document.getElementById('loading').style.display = 'none';
+                    
+                    // Get the routes container
+                    const routesContainer = document.getElementById('routesContainer');
+                    
+                    // Generate HTML for each transport option
+                    let cardsHtml = '';
+                    transportOptions.forEach((option, index) => {
+                        cardsHtml += generateTransportCard(option, index);
+                    });
+                    
+                    // Update the container
+                    routesContainer.innerHTML = cardsHtml;
+                    
+                    // Add click event listeners to all cards
+                    document.querySelectorAll('.card').forEach((card, index) => {
+                        card.addEventListener('click', () => selectTransportCard(index));
+                    });
+                });
+        }
+        
+        // Function to select a transport card
+        function selectTransportCard(index) {
+            // Update selected index
+            selectedRouteIndex = index;
+            
+            // Update UI
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => card.classList.remove('selected'));
+            cards[index].classList.add('selected');
+            
+            // Show the select button
+            document.getElementById('selectRouteBtn').style.display = 'block';
+        }
+        
+        // Load transport options when the page loads
+        window.addEventListener('load', function() {
+            // Load transport options immediately
+            displayTransportOptions();
+        });
+    </script>
+</body>
+</html> 

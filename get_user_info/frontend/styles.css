@@ -201,4 +201,82 @@ footer {
 
 .form-control.is-invalid ~ .invalid-feedback {
     display: block;
+}
+
+/* Survey Complete Card */
+.survey-complete {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.survey-complete .alert-success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.survey-complete .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    font-weight: 500;
+    padding: 0.5rem 1.5rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.survey-complete .btn-primary:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
+    transform: translateY(-2px);
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.2);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* File Path Information */
+.file-path-info {
+    padding: 12px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    border-left: 4px solid #007bff;
+    font-family: Consolas, monospace;
+    margin-bottom: 1rem;
+    word-break: break-all;
+}
+
+.file-path-info p {
+    margin: 8px 0;
+    line-height: 1.4;
+    color: #333;
+}
+
+.file-path-info strong {
+    color: #007bff;
+    display: inline-block;
+    width: 80px;
+}
+
+/* Improve copy button styling */
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+    transform: translateY(-2px);
 } 
